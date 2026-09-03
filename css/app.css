@@ -176,37 +176,43 @@ textarea { min-height: 80px; resize: vertical; }
 .lineup-bar .qseg button[disabled] { opacity: .4; }
 .lineup-bar.compact { margin-bottom: 0; }
 
-/* view mode */
-.viewer { display: flex; flex-direction: column; min-height: calc(100vh - 52px - var(--nav-h) - var(--safe-b)); }
-.viewer .stage { position: relative; background: #fff; border-bottom: 1px solid var(--line); display: flex; justify-content: center; }
-.viewer .stage svg { display: block; width: 100%; max-width: min(100vw, calc((100vh - 170px) * 4 / 3)); aspect-ratio: 4 / 3; }
-.viewer .stage .annot { position: absolute; inset: 0; margin: 0 auto; height: 100%; touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; cursor: crosshair; }
-.vtools { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; justify-content: center; padding: 10px 14px; }
+/* view mode: navigation hidden, play fills the screen inside a margin (1in on tablets/desktops) */
+body.viewing { padding-left: 0 !important; padding-bottom: 0 !important; }
+body.viewing .nav { display: none !important; }
+.viewer { --vpad: 8px; --topbar: 52px; --vtools-h: 64px; display: flex; flex-direction: column; }
+.viewer .stage { position: relative; background: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: var(--vpad); min-height: calc(100vh - var(--topbar)); }
+.viewer .frame { position: relative; width: 100%; aspect-ratio: 4 / 3; max-width: min(calc(100vw - 2 * var(--vpad)), calc((100vh - var(--topbar) - var(--vtools-h) - 2 * var(--vpad)) * 4 / 3)); }
+.viewer .frame svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.viewer .frame .annot { touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; cursor: crosshair; }
+.vtools { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; justify-content: center; padding: 10px 14px; min-height: var(--vtools-h); }
 .vgroup { display: flex; gap: 8px; align-items: center; }
 .vtools .btn.icon { width: 46px; min-height: 46px; font-size: 22px; }
 .pen { width: 40px; height: 40px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 0 0 1px var(--line); background: var(--pen); cursor: pointer; padding: 0; }
 .pen.on { box-shadow: 0 0 0 3px var(--ink); }
 .small-seg button { min-width: 46px; min-height: 40px; }
 .vnotes { padding: 4px 16px 14px; text-align: center; color: var(--muted); font-size: 14px; white-space: pre-wrap; }
-/* landscape phone: field left, tools stacked on the right, nav hidden */
-@media (orientation: landscape) and (max-height: 520px) {
-  body.viewing { padding-bottom: 0; }
-  body.viewing .nav { display: none; }
-  .viewer { flex-direction: row; min-height: 0; height: calc(100vh - 52px); }
-  .viewer .stage { flex: 1; border-bottom: 0; border-right: 1px solid var(--line); align-items: center; }
-  .viewer .stage svg { max-width: min(calc(100vw - 112px), calc((100vh - 52px) * 4 / 3)); }
-  .viewer .stage .annot { width: auto; }
-  .vtools { flex-direction: column; width: 112px; padding: 8px; gap: 10px; overflow-y: auto; max-height: calc(100vh - 52px); justify-content: flex-start; }
-  .vtools .btn.icon { width: 38px; min-height: 38px; font-size: 18px; }
-  .pen { width: 32px; height: 32px; }
-  .small-seg button { min-width: 38px; min-height: 34px; font-size: 13px; padding: 4px 6px; }
-  .vgroup { flex-wrap: wrap; justify-content: center; }
-  .vgroup.seg { flex-direction: column; }
-  .vgroup.seg button + button { border-left: 0; border-top: 1px solid var(--line); }
+
+/* tablets and desktops: one-inch margin all round; tools sit in the bottom margin so the play gets the rest */
+@media (min-width: 700px) and (min-height: 521px) {
+  .viewer { --vpad: 1in; --vtools-h: 0px; }
+  .viewer .stage { height: calc(100vh - var(--topbar)); min-height: 0; }
+  .vtools { position: absolute; left: 0; right: 0; bottom: calc((1in - 48px) / 2); padding: 0 1in; min-height: 48px; flex-wrap: nowrap; gap: 10px 22px; }
+  .vtools .btn.icon { width: 44px; min-height: 44px; }
+  .pen { width: 36px; height: 36px; }
   .vnotes { display: none; }
 }
+
+/* landscape phone: field left, tools stacked on the right */
 @media (orientation: landscape) and (max-height: 520px) {
+  .viewer { --vtools-h: 0px; }
+  .viewer .stage { flex-direction: row; height: calc(100vh - var(--topbar)); min-height: 0; padding: 6px; }
+  .viewer .frame { max-width: min(calc(100vw - 124px), calc((100vh - var(--topbar) - 12px) * 4 / 3)); }
+  .vtools { flex-direction: column; width: 112px; padding: 4px; gap: 10px; overflow: hidden auto; max-height: 100%; justify-content: flex-start; min-height: 0; flex: 0 0 112px; }
+  .vgroup { flex-wrap: wrap; justify-content: center; }
+  .vtools .btn.icon { width: 38px; min-height: 38px; font-size: 18px; }
+  .pen { width: 32px; height: 32px; }
   .vtools .small-seg { flex-direction: row; flex-wrap: wrap; width: 84px; border: 0; background: transparent; gap: 4px; overflow: visible; }
-  .vtools .small-seg button { flex: 0 0 38px; border: 1px solid var(--line) !important; border-radius: 8px; background: var(--card); }
+  .vtools .small-seg button { flex: 0 0 38px; min-width: 38px; min-height: 34px; font-size: 13px; padding: 4px 6px; border: 1px solid var(--line) !important; border-radius: 8px; background: var(--card); }
   .vtools .small-seg button.on { background: var(--ink); color: #fff; }
+  .vnotes { display: none; }
 }

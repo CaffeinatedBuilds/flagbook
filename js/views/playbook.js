@@ -82,12 +82,12 @@
   }
 
   /* ---------- editor ---------- */
-  const ed = { id: null, sel: null, mode: 'draw', showGrid: false, stroke: null, drag: null, svg: null, play: null, names: null };
+  const ed = { id: null, sel: null, mode: 'draw', showGrid: false, stroke: null, drag: null, dragLabel: null, svg: null, play: null, names: null };
 
   function renderEditor(root, route) {
     const play = S.play(route.id);
     if (!play) { root.innerHTML = '<div class="empty">Play not found. <a href="#/playbook">Back to playbook</a></div>'; return; }
-    if (ed.id !== play.id) { ed.id = play.id; ed.sel = null; ed.stroke = null; ed.drag = null; }
+    if (ed.id !== play.id) { ed.id = play.id; ed.sel = null; ed.stroke = null; ed.drag = null; ed.dragLabel = null; }
     ed.play = play; ed.names = S.lineupNames();
     if (ed.sel && !play.players[ed.sel]) ed.sel = null;
     const scrollY = window.scrollY;
@@ -128,10 +128,10 @@
           <span class="small muted">Ending</span>
           <div class="seg" id="ending">${[['arrow', '➔'], ['dot', '●'], ['block', '⊥'], ['none', '—']].map(([k, l]) => `<button data-end="${k}" class="${(r.end || 'arrow') === k ? 'on' : ''}" title="${k}">${l}</button>`).join('')}</div>
           <button class="btn sm ${r.dashed ? 'on' : ''}" id="dashed">Dashed</button>
-          <button class="btn sm" id="flip" title="Move the step number to the other side">⇄ #</button>
+          <button class="btn sm" id="flip" title="${r.labelAt ? 'Snap the step number back beside the route' : 'Move the step number to the other side'}">${r.labelAt ? '↺ #' : '⇄ #'}</button>
           <button class="btn sm danger" id="clearRoute">Clear route</button>
         </div>
-        <p class="hint" style="margin:10px 0 0">Tip: tap a route on the field to select it; tap it again to toggle hot. Redraw any time — the route keeps its settings.</p>` :
+        <p class="hint" style="margin:10px 0 0">Tip: tap a route on the field to select it; tap it again to toggle hot. Drag the step number to place it where you want. Redraw any time — the route keeps its settings.</p>` :
         `<p class="hint" style="margin:0">No route yet. Switch to <b>Draw route</b> and drag from ${sel} across the field. Sharp cuts stay sharp, curves get smoothed.</p>`}
       </div>`;
     }
@@ -231,6 +231,15 @@
       downPt = [x, y]; moved = false; tapRoute = null; tapGap = null;
       const gapEl = e.target.closest && e.target.closest('.gap');
       if (gapEl) { tapGap = gapEl.dataset.gap; return; }
+      const lblEl = e.target.closest && e.target.closest('.steplabel');
+      if (lblEl && play.routes[lblEl.dataset.pos]) {
+        // grab the step number: works in either mode and takes priority over drawing
+        const pos = lblEl.dataset.pos, r = play.routes[pos], at = play.players[pos];
+        const cur = r.labelAt ? [at[0] + r.labelAt[0], at[1] + r.labelAt[1]] : G.labelPoint(r, at[0], at[1], r.labelSide || 1, 22);
+        ed.dragLabel = { pos, dx: cur[0] - x, dy: cur[1] - y };
+        if (ed.sel !== pos) { ed.sel = pos; drawField(); }
+        return;
+      }
       const tok = tokenAt(play, x, y);
       if (ed.mode === 'move') {
         if (tok) { ed.sel = tok; ed.drag = { pos: tok, dx: play.players[tok][0] - x, dy: play.players[tok][1] - y }; drawField(); }
@@ -249,7 +258,11 @@
       if (!downPt) return;
       const [x, y] = F.pointFromEvent(svg, e);
       if (!moved && Math.hypot(x - downPt[0], y - downPt[1]) > 3) moved = true;
-      if (ed.drag) {
+      if (ed.dragLabel) {
+        const at = play.players[ed.dragLabel.pos];
+        play.routes[ed.dragLabel.pos].labelAt = [U.clamp(x + ed.dragLabel.dx, 12, G.FIELD_W - 12) - at[0], U.clamp(y + ed.dragLabel.dy, 14, G.FIELD_H - 14) - at[1]];
+        drawField();
+      } else if (ed.drag) {
         play.players[ed.drag.pos] = [U.clamp(x + ed.drag.dx, 10, G.FIELD_W - 10), U.clamp(y + ed.drag.dy, 10, G.FIELD_H - 10)];
         drawField();
       } else if (ed.stroke) {
@@ -265,6 +278,13 @@
         const v = prompt('Spacing label (yards) for this gap. Leave blank to auto-measure.', cur);
         if (v !== null) save(() => { play.spacing.labels = play.spacing.labels || {}; if (v.trim()) play.spacing.labels[tapGap] = v.trim(); else delete play.spacing.labels[tapGap]; });
         tapGap = null; return;
+      }
+      if (ed.dragLabel) {
+        const pos = ed.dragLabel.pos; ed.dragLabel = null;
+        const r = play.routes[pos];
+        if (moved && r.labelAt) { r.labelAt = [Math.round(r.labelAt[0]), Math.round(r.labelAt[1])]; save(() => {}); }
+        else FB.app.rerender();
+        return;
       }
       if (ed.drag) {
         const pos = ed.drag.pos; ed.drag = null;
@@ -313,7 +333,7 @@
       if (q('#stepClr')) q('#stepClr').onclick = () => save(() => { r.steps = null; });
       root.querySelectorAll('#ending button').forEach(b => b.onclick = () => save(() => { r.end = b.dataset.end; }));
       if (q('#dashed')) q('#dashed').onclick = () => save(() => { r.dashed = !r.dashed; });
-      if (q('#flip')) q('#flip').onclick = () => save(() => { r.labelSide = (r.labelSide || 1) * -1; });
+      if (q('#flip')) q('#flip').onclick = () => save(() => { if (r.labelAt) delete r.labelAt; else r.labelSide = (r.labelSide || 1) * -1; });
       if (q('#clearRoute')) q('#clearRoute').onclick = () => save(() => { delete play.routes[ed.sel]; });
     }
     q('#spacing').onchange = e => save(() => { play.spacing.show = e.target.checked; });

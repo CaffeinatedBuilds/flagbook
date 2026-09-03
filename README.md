@@ -37,6 +37,7 @@ the page data between launches.
   automatically: jitter is removed, real cuts stay sharp and are squared to 45° angles, and
   curved parts (swings, wheels, drags) become smooth splines. Redrawing replaces the shape but
   keeps the route's settings.
+* Drag a step number to place it exactly where you want; **↺ #** snaps it back beside the route.
 * Tap a route to select it; tap it again (or use **🔥 Hot route**) to make it a hot route. Hot
   routes are red and show the step number the receiver should be ready for the ball on
   (**Ready on step** stepper). Any route can carry a step/depth number in black too.
@@ -59,8 +60,9 @@ Tapping a play in the playbook opens **View mode**: the play fills the screen wi
 quarter's names, and you can scribble over it with a finger (highlighter, red, blue, black pens,
 undo, clear) to walk the team through it. Those marks never touch the play and disappear when you
 move to another play with the ‹ › arrows. **✏️ Edit** switches to the editor; the editor's
-**👁 View** button goes back. In landscape on a phone the field fills the screen with the tools
-stacked at the side.
+**👁 View** button goes back. View mode hides the app navigation and gives the play the whole
+screen: on tablets and desktops the field sits inside a one-inch margin with the tools in the
+bottom margin; on a phone the tools sit below the field (portrait) or beside it (landscape).
 
 ## Games & rotation
 

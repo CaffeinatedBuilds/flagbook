@@ -49,8 +49,11 @@
       s += `<line x1="${f(ex + px * L)}" y1="${f(ey + py * L)}" x2="${f(ex - px * L)}" y2="${f(ey - py * L)}" stroke="${color}" stroke-width="${STROKE}" stroke-linecap="round" />`;
     }
     if (r.steps != null && r.steps !== '') {
-      const [lx, ly] = G.labelPoint(r, ox, oy, r.labelSide || 1, 22);
-      s += `<text x="${f(lx)}" y="${f(ly)}" text-anchor="middle" dominant-baseline="central" font-family="${FONT}" font-weight="800" font-size="36" fill="${color}">${U.esc(r.steps)}</text>`;
+      // custom placement (dragged) is stored relative to the player; otherwise auto beside the first leg
+      const [lx, ly] = r.labelAt ? [ox + r.labelAt[0], oy + r.labelAt[1]] : G.labelPoint(r, ox, oy, r.labelSide || 1, 22);
+      s += `<g class="steplabel" data-pos="${pos}">`;
+      if (opts.interactive) s += `<circle cx="${f(lx)}" cy="${f(ly)}" r="26" fill="rgba(0,0,0,0.001)" />`;
+      s += `<text x="${f(lx)}" y="${f(ly)}" text-anchor="middle" dominant-baseline="central" font-family="${FONT}" font-weight="800" font-size="36" fill="${color}">${U.esc(r.steps)}</text></g>`;
     }
     s += '</g>';
     return s;

@@ -44,9 +44,10 @@
       root.innerHTML = `
         <div class="viewer">
           <div class="stage">
-            <svg class="field" id="vfield" xmlns="http://www.w3.org/2000/svg"></svg>
-            <svg class="annot" id="annot" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${G.FIELD_W} ${G.FIELD_H}"></svg>
-          </div>
+            <div class="frame">
+              <svg class="field" id="vfield" xmlns="http://www.w3.org/2000/svg"></svg>
+              <svg class="annot" id="annot" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${G.FIELD_W} ${G.FIELD_H}"></svg>
+            </div>
           <div class="vtools">
             <div class="vgroup nav-plays">
               <button class="btn icon" id="prevPlay" title="Previous play: ${U.esc(prev.name)}">‹</button>
@@ -58,6 +59,7 @@
               <button class="btn icon" id="clear" title="Clear marks">✕</button>
             </div>
             ${L.show ? `<div class="vgroup seg qseg small-seg">${Array.from({ length: Q }, (_, i) => `<button data-q="${i + 1}" class="${L.quarter === i + 1 ? 'on' : ''}">Q${i + 1}</button>`).join('')}</div>` : ''}
+          </div>
           </div>
           ${play.notes ? `<div class="vnotes">${U.esc(play.notes)}</div>` : ''}
         </div>`;

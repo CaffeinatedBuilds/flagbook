@@ -189,39 +189,45 @@ textarea { min-height: 80px; resize: vertical; }
 .lineup-bar .qseg button[disabled] { opacity: .4; }
 .lineup-bar.compact { margin-bottom: 0; }
 
-/* view mode */
-.viewer { display: flex; flex-direction: column; min-height: calc(100vh - 52px - var(--nav-h) - var(--safe-b)); }
-.viewer .stage { position: relative; background: #fff; border-bottom: 1px solid var(--line); display: flex; justify-content: center; }
-.viewer .stage svg { display: block; width: 100%; max-width: min(100vw, calc((100vh - 170px) * 4 / 3)); aspect-ratio: 4 / 3; }
-.viewer .stage .annot { position: absolute; inset: 0; margin: 0 auto; height: 100%; touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; cursor: crosshair; }
-.vtools { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; justify-content: center; padding: 10px 14px; }
+/* view mode: navigation hidden, play fills the screen inside a margin (1in on tablets/desktops) */
+body.viewing { padding-left: 0 !important; padding-bottom: 0 !important; }
+body.viewing .nav { display: none !important; }
+.viewer { --vpad: 8px; --topbar: 52px; --vtools-h: 64px; display: flex; flex-direction: column; }
+.viewer .stage { position: relative; background: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: var(--vpad); min-height: calc(100vh - var(--topbar)); }
+.viewer .frame { position: relative; width: 100%; aspect-ratio: 4 / 3; max-width: min(calc(100vw - 2 * var(--vpad)), calc((100vh - var(--topbar) - var(--vtools-h) - 2 * var(--vpad)) * 4 / 3)); }
+.viewer .frame svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.viewer .frame .annot { touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; cursor: crosshair; }
+.vtools { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; justify-content: center; padding: 10px 14px; min-height: var(--vtools-h); }
 .vgroup { display: flex; gap: 8px; align-items: center; }
 .vtools .btn.icon { width: 46px; min-height: 46px; font-size: 22px; }
 .pen { width: 40px; height: 40px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 0 0 1px var(--line); background: var(--pen); cursor: pointer; padding: 0; }
 .pen.on { box-shadow: 0 0 0 3px var(--ink); }
 .small-seg button { min-width: 46px; min-height: 40px; }
 .vnotes { padding: 4px 16px 14px; text-align: center; color: var(--muted); font-size: 14px; white-space: pre-wrap; }
-/* landscape phone: field left, tools stacked on the right, nav hidden */
-@media (orientation: landscape) and (max-height: 520px) {
-  body.viewing { padding-bottom: 0; }
-  body.viewing .nav { display: none; }
-  .viewer { flex-direction: row; min-height: 0; height: calc(100vh - 52px); }
-  .viewer .stage { flex: 1; border-bottom: 0; border-right: 1px solid var(--line); align-items: center; }
-  .viewer .stage svg { max-width: min(calc(100vw - 112px), calc((100vh - 52px) * 4 / 3)); }
-  .viewer .stage .annot { width: auto; }
-  .vtools { flex-direction: column; width: 112px; padding: 8px; gap: 10px; overflow-y: auto; max-height: calc(100vh - 52px); justify-content: flex-start; }
-  .vtools .btn.icon { width: 38px; min-height: 38px; font-size: 18px; }
-  .pen { width: 32px; height: 32px; }
-  .small-seg button { min-width: 38px; min-height: 34px; font-size: 13px; padding: 4px 6px; }
-  .vgroup { flex-wrap: wrap; justify-content: center; }
-  .vgroup.seg { flex-direction: column; }
-  .vgroup.seg button + button { border-left: 0; border-top: 1px solid var(--line); }
+
+/* tablets and desktops: one-inch margin all round; tools sit in the bottom margin so the play gets the rest */
+@media (min-width: 700px) and (min-height: 521px) {
+  .viewer { --vpad: 1in; --vtools-h: 0px; }
+  .viewer .stage { height: calc(100vh - var(--topbar)); min-height: 0; }
+  .vtools { position: absolute; left: 0; right: 0; bottom: calc((1in - 48px) / 2); padding: 0 1in; min-height: 48px; flex-wrap: nowrap; gap: 10px 22px; }
+  .vtools .btn.icon { width: 44px; min-height: 44px; }
+  .pen { width: 36px; height: 36px; }
   .vnotes { display: none; }
 }
+
+/* landscape phone: field left, tools stacked on the right */
 @media (orientation: landscape) and (max-height: 520px) {
+  .viewer { --vtools-h: 0px; }
+  .viewer .stage { flex-direction: row; height: calc(100vh - var(--topbar)); min-height: 0; padding: 6px; }
+  .viewer .frame { max-width: min(calc(100vw - 124px), calc((100vh - var(--topbar) - 12px) * 4 / 3)); }
+  .vtools { flex-direction: column; width: 112px; padding: 4px; gap: 10px; overflow: hidden auto; max-height: 100%; justify-content: flex-start; min-height: 0; flex: 0 0 112px; }
+  .vgroup { flex-wrap: wrap; justify-content: center; }
+  .vtools .btn.icon { width: 38px; min-height: 38px; font-size: 18px; }
+  .pen { width: 32px; height: 32px; }
   .vtools .small-seg { flex-direction: row; flex-wrap: wrap; width: 84px; border: 0; background: transparent; gap: 4px; overflow: visible; }
-  .vtools .small-seg button { flex: 0 0 38px; border: 1px solid var(--line) !important; border-radius: 8px; background: var(--card); }
+  .vtools .small-seg button { flex: 0 0 38px; min-width: 38px; min-height: 34px; font-size: 13px; padding: 4px 6px; border: 1px solid var(--line) !important; border-radius: 8px; background: var(--card); }
   .vtools .small-seg button.on { background: var(--ink); color: #fff; }
+  .vnotes { display: none; }
 }
 
 </style>
@@ -1057,8 +1063,11 @@ textarea { min-height: 80px; resize: vertical; }
       s += `<line x1="${f(ex + px * L)}" y1="${f(ey + py * L)}" x2="${f(ex - px * L)}" y2="${f(ey - py * L)}" stroke="${color}" stroke-width="${STROKE}" stroke-linecap="round" />`;
     }
     if (r.steps != null && r.steps !== '') {
-      const [lx, ly] = G.labelPoint(r, ox, oy, r.labelSide || 1, 22);
-      s += `<text x="${f(lx)}" y="${f(ly)}" text-anchor="middle" dominant-baseline="central" font-family="${FONT}" font-weight="800" font-size="36" fill="${color}">${U.esc(r.steps)}</text>`;
+      // custom placement (dragged) is stored relative to the player; otherwise auto beside the first leg
+      const [lx, ly] = r.labelAt ? [ox + r.labelAt[0], oy + r.labelAt[1]] : G.labelPoint(r, ox, oy, r.labelSide || 1, 22);
+      s += `<g class="steplabel" data-pos="${pos}">`;
+      if (opts.interactive) s += `<circle cx="${f(lx)}" cy="${f(ly)}" r="26" fill="rgba(0,0,0,0.001)" />`;
+      s += `<text x="${f(lx)}" y="${f(ly)}" text-anchor="middle" dominant-baseline="central" font-family="${FONT}" font-weight="800" font-size="36" fill="${color}">${U.esc(r.steps)}</text></g>`;
     }
     s += '</g>';
     return s;
@@ -1654,12 +1663,12 @@ textarea { min-height: 80px; resize: vertical; }
   }
 
   /* ---------- editor ---------- */
-  const ed = { id: null, sel: null, mode: 'draw', showGrid: false, stroke: null, drag: null, svg: null, play: null, names: null };
+  const ed = { id: null, sel: null, mode: 'draw', showGrid: false, stroke: null, drag: null, dragLabel: null, svg: null, play: null, names: null };
 
   function renderEditor(root, route) {
     const play = S.play(route.id);
     if (!play) { root.innerHTML = '<div class="empty">Play not found. <a href="#/playbook">Back to playbook</a></div>'; return; }
-    if (ed.id !== play.id) { ed.id = play.id; ed.sel = null; ed.stroke = null; ed.drag = null; }
+    if (ed.id !== play.id) { ed.id = play.id; ed.sel = null; ed.stroke = null; ed.drag = null; ed.dragLabel = null; }
     ed.play = play; ed.names = S.lineupNames();
     if (ed.sel && !play.players[ed.sel]) ed.sel = null;
     const scrollY = window.scrollY;
@@ -1700,10 +1709,10 @@ textarea { min-height: 80px; resize: vertical; }
           <span class="small muted">Ending</span>
           <div class="seg" id="ending">${[['arrow', '➔'], ['dot', '●'], ['block', '⊥'], ['none', '—']].map(([k, l]) => `<button data-end="${k}" class="${(r.end || 'arrow') === k ? 'on' : ''}" title="${k}">${l}</button>`).join('')}</div>
           <button class="btn sm ${r.dashed ? 'on' : ''}" id="dashed">Dashed</button>
-          <button class="btn sm" id="flip" title="Move the step number to the other side">⇄ #</button>
+          <button class="btn sm" id="flip" title="${r.labelAt ? 'Snap the step number back beside the route' : 'Move the step number to the other side'}">${r.labelAt ? '↺ #' : '⇄ #'}</button>
           <button class="btn sm danger" id="clearRoute">Clear route</button>
         </div>
-        <p class="hint" style="margin:10px 0 0">Tip: tap a route on the field to select it; tap it again to toggle hot. Redraw any time — the route keeps its settings.</p>` :
+        <p class="hint" style="margin:10px 0 0">Tip: tap a route on the field to select it; tap it again to toggle hot. Drag the step number to place it where you want. Redraw any time — the route keeps its settings.</p>` :
         `<p class="hint" style="margin:0">No route yet. Switch to <b>Draw route</b> and drag from ${sel} across the field. Sharp cuts stay sharp, curves get smoothed.</p>`}
       </div>`;
     }
@@ -1803,6 +1812,15 @@ textarea { min-height: 80px; resize: vertical; }
       downPt = [x, y]; moved = false; tapRoute = null; tapGap = null;
       const gapEl = e.target.closest && e.target.closest('.gap');
       if (gapEl) { tapGap = gapEl.dataset.gap; return; }
+      const lblEl = e.target.closest && e.target.closest('.steplabel');
+      if (lblEl && play.routes[lblEl.dataset.pos]) {
+        // grab the step number: works in either mode and takes priority over drawing
+        const pos = lblEl.dataset.pos, r = play.routes[pos], at = play.players[pos];
+        const cur = r.labelAt ? [at[0] + r.labelAt[0], at[1] + r.labelAt[1]] : G.labelPoint(r, at[0], at[1], r.labelSide || 1, 22);
+        ed.dragLabel = { pos, dx: cur[0] - x, dy: cur[1] - y };
+        if (ed.sel !== pos) { ed.sel = pos; drawField(); }
+        return;
+      }
       const tok = tokenAt(play, x, y);
       if (ed.mode === 'move') {
         if (tok) { ed.sel = tok; ed.drag = { pos: tok, dx: play.players[tok][0] - x, dy: play.players[tok][1] - y }; drawField(); }
@@ -1821,7 +1839,11 @@ textarea { min-height: 80px; resize: vertical; }
       if (!downPt) return;
       const [x, y] = F.pointFromEvent(svg, e);
       if (!moved && Math.hypot(x - downPt[0], y - downPt[1]) > 3) moved = true;
-      if (ed.drag) {
+      if (ed.dragLabel) {
+        const at = play.players[ed.dragLabel.pos];
+        play.routes[ed.dragLabel.pos].labelAt = [U.clamp(x + ed.dragLabel.dx, 12, G.FIELD_W - 12) - at[0], U.clamp(y + ed.dragLabel.dy, 14, G.FIELD_H - 14) - at[1]];
+        drawField();
+      } else if (ed.drag) {
         play.players[ed.drag.pos] = [U.clamp(x + ed.drag.dx, 10, G.FIELD_W - 10), U.clamp(y + ed.drag.dy, 10, G.FIELD_H - 10)];
         drawField();
       } else if (ed.stroke) {
@@ -1837,6 +1859,13 @@ textarea { min-height: 80px; resize: vertical; }
         const v = prompt('Spacing label (yards) for this gap. Leave blank to auto-measure.', cur);
         if (v !== null) save(() => { play.spacing.labels = play.spacing.labels || {}; if (v.trim()) play.spacing.labels[tapGap] = v.trim(); else delete play.spacing.labels[tapGap]; });
         tapGap = null; return;
+      }
+      if (ed.dragLabel) {
+        const pos = ed.dragLabel.pos; ed.dragLabel = null;
+        const r = play.routes[pos];
+        if (moved && r.labelAt) { r.labelAt = [Math.round(r.labelAt[0]), Math.round(r.labelAt[1])]; save(() => {}); }
+        else FB.app.rerender();
+        return;
       }
       if (ed.drag) {
         const pos = ed.drag.pos; ed.drag = null;
@@ -1885,7 +1914,7 @@ textarea { min-height: 80px; resize: vertical; }
       if (q('#stepClr')) q('#stepClr').onclick = () => save(() => { r.steps = null; });
       root.querySelectorAll('#ending button').forEach(b => b.onclick = () => save(() => { r.end = b.dataset.end; }));
       if (q('#dashed')) q('#dashed').onclick = () => save(() => { r.dashed = !r.dashed; });
-      if (q('#flip')) q('#flip').onclick = () => save(() => { r.labelSide = (r.labelSide || 1) * -1; });
+      if (q('#flip')) q('#flip').onclick = () => save(() => { if (r.labelAt) delete r.labelAt; else r.labelSide = (r.labelSide || 1) * -1; });
       if (q('#clearRoute')) q('#clearRoute').onclick = () => save(() => { delete play.routes[ed.sel]; });
     }
     q('#spacing').onchange = e => save(() => { play.spacing.show = e.target.checked; });
@@ -1971,9 +2000,10 @@ textarea { min-height: 80px; resize: vertical; }
       root.innerHTML = `
         <div class="viewer">
           <div class="stage">
-            <svg class="field" id="vfield" xmlns="http://www.w3.org/2000/svg"></svg>
-            <svg class="annot" id="annot" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${G.FIELD_W} ${G.FIELD_H}"></svg>
-          </div>
+            <div class="frame">
+              <svg class="field" id="vfield" xmlns="http://www.w3.org/2000/svg"></svg>
+              <svg class="annot" id="annot" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${G.FIELD_W} ${G.FIELD_H}"></svg>
+            </div>
           <div class="vtools">
             <div class="vgroup nav-plays">
               <button class="btn icon" id="prevPlay" title="Previous play: ${U.esc(prev.name)}">‹</button>
@@ -1985,6 +2015,7 @@ textarea { min-height: 80px; resize: vertical; }
               <button class="btn icon" id="clear" title="Clear marks">✕</button>
             </div>
             ${L.show ? `<div class="vgroup seg qseg small-seg">${Array.from({ length: Q }, (_, i) => `<button data-q="${i + 1}" class="${L.quarter === i + 1 ? 'on' : ''}">Q${i + 1}</button>`).join('')}</div>` : ''}
+          </div>
           </div>
           ${play.notes ? `<div class="vnotes">${U.esc(play.notes)}</div>` : ''}
         </div>`;
