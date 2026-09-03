@@ -35,6 +35,7 @@
       const prev = plays[(idx - 1 + plays.length) % plays.length], next = plays[(idx + 1) % plays.length];
       const L = st.lineup, Q = st.settings.quarters || 4;
       const names = S.lineupNames();
+      const crop = F.contentCrop(play, { names });   // trim empty sky so the play can go wide
 
       FB.ui.setTitle(`<a class="btn ghost sm" href="#/playbook" aria-label="Back to playbook">‹</a>
         <h1 style="font-size:18px">${U.esc(play.name)}</h1>
@@ -44,9 +45,9 @@
       root.innerHTML = `
         <div class="viewer">
           <div class="stage">
-            <div class="frame">
+            <div class="frame" style="--ar:${crop.ratio.toFixed(4)}">
               <svg class="field" id="vfield" xmlns="http://www.w3.org/2000/svg"></svg>
-              <svg class="annot" id="annot" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${G.FIELD_W} ${G.FIELD_H}"></svg>
+              <svg class="annot" id="annot" xmlns="http://www.w3.org/2000/svg" viewBox="${crop.viewBox}"></svg>
             </div>
           <div class="vtools">
             <div class="vgroup nav-plays">
@@ -65,7 +66,7 @@
         </div>`;
 
       const field = root.querySelector('#vfield'), annot = root.querySelector('#annot');
-      F.render(field, play, { names });
+      F.render(field, play, { names, viewBox: crop.viewBox });
       drawAnnots(annot);
 
       root.querySelector('#prevPlay').onclick = () => { location.hash = '#/view/' + prev.id; };

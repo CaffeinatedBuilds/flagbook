@@ -70,3 +70,19 @@
     near(G.distanceToRoute(r, 100, 300, 105, 250), 5);
   });
 })();
+(function () {
+  test('contentCrop trims empty sky but keeps every route, label and token inside', () => {
+    const plays = FB.store._seedPlays();
+    for (const p of plays) {
+      const c = FB.field.contentCrop(p, {});
+      assert(c.top >= 0 && c.top + c.height <= 540 && c.height >= 220, p.name + ' bounds ' + JSON.stringify(c));
+      for (const pos of Object.keys(p.routes)) for (const pt of p.routes[pos].pts) {
+        const y = p.players[pos][1] + pt[1];
+        assert(y >= c.top && y <= c.top + c.height, p.name + ' ' + pos + ' route point outside crop');
+      }
+      for (const pos of Object.keys(p.players)) assert(p.players[pos][1] + 20 <= c.top + c.height, p.name + ' token cut off');
+    }
+    const verts = FB.field.contentCrop(plays[0], {});
+    assert(verts.ratio > 1.6, 'a play with short verticals gets a wide crop: ' + verts.ratio);
+  });
+})();

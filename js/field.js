@@ -74,7 +74,7 @@
     const name = opts.names && opts.names[pos];
     if (name) {
       // If someone lines up directly below (Q under C), the caption goes to the upper right instead.
-      const crowded = Object.keys(play.players).some(o => o !== pos && Math.abs(play.players[o][0] - x) < 34 && play.players[o][1] - y > 20 && play.players[o][1] - y < 70);
+      const crowded = y + R + 26 > G.FIELD_H || Object.keys(play.players).some(o => o !== pos && Math.abs(play.players[o][0] - x) < 34 && play.players[o][1] - y > 20 && play.players[o][1] - y < 70);
       // ...on the side away from the route's step number (which defaults to the right of travel).
       const rt = play.routes && play.routes[pos];
       const side = rt && rt.steps != null && (rt.labelSide || 1) === -1 ? 1 : -1;
@@ -143,8 +143,40 @@
   };
 
   F.render = function (svg, play, opts) {
-    svg.setAttribute('viewBox', `0 0 ${G.FIELD_W} ${G.FIELD_H}`);
+    opts = opts || {};
+    svg.setAttribute('viewBox', opts.viewBox || `0 0 ${G.FIELD_W} ${G.FIELD_H}`);
     svg.innerHTML = F.innerMarkup(play, opts);
+  };
+
+  /* Vertical extent of everything drawn for this play (tokens, names, routes, arrowheads,
+   * step numbers, spacing labels), padded and clamped to the page. Used by View mode to crop
+   * the empty sky above the routes so the play can be shown wider. */
+  F.contentCrop = function (play, opts) {
+    opts = opts || {};
+    const pad = opts.pad == null ? 26 : opts.pad, minH = opts.minHeight || 220;
+    let top = Infinity, bottom = -Infinity;
+    const add = (y, r) => { top = Math.min(top, y - (r || 0)); bottom = Math.max(bottom, y + (r || 0)); };
+    const R = G.TOKEN_R;
+    for (const pos of Object.keys(play.players)) {
+      const [x, y] = play.players[pos];
+      add(y, R + 4);
+      if (opts.names && opts.names[pos]) { add(y + R + 24); add(y - R - 26); }
+      const rt = play.routes[pos];
+      if (rt && rt.pts && rt.pts.length > 1) {
+        for (const p of rt.pts) add(y + p[1], 17);
+        if (rt.steps != null && rt.steps !== '') {
+          const [, ly] = rt.labelAt ? [0, y + rt.labelAt[1]] : G.labelPoint(rt, x, y, rt.labelSide || 1, 22);
+          add(ly, 20);
+        }
+      }
+    }
+    if (play.spacing && play.spacing.show) add(G.RECEIVER_Y + 44);
+    add(G.LOS_Y, 4);
+    if (!isFinite(top)) { top = 0; bottom = G.FIELD_H; }
+    top = Math.max(0, top - pad); bottom = Math.min(G.FIELD_H, bottom + pad);
+    if (bottom - top < minH) { const mid = (top + bottom) / 2; top = Math.max(0, mid - minH / 2); bottom = Math.min(G.FIELD_H, top + minH); top = Math.max(0, bottom - minH); }
+    top = Math.round(top); bottom = Math.round(bottom);
+    return { top, height: bottom - top, viewBox: `0 ${top} ${G.FIELD_W} ${bottom - top}`, ratio: G.FIELD_W / (bottom - top) };
   };
 
   F.svgString = function (play, opts, attrs) {
