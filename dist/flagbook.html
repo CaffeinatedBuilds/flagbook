@@ -1,0 +1,2248 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<title>FlagBook</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="FlagBook">
+<meta name="theme-color" content="#ffffff">
+<link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAYAAAA9zQYyAAAAAXNSR0IArs4c6QAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAtKADAAQAAAABAAAAtAAAAAB1HbRDAAARIUlEQVR4Ae2da2xcVxGA5+7br9iO7TiOie24paHEgSSQ9EmgSFWVqlDEoz9QpSL6i4of/EUIEAIJIVEUtaqqqimElqqqQCIlUdMmjao+nEdJUkJC0jZ287AT27u21/Z67X0vM8feene9tnfXu/a9c+ZEG+/evffcOzPfnZ1z5txzjLbOriRIEQ0w0YCNiRwihmhAaUCAFhBYaUCAZmVOEUaAFgZYaUCAZmVOEUaAFgZYaUCAZmVOEUaAFgZYaUCAZmVOEUaAFgZYaUCAZmVOEUaAFgZYaUCAZmVOEUaAFgZYaUCAZmVOEUaAFgZYaUCAZmVOEUaAFgZYaUCAZmVOEUaAFgZYaUCAZmVOEUaAFgZYaUCAZmVOEUaAFgZYaUCAZmVOEUaAFgZYaUCAZmVOEUaAFgZYaUCAZmVOEUaAFgZYaUCAZmVOEUaAFgZYaUCAZmVOEUaAFgZYaUCAZmVOEUaAFgZYaUCAZmVOEUaAFgZYaUCAZmVOEUaAFgZYaUCAZmVOEUaAFgZYaUCAZmVOEUaAZsxAFFdx120hdwGaIdAxpHh7lQMeWesCMjCBrUsRoBlaOoEy1TsM+G2rG/a2V8DmChuEEWrazr0I0EwtnECA48kk3F9jh79sqoDHm1zgNgyIMPfWAjRToEksYpc8c73dgJ+vd8GzHRWwo9KhoObqrQVoxkCnRIsj1OSZ766ywfMdHvjZejfU2AwFe2ofLn8FaC6WzEMO8taVaPGfrnPCPgxDdtc4VIORgOdSBGgulsxTDgo1wvjfl7Ch+Ey7B365wQ2NzplGIweuBeg8QeC2G4UgThTqsUYn7Edv/WCtE6ghSV1+Vi4CtJWtt8xrJ28dwv9ucRvw5EY3/H6jBza6re2tHcvUiaUPJ2fEKX5MGYO8bCFyUeLFwIO/V++AXVV2eMYbgX/5o6oh6aQvLFS0BJqMHUcj1WJ31jq0mBP7ZwluLoUAbXUV9uNL8pO3bkF9/A4TMvdhg/EpbxguTSdQP6AyjlbQj9HW2cXJlkvqnLxXA2bRHm10wZ41DqjF9xZzQkvKSDvgvQqeIgWjw1z4nw/v+ufRW786GoUgBti0zexFK6DJM7eg53oSY8Wd2CdLnowaQhwLibVc0eimsGM9J4IJ2DsYhjNTcdN7a62AJnD/2FYBD9XaAX9JpeSpAfLMAdTXi8NR2D8cAT96BmxHmrIUFmiZUoT8Loq6qbZV2jE2tKt+2PyOkr1IA6S7CgSYEjIvmDwhow3QFFpswWRCNUoszrnwG5V0RplGlZBp88CvWj2wAcM3s+lSG6Bx6ALU2G3LjisLR4HXEeStsWcPfoBdfHdVO0zXBtGy244XYisnTaqR2D0500g8h41E7CQyVRGgTWUOc14MMUsNQy/2eb6ADcNXRqIwZdJuPAHanAyZ5qrIA2OUAUcn4rB3KAwfYfaFEi1m7ZMWoBdAhwxGcbdVC/W5L+dZQhKdko192BJ81heBA5gKp/rM2l2XspMAndJE1t+TmEzwogWtCDX16DSjG91Og5+LKOSBKaP6T38Mnh6KwDUcb0pw03azFwE6y0JkM7Ql7MMEwrHxmGl/WrMuO+Mj9UQ8gMNBd7S5C+rVUV4Z/7uMXvkpBPnIeFQdjwPwLFME6AVMRSlf1aq3gFfKFiF17dnbF/tM3jeEN8IrIzF4zheGIbwryCtbTXwBehErkzGtZlASp5BrJudLMJ/DsQB70Su/H4ipkXVW8sokc6oI0ClNaPiXGr7YeQEv4Wi6/djwG8OWpFl7L/I1jwCdr6YY7UehFHlmavj+CUfRnaVRdPjZ6jCTiQRo0oImhUIRiot92HuzTyVIIpggMX9XXCHmEaAL0ZaF91UJEmz0vUUJksEIXJyOK7g5eOV0swjQ6dpg+F55ZfyvD73ys/j0CSVIqI/ZQzEHwyJAMzRqSiTqvYjih3+OxTFBEoarmCCh3guzDShKXW8p/grQpdCiCeughl8PJkiexgdd3xyLqQQJV6+crn4BOl0bTN6TUS9gz8WPr0zDzchM2ppCDx2KAM3QyjT+ZCCK3RcYK1s1QVKsWQToYjVn8uNUm08Xt5xmC6Zt3TQJ5a1WGhCgtTI3f2EFaP421kpCAVorc/MXVoDmb2OtJBSgtTI3f2EFaP421kpCAVorc/MXVoDmb2OtJBSgtTI3f2EFaP421kpCAVorc/MXVoDmb2OtJBSgtTI3f2EFaP421kpCAVorc/MXVoDmb2OtJBSgtTI3f2EFaP421kpCAVorc/MXVoDmb2OtJBSgtTI3f2EFaP421kpCAVorc/MXVuOJZpLzlm6Yv4U/ANwk1AfoJOKaxJnqcYasOK57FrM5IWbgWtXGzI+UPZkARyICjmQM4jS/PX6eWQ9Lw+mHLEw5e6CTCGYyjgvhONwQrGqB4+tvhx5PK4x6GiDoqIaozaXAdSfCUBOZgMaQD9qD1yExfBEXIPFBIhEFG8IPhoBtBc6Nts4unNKPX5kBOQ7umgZo2nQHNG7aBbVNnZB0eiCKntnAmQwN9NozXpjkN5S3JmxdySjEQwEYHbgEw70nYeT6hxCLTIHNTve/gE3aMmthCXQiHgWnZw1s2HI/tNz+TahYs17pP5GIIb9L37+0h4GhCAFM3j3g+xT6LxwGX89xjETiYNhoJUApZtQAL6AR1gQC19C2DTbd8UOoIY9MIQduW04xbOiZsZ6Ra2fh01MvQ3DkOoYwFKpIMZsGjNb225d2WWa76nnXY6gQwma3wcZtD0P7ju+C3emGBHrXUhaCODThhd7u/eDtPQFJQzx1KfVbirqM7Tt3Wx5omuA7kTSgfvO3YEPXA8qbkmcuR6FwIxGLwJVTf4PI4GmMxG1quYdynEvqLFwDht8/ZnmgqZn20rFBOP5JeBavMouEPR7U2ff9u2vhvm312A1YuOLliPJowFFXV1uemlew1kMnfdD98TSQp16RgrE6riIMBz4IQGdbE3R1VK3IaeUkS2vA8qnvC1cm4e/v3Jzphlta3pLtQd3SU6EY/PnwNRiZoMXTpJhBA5YGeioch5eP3YAwLpBjy5H4SGBGkLKC2a/FFJ9A7xtD95t+DNWTqzhw7bR+Xxj+8e5Arq9l2ypowNKZwrfODEPvQBBcjvn3ZRyhvHfrWti5uRYbjHOafefcCJztmQAnLeSXVQjchjUueOQbLeBMq3NsMgqvvj0A0RzBshNXsey+4Id7u+phS0dNVo3ycaU1YFmg/RMReOvsMNgXCJyJ4fFgDHZ9oS5Dp811Lrh0fRKiuD5wtlMnr3z/Vxrha3gjpJeDJ7wwHYkDeeTsQnXQL8Trp7yweWMV7jP/5so+Rj6XTwPGjx5/Is1/le9EJa0ZBxA5m3fC1Jo7sYtu4b7mGAL6k4fa4etfzgT0uUPX4RjeDC7nHHzk0Vsa3PCbx26Dmsq5+3xwNAy/fvETCARxyNLc7vPEMYwkVHnfgNDYNckkztPOym1wHH7j6MqdrQRnoruP0ijbH94NTeh8F0sCkj89eHIIvophR5VnLgny4K518MFHY8rrpmJv6nl7YGdTBsx0uYdOesEfiOYMa+j7VDFwkNN/r0Wgp/tNzCLiYCYpq6IBh9vtXpUTF3tSSmNXN7RDXfOtS6a0KRzp807DUYy1v3NP82en3LjOo8IKChNcuMI7eeeO5grYnRVqXL4xBe+dH8V4exHXPFtrEhuTzZ3bYeD8ayrxMi+e+ezs8qacGljaUuU8exF1E9BVjR04+Kgax2ksHS0R1EdO+8A3Fsk4255dTVBf7cSxH0mV6XsQP1e457w4bX+texBCuFZ2dqydUdHshySOtaZBUJ7qJjV+JNc+sq38GrAc0AYGstVr2zDuyO/SbQj0MDYgKXRIL831brhve6MC9vOtVXDXlvr0r+FD7AlRvSHYi5FXwZuLxo9UNbQh0MsbDJXX+WSnnBrIj4qch67ORgMHBFXU4nDQAqChkIFChyuD0xkXTT0azWvdsAdj5/SuP+q1ONA9pLx3xgFLfLDZnXhtzXn9cixRlXxdpAYsBzT9/ruq6hGa/CWmkGESs3oHMIRIP65hjROe+HY77LgtM/3/PsJ/+UYwZzfd4me1gbOiVjVaF99Pvi2XBiwJtB0fp0IXXZBOyAOf+WQczn06kXHc1k014HHNqWFiKqbCk3zi5oyK1BVh2EHjpPMMh7KPl8/L18CcJZdf18rUQBynu9kCzkop7dcwlIhEF74ZjpwehhsjoQUTNoudjqLtmYbqwvUvdrx8t3wNWA9o9MyxaAglz7OxlqYjyvRd6puE4xf9aVvn3lIS5egZX/HZPnTriVgYoZbxpHNaXdl3lgOaYAlPjmAoXTjQpFo66hAmWwIYWqQXcvoHTwyBH8dtLJBNT98953vqUgwH/UXcajmrk41FaMB6QCM00+M3i45TqV+6fziEsXQgQ10jgQj8++Px4r0zYkwP506P48g7iaEzdLuSHywHNDUGJ/EhVfxtRz0V76Wpay690GClZUW+eCnx6LS6NnkqPF2zK/veckDTE9iTw1cgMj1RdNhBKs6OWIq7NeaMZcPrCo72QyQ4uqzrmqtR3hWjAesBjT/n0xNDMOG9bLpRbf6+c+ili2uwFmM8OWa+BiwHNIlAk794cdIXCj+KDTuonpIVdPfR0AQMXzllupusZDJapCJLAk0p5tHrZzH0uGoKgOh6hq+egaC/3xTXYxH2ynKZlgSaAuAozj3Xf/7wrFIKj4Bp0FJ6WejJl/R9cr2n7sMoxvM31LVk1plrf9lWXg1YE2jUCXlFb8/74O/7j3pfqJpGcQTeACZSUq9BPyVECq1l5jpu/u8Izn/XK965cPWV/AhLz21Hky/WNHTA1od+AS4cFFToHHbZ/rRQnummGrt5ES4c/oPqskOiS24gqbAwDVjaAtRVFsAuvN7uv6qGIo2VLqQQwOmvQo6lc4cCPrj83gsQDQexbVrYuQs5l+ybvwYsbwUVelx+D3pPvqzopGlwy10IZuoH/+jtZzCRcnV23uhyn1Xqz0cDc48357O3SfcxcB7nG+dfR6AT0Hnno2qq26TKJJb+gm12nIE04FUw+/vPFxW/l/6qpMaUBlgATX3RlG7uR6hp4NKt9zymnmqJx2iKrkIj45RqMv+mJkD3Y8zc8+4+CCjPLE93Z2pp9T9ZulGYS300QKiybgN07HwEmm65U62Pku/M/bnqI5DpF4C6CW9eeBP6zh2EWGhSbcu1v2xbXQ2wA5rUqXo7EMS1OJP/57bugbqWL4INH2BV2zEsWeppcRWHE8jYyKQ+5pGrp9WSFAHvTNfcSsTpq4uFdc/OEuiUOchb0yNRa5pvgwZcNKi+tQunGWgEB06BoFLmquN5NiTBBAn9I+gjmMaeHh/EJSjOqBctQUGhi1qaIlW5/DWlBlgDPaNxXHdldmkKh6sSKutbcf6MZvVyVdar5d4I1hgO/QxPDqslJ6bGcD6OiQGI40z9lAkUkE3Jbs6L0gDoNLnRIydo+oMEjoUmUPGlPLXaBcdDk8fGFzUwZUxzmt4s9JZJL0eeGkeAbbhGoVpPIsch2ZnDHLvIJpNroPxZCJMrQC6PlwYEaF721F4aAVp7BHgpQIDmZU/tpRGgtUeAlwIEaF721F4aAVp7BHgpQIDmZU/tpRGgtUeAlwIEaF721F4aAVp7BHgpQIDmZU/tpRGgtUeAlwIEaF721F4aAVp7BHgpQIDmZU/tpRGgtUeAlwIEaF721F4aAVp7BHgpQIDmZU/tpRGgtUeAlwIEaF721F4aAVp7BHgpQIDmZU/tpRGgtUeAlwIEaF721F4aAVp7BHgpQIDmZU/tpRGgtUeAlwIEaF721F4aAVp7BHgpQIDmZU/tpfk/B+jjsrJhAx4AAAAASUVORK5CYII=">
+<link rel="icon" href="data:image/png;base64,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">
+<style>
+/* FlagBook styles — mobile first */
+:root {
+  --bg: #f3f4f6; --card: #ffffff; --ink: #14161a; --muted: #6b7280; --line: #e5e7eb;
+  --accent: #14161a; --accent-ink: #ffffff; --silver: #a5acaf; --blue: #2A7DE1; --red: #E5352B; --green: #2e9e4f;
+  --radius: 14px; --nav-h: 62px; --safe-b: env(safe-area-inset-bottom, 0px);
+  --font: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: var(--bg); color: var(--ink); font-family: var(--font); -webkit-text-size-adjust: 100%; }
+body { min-height: 100vh; padding-bottom: calc(var(--nav-h) + var(--safe-b)); }
+a { color: inherit; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+h1, h2, h3 { margin: 0; }
+h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.01em; }
+h2 { font-size: 17px; font-weight: 700; }
+h3 { font-size: 14px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+.muted { color: var(--muted); }
+.small { font-size: 13px; }
+.hidden { display: none !important; }
+
+/* top bar */
+.topbar { position: sticky; top: 0; z-index: 20; background: var(--card); border-bottom: 1px solid var(--line); padding: env(safe-area-inset-top, 0px) 14px 0; }
+.topbar-in { display: flex; align-items: center; gap: 10px; height: 52px; }
+.topbar-in h1 { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.topbar-in .play-name { flex: 1; border: 0; background: transparent; font-size: 18px; font-weight: 800; padding: 6px 4px; min-width: 0; border-radius: 8px; }
+.topbar-in .play-name:focus { outline: 2px solid var(--blue); background: #f5f8ff; }
+
+/* nav */
+.nav { position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; display: flex; background: var(--card); border-top: 1px solid var(--line); padding-bottom: var(--safe-b); height: calc(var(--nav-h) + var(--safe-b)); }
+.nav a { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: var(--muted); font-size: 11px; font-weight: 600; }
+.nav a svg { width: 24px; height: 24px; }
+.nav a.active { color: var(--ink); }
+@media (min-width: 900px) {
+  body { padding-bottom: 0; padding-left: 92px; }
+  .nav { top: 0; bottom: 0; right: auto; width: 92px; flex-direction: column; justify-content: flex-start; padding-top: 18px; border-top: 0; border-right: 1px solid var(--line); height: auto; }
+  .nav a { flex: 0 0 auto; padding: 14px 0; }
+}
+
+/* layout */
+.page { padding: 14px; max-width: 1100px; margin: 0 auto; }
+.row { display: flex; gap: 10px; align-items: center; }
+.row.wrap { flex-wrap: wrap; }
+.spread { justify-content: space-between; }
+.grow { flex: 1; min-width: 0; }
+.stack { display: flex; flex-direction: column; gap: 10px; }
+.section { margin-top: 18px; }
+.section > h3 { margin-bottom: 8px; }
+
+.card { background: var(--card); border-radius: var(--radius); padding: 14px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); border: 1px solid var(--line); }
+.card.tap { cursor: pointer; }
+.card.tap:active { background: #fafafa; }
+.card + .card { margin-top: 10px; }
+.card-title { font-weight: 700; font-size: 16px; }
+.empty { text-align: center; color: var(--muted); padding: 28px 12px; }
+
+/* buttons */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; border: 1px solid var(--line); background: var(--card); border-radius: 10px; padding: 9px 13px; font-weight: 600; font-size: 14px; text-decoration: none; min-height: 40px; white-space: nowrap; }
+.btn:active { transform: translateY(1px); }
+.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.btn.danger { color: var(--red); border-color: #f3c4c0; }
+.btn.ghost { border-color: transparent; background: transparent; }
+.btn.sm { padding: 6px 10px; min-height: 32px; font-size: 13px; }
+.btn.icon { width: 40px; padding: 0; }
+.btn[disabled] { opacity: 0.45; pointer-events: none; }
+.btn.on { background: var(--ink); color: #fff; border-color: var(--ink); }
+.btn.hot.on { background: var(--red); border-color: var(--red); }
+
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--card); }
+.seg button { border: 0; background: transparent; padding: 8px 12px; font-weight: 600; font-size: 14px; min-height: 38px; }
+.seg button + button { border-left: 1px solid var(--line); }
+.seg button.on { background: var(--ink); color: #fff; }
+
+.chip { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 999px; font-size: 12px; font-weight: 700; background: #eef0f3; color: #333; }
+.chip.pos { color: #fff; }
+
+/* forms */
+.field-row { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; }
+.field-row label { font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+input[type=text], input[type=date], input[type=time], input[type=number], input[type=tel], input[type=email], select, textarea {
+  width: 100%; border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; background: #fff; font-size: 16px; min-height: 42px; }
+textarea { min-height: 80px; resize: vertical; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.checks { display: flex; flex-wrap: wrap; gap: 8px; }
+.checks label { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; font-size: 14px; font-weight: 600; text-transform: none; letter-spacing: 0; color: var(--ink); }
+.checks input { margin: 0; }
+.switch { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; font-size: 14px; }
+
+/* modal */
+.modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 100; display: flex; align-items: flex-end; justify-content: center; }
+.modal { background: var(--card); width: 100%; max-width: 560px; max-height: 92vh; overflow: auto; border-radius: 18px 18px 0 0; padding: 18px 16px calc(18px + var(--safe-b)); }
+.modal h2 { margin-bottom: 14px; }
+.modal .actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 8px; }
+.modal .actions .btn { flex: 1; }
+@media (min-width: 640px) { .modal-bg { align-items: center; } .modal { border-radius: 18px; } }
+
+#toast { position: fixed; left: 50%; bottom: calc(var(--nav-h) + var(--safe-b) + 14px); transform: translateX(-50%) translateY(20px); background: #111; color: #fff; padding: 10px 16px; border-radius: 999px; font-weight: 600; font-size: 14px; opacity: 0; transition: all .2s; z-index: 200; pointer-events: none; }
+#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* roster */
+.num { width: 40px; height: 40px; border-radius: 10px; background: var(--ink); color: #fff; display: inline-flex; align-items: center; justify-content: center; font-weight: 800; flex: 0 0 auto; }
+
+/* plays grid */
+.plays { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+.play-card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; text-decoration: none; display: block; }
+.play-card svg { display: block; width: 100%; aspect-ratio: 4 / 3; background: #fff; }
+.play-card .cap { padding: 8px 10px; font-weight: 700; font-size: 14px; border-top: 1px solid var(--line); display: flex; align-items: center; gap: 6px; }
+.play-card .cap span { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.play-card .cap .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--red); flex: 0 0 auto; }
+
+/* editor */
+.editor { padding: 0; max-width: none; }
+.field-wrap { background: #fff; border-bottom: 1px solid var(--line); display: flex; justify-content: center; }
+.field-wrap svg.field { display: block; width: 100%; max-width: min(100vw, calc((100vh - 240px) * 4 / 3)); aspect-ratio: 4 / 3; touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+.field-wrap svg.field.draw { cursor: crosshair; }
+.token, .route-hit, .gap { cursor: pointer; }
+.editor-body { padding: 12px 14px; display: grid; gap: 12px; max-width: 1100px; margin: 0 auto; }
+@media (min-width: 900px) { .editor-body { grid-template-columns: 1fr 1fr; } .editor-body .full { grid-column: 1 / -1; } }
+.toolrow { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.bench { display: flex; gap: 8px; align-items: center; }
+.bench .tok { width: 44px; height: 44px; border-radius: 50%; border: 0; color: #fff; font-weight: 800; font-size: 20px; display: inline-flex; align-items: center; justify-content: center; touch-action: none; box-shadow: 0 1px 2px rgba(0,0,0,0.15); }
+.bench .tok.diamond { border-radius: 6px; transform: rotate(45deg); width: 36px; height: 36px; margin: 0 4px; }
+.bench .tok.diamond span { transform: rotate(-45deg); }
+.bench .tok.onfield { opacity: 0.35; }
+.bench .tok.sel { outline: 3px solid var(--blue); outline-offset: 2px; }
+.ghost-tok { position: fixed; z-index: 500; width: 44px; height: 44px; border-radius: 50%; color: #fff; font-weight: 800; font-size: 20px; display: flex; align-items: center; justify-content: center; pointer-events: none; transform: translate(-50%, -50%); box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+.route-panel .head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.route-panel .head .tokdot { width: 28px; height: 28px; border-radius: 50%; color: #fff; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; font-size: 15px; }
+.stepper { display: inline-flex; align-items: center; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.stepper button { border: 0; background: transparent; width: 40px; height: 40px; font-size: 20px; font-weight: 700; }
+.stepper .val { min-width: 42px; text-align: center; font-weight: 800; font-size: 18px; }
+.stepper .val.red { color: var(--red); }
+.hint { font-size: 13px; color: var(--muted); }
+
+/* rotation grid */
+.rot { width: 100%; border-collapse: collapse; font-size: 14px; }
+.rot th, .rot td { padding: 6px 4px; text-align: center; border-bottom: 1px solid var(--line); }
+.rot th { font-size: 12px; color: var(--muted); }
+.rot th.pos { color: #fff; border-radius: 6px; }
+.rot td select { padding: 6px 4px; min-height: 36px; font-size: 14px; border-radius: 8px; }
+.rot td.q { font-weight: 800; }
+.rot-wrap { overflow-x: auto; }
+.sit { font-size: 13px; color: var(--muted); margin-top: 6px; }
+.counts { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.counts .chip.low { background: #fde8e6; color: var(--red); }
+.counts .chip.high { background: #e3f4e8; color: var(--green); }
+.mini-field svg { width: 100%; aspect-ratio: 4/3; display: block; border: 1px solid var(--line); border-radius: 10px; }
+
+/* print pages */
+.print-pages .sheet { background: #fff; width: 100%; max-width: 1000px; margin: 0 auto 16px; aspect-ratio: 4 / 3; position: relative; border: 1px solid var(--line); }
+.print-pages .sheet svg { width: 100%; height: 100%; display: block; }
+.print-pages .sheet .title { position: absolute; top: 2%; left: 3%; font-weight: 800; font-size: clamp(12px, 2.2vw, 22px); }
+.print-pages .sheet .names { position: absolute; top: 2%; right: 3%; font-size: clamp(10px, 1.6vw, 14px); color: #333; text-align: right; }
+.print-bar { padding: 12px 14px; display: flex; gap: 10px; align-items: center; justify-content: space-between; background: var(--card); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 5; }
+.gamesheet { background: #fff; padding: 20px; max-width: 800px; margin: 0 auto; }
+.gamesheet table { width: 100%; border-collapse: collapse; }
+.gamesheet th, .gamesheet td { border: 1px solid #999; padding: 6px; text-align: center; }
+
+@media print {
+  @page { size: 10in 7.5in; margin: 0; }
+  body { padding: 0 !important; background: #fff; }
+  .nav, .topbar, .print-bar, #toast { display: none !important; }
+  .page { padding: 0; max-width: none; }
+  .print-pages .sheet { width: 10in; height: 7.5in; max-width: none; margin: 0; border: 0; page-break-after: always; break-after: page; aspect-ratio: auto; }
+  .print-pages .sheet:last-child { page-break-after: auto; }
+  .print-pages .sheet .title { font-size: 16pt; }
+  .print-pages .sheet .names { font-size: 10pt; }
+  .gamesheet { max-width: none; padding: 0.4in; }
+}
+
+/* lineup bar (playbook) */
+.lineup-bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 12px; }
+.lineup-bar select { width: auto; flex: 1 1 140px; min-height: 40px; padding: 7px 10px; font-size: 14px; font-weight: 600; }
+.lineup-bar .qseg { flex: 1 1 auto; display: flex; }
+.lineup-bar .qseg button { flex: 1; min-width: 44px; }
+.lineup-bar .qseg button[disabled] { opacity: .4; }
+.lineup-bar.compact { margin-bottom: 0; }
+
+/* view mode */
+.viewer { display: flex; flex-direction: column; min-height: calc(100vh - 52px - var(--nav-h) - var(--safe-b)); }
+.viewer .stage { position: relative; background: #fff; border-bottom: 1px solid var(--line); display: flex; justify-content: center; }
+.viewer .stage svg { display: block; width: 100%; max-width: min(100vw, calc((100vh - 170px) * 4 / 3)); aspect-ratio: 4 / 3; }
+.viewer .stage .annot { position: absolute; inset: 0; margin: 0 auto; height: 100%; touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; cursor: crosshair; }
+.vtools { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; justify-content: center; padding: 10px 14px; }
+.vgroup { display: flex; gap: 8px; align-items: center; }
+.vtools .btn.icon { width: 46px; min-height: 46px; font-size: 22px; }
+.pen { width: 40px; height: 40px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 0 0 1px var(--line); background: var(--pen); cursor: pointer; padding: 0; }
+.pen.on { box-shadow: 0 0 0 3px var(--ink); }
+.small-seg button { min-width: 46px; min-height: 40px; }
+.vnotes { padding: 4px 16px 14px; text-align: center; color: var(--muted); font-size: 14px; white-space: pre-wrap; }
+/* landscape phone: field left, tools stacked on the right, nav hidden */
+@media (orientation: landscape) and (max-height: 520px) {
+  body.viewing { padding-bottom: 0; }
+  body.viewing .nav { display: none; }
+  .viewer { flex-direction: row; min-height: 0; height: calc(100vh - 52px); }
+  .viewer .stage { flex: 1; border-bottom: 0; border-right: 1px solid var(--line); align-items: center; }
+  .viewer .stage svg { max-width: min(calc(100vw - 112px), calc((100vh - 52px) * 4 / 3)); }
+  .viewer .stage .annot { width: auto; }
+  .vtools { flex-direction: column; width: 112px; padding: 8px; gap: 10px; overflow-y: auto; max-height: calc(100vh - 52px); justify-content: flex-start; }
+  .vtools .btn.icon { width: 38px; min-height: 38px; font-size: 18px; }
+  .pen { width: 32px; height: 32px; }
+  .small-seg button { min-width: 38px; min-height: 34px; font-size: 13px; padding: 4px 6px; }
+  .vgroup { flex-wrap: wrap; justify-content: center; }
+  .vgroup.seg { flex-direction: column; }
+  .vgroup.seg button + button { border-left: 0; border-top: 1px solid var(--line); }
+  .vnotes { display: none; }
+}
+@media (orientation: landscape) and (max-height: 520px) {
+  .vtools .small-seg { flex-direction: row; flex-wrap: wrap; width: 84px; border: 0; background: transparent; gap: 4px; overflow: visible; }
+  .vtools .small-seg button { flex: 0 0 38px; border: 1px solid var(--line) !important; border-radius: 8px; background: var(--card); }
+  .vtools .small-seg button.on { background: var(--ink); color: #fff; }
+}
+
+</style>
+</head>
+<body>
+<header class="topbar" id="topbar"><div class="topbar-in"><h1 id="title">FlagBook</h1></div></header>
+<main id="app" class="page"></main>
+<nav class="nav" id="nav">
+  <a href="#/home" data-nav="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-8 9 8v10a1 1 0 0 1-1 1h-5v-7h-6v7H4a1 1 0 0 1-1-1z"/></svg>Home</a>
+  <a href="#/roster" data-nav="roster"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="4"/><path d="M2 21v-1a6 6 0 0 1 12 0v1"/><circle cx="17" cy="9" r="3"/><path d="M15 21v-1a5 5 0 0 1 7-4.6"/></svg>Roster</a>
+  <a href="#/practices" data-nav="practices"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Practice</a>
+  <a href="#/games" data-nav="games"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12c0-5 4-8 8-8s8 3 8 8-4 8-8 8-8-3-8-8z"/><path d="M8 12h8M12 8v8"/></svg>Games</a>
+  <a href="#/playbook" data-nav="playbook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v14"/><path d="M4 19a2 2 0 0 0 2 2h14M8 7h8M8 11h6"/></svg>Playbook</a>
+  <a href="#/settings" data-nav="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>More</a>
+</nav>
+<script>
+/* FlagBook — small shared helpers. Classic script; everything hangs off window.FB. */
+(function () {
+  'use strict';
+  const FB = (window.FB = window.FB || {});
+  FB.views = FB.views || {};
+
+  const U = {};
+
+  U.uid = function () {
+    return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+  };
+
+  U.esc = function (s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  };
+
+  U.el = function (sel, root) { return (root || document).querySelector(sel); };
+  U.els = function (sel, root) { return Array.from((root || document).querySelectorAll(sel)); };
+
+  U.clamp = function (v, lo, hi) { return Math.max(lo, Math.min(hi, v)); };
+
+  U.todayISO = function () {
+    const d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  };
+
+  U.parseISODate = function (iso) {
+    if (!iso) return null;
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
+    if (!m) return null;
+    return new Date(+m[1], +m[2] - 1, +m[3]);
+  };
+
+  U.fmtDate = function (iso, opts) {
+    const d = U.parseISODate(iso);
+    if (!d) return '';
+    return d.toLocaleDateString(undefined, opts || { weekday: 'short', month: 'short', day: 'numeric' });
+  };
+
+  U.fmtDateLong = function (iso) {
+    return U.fmtDate(iso, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+  };
+
+  U.fmtTime = function (hhmm) {
+    if (!hhmm) return '';
+    const m = /^(\d{1,2}):(\d{2})$/.exec(hhmm);
+    if (!m) return hhmm;
+    let h = +m[1];
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    h = h % 12; if (h === 0) h = 12;
+    return h + ':' + m[2] + ' ' + ampm;
+  };
+
+  U.isPast = function (iso) {
+    const d = U.parseISODate(iso);
+    if (!d) return false;
+    const t = new Date(); t.setHours(0, 0, 0, 0);
+    return d < t;
+  };
+
+  U.sortBy = function (arr, key) {
+    return arr.slice().sort((a, b) => {
+      const ka = typeof key === 'function' ? key(a) : a[key];
+      const kb = typeof key === 'function' ? key(b) : b[key];
+      return ka < kb ? -1 : ka > kb ? 1 : 0;
+    });
+  };
+
+  U.mapsLink = function (location) {
+    return 'https://maps.apple.com/?q=' + encodeURIComponent(location || '');
+  };
+
+  U.download = function (filename, text, mime) {
+    const blob = new Blob([text], { type: mime || 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click();
+    setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 500);
+  };
+
+  U.toast = function (msg, ms) {
+    let t = document.getElementById('toast');
+    if (!t) { t = document.createElement('div'); t.id = 'toast'; document.body.appendChild(t); }
+    t.textContent = msg; t.classList.add('show');
+    clearTimeout(U._toastTimer);
+    U._toastTimer = setTimeout(() => t.classList.remove('show'), ms || 1800);
+  };
+
+  U.confirm = function (msg) { return window.confirm(msg); };
+
+  FB.util = U;
+})();
+
+</script>
+<script>
+/* FlagBook — route geometry: turn a hand-drawn stroke into a clean playbook route.
+ *
+ * Field space is the PDF page: 720 x 540 units (10in x 7.5in, 4:3 landscape).
+ * A route is stored relative to its player's centre as
+ *   { pts: [[dx,dy], ...], corners: [bool, ...] }
+ * where corners[i] marks a sharp cut at vertex i. Runs of non-corner interior
+ * vertices are rendered as a Catmull-Rom spline; everything else is straight.
+ */
+(function () {
+  'use strict';
+  const FB = (window.FB = window.FB || {});
+  const G = {};
+
+  G.FIELD_W = 720;
+  G.FIELD_H = 540;
+  G.LOS_Y = 358;              // line of scrimmage (matches Raiders.pdf)
+  G.RECEIVER_Y = 376;         // token centre hanging just under the line
+  G.UNITS_PER_YARD = 24;      // 30-yard-wide field across the page
+  G.TOKEN_R = 17;
+
+  const dist = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1]);
+  G.dist = dist;
+
+  /* Remove consecutive near-duplicates. */
+  G.dedupe = function (pts, eps) {
+    eps = eps == null ? 0.75 : eps;
+    const out = [];
+    for (const p of pts) {
+      if (!out.length || dist(out[out.length - 1], p) > eps) out.push([p[0], p[1]]);
+    }
+    return out;
+  };
+
+  /* Resample a polyline at a fixed step so jitter is uniform before simplification. */
+  G.resample = function (pts, step) {
+    step = step || 4;
+    if (pts.length < 2) return pts.slice();
+    const out = [[pts[0][0], pts[0][1]]];
+    let carry = 0;
+    for (let i = 1; i < pts.length; i++) {
+      let a = pts[i - 1], b = pts[i];
+      const segLen = dist(a, b);
+      if (segLen === 0) continue;
+      let t = step - carry;
+      while (t <= segLen) {
+        const k = t / segLen;
+        out.push([a[0] + (b[0] - a[0]) * k, a[1] + (b[1] - a[1]) * k]);
+        t += step;
+      }
+      carry = segLen - (t - step);
+    }
+    const last = pts[pts.length - 1];
+    if (dist(out[out.length - 1], last) > step * 0.35) out.push([last[0], last[1]]);
+    return out;
+  };
+
+  /* Perpendicular distance from p to segment ab. */
+  function perpDist(p, a, b) {
+    const dx = b[0] - a[0], dy = b[1] - a[1];
+    const l2 = dx * dx + dy * dy;
+    if (l2 === 0) return dist(p, a);
+    let t = ((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / l2;
+    t = Math.max(0, Math.min(1, t));
+    return dist(p, [a[0] + t * dx, a[1] + t * dy]);
+  }
+
+  /* Ramer-Douglas-Peucker simplification. */
+  G.rdp = function (pts, tol) {
+    if (pts.length < 3) return pts.slice();
+    const keep = new Array(pts.length).fill(false);
+    keep[0] = keep[pts.length - 1] = true;
+    const stack = [[0, pts.length - 1]];
+    while (stack.length) {
+      const [s, e] = stack.pop();
+      let maxD = -1, idx = -1;
+      for (let i = s + 1; i < e; i++) {
+        const d = perpDist(pts[i], pts[s], pts[e]);
+        if (d > maxD) { maxD = d; idx = i; }
+      }
+      if (maxD > tol && idx > 0) { keep[idx] = true; stack.push([s, idx], [idx, e]); }
+    }
+    return pts.filter((_, i) => keep[i]);
+  };
+
+  /* Turn angle (degrees, 0..180) at vertex i. */
+  G.turnAngle = function (pts, i) {
+    const a = pts[i - 1], b = pts[i], c = pts[i + 1];
+    const v1 = [b[0] - a[0], b[1] - a[1]], v2 = [c[0] - b[0], c[1] - b[1]];
+    const l1 = Math.hypot(v1[0], v1[1]), l2 = Math.hypot(v2[0], v2[1]);
+    if (!l1 || !l2) return 0;
+    let cos = (v1[0] * v2[0] + v1[1] * v2[1]) / (l1 * l2);
+    cos = Math.max(-1, Math.min(1, cos));
+    return Math.acos(cos) * 180 / Math.PI;
+  };
+
+  /* Snap a vector's direction to the nearest multiple of 45deg if within `within` degrees. */
+  G.snapVector = function (dx, dy, within) {
+    within = within == null ? 12 : within;
+    const len = Math.hypot(dx, dy);
+    if (len === 0) return [dx, dy];
+    const ang = Math.atan2(dy, dx) * 180 / Math.PI;
+    const target = Math.round(ang / 45) * 45;
+    let diff = Math.abs(ang - target);
+    if (diff > 180) diff = 360 - diff;
+    if (diff > within) return [dx, dy];
+    const r = target * Math.PI / 180;
+    return [Math.cos(r) * len, Math.sin(r) * len];
+  };
+
+  /* Local turn angle at resampled index i, measured over a window of `w` samples each
+   * side. A true cut is sharp inside a short window; an arc bends gradually. */
+  function localAngle(pts, i, w) {
+    const a = pts[Math.max(0, i - w)], b = pts[i], c = pts[Math.min(pts.length - 1, i + w)];
+    if (a === b || b === c) return 0;
+    return G.turnAngle([a, b, c], 1);
+  }
+
+  /* RDP returning kept indices. */
+  function rdpIdx(pts, tol, s0, e0) {
+    const keep = new Set([s0, e0]);
+    const stack = [[s0, e0]];
+    while (stack.length) {
+      const [s, e] = stack.pop();
+      let maxD = -1, idx = -1;
+      for (let i = s + 1; i < e; i++) {
+        const d = perpDist(pts[i], pts[s], pts[e]);
+        if (d > maxD) { maxD = d; idx = i; }
+      }
+      if (maxD > tol && idx > 0) { keep.add(idx); stack.push([s, idx], [idx, e]); }
+    }
+    return Array.from(keep).sort((a, b) => a - b);
+  }
+
+  /* Main entry: raw stroke (absolute field coords, first point = player centre)
+   * -> { pts (relative), corners }. Returns null if the stroke is too short. */
+  G.processStroke = function (raw, opts) {
+    opts = opts || {};
+    const tol = opts.tolerance == null ? 7 : opts.tolerance;
+    const cornerDeg = opts.cornerDeg == null ? 38 : opts.cornerDeg;
+    const snapDeg = opts.snapDeg == null ? 12 : opts.snapDeg;
+    const minLen = opts.minLen == null ? 18 : opts.minLen;
+    const STEP = 4, WIN = 3;
+
+    let pts = G.dedupe(raw);
+    if (pts.length < 2) return null;
+    let total = 0;
+    for (let i = 1; i < pts.length; i++) total += dist(pts[i - 1], pts[i]);
+    if (total < minLen) return null;
+
+    const rs = G.resample(pts, STEP);
+    if (rs.length < 2) return null;
+    let idx = rdpIdx(rs, tol, 0, rs.length - 1);
+    // Drop tiny head/tail wobble.
+    while (idx.length > 2 && dist(rs[idx[idx.length - 2]], rs[idx[idx.length - 1]]) < tol * 1.2) idx.splice(idx.length - 2, 1);
+    while (idx.length > 2 && dist(rs[idx[0]], rs[idx[1]]) < tol * 1.2) idx.splice(1, 1);
+
+    // Classify each kept interior vertex by its local angle on the raw stroke.
+    const isCorner = i => localAngle(rs, i, WIN) >= cornerDeg;
+    const cornerIdx = [idx[0]];
+    for (let k = 1; k < idx.length - 1; k++) if (isCorner(idx[k])) cornerIdx.push(idx[k]);
+    cornerIdx.push(idx[idx.length - 1]);
+
+    // Build legs between consecutive corners. A leg is straight if the raw stroke
+    // between the corners stays close to the chord; otherwise it is a curve and we
+    // re-simplify it finely so the spline follows the hand-drawn arc.
+    const out = [rs[cornerIdx[0]].slice()], corners = [true];
+    for (let k = 0; k < cornerIdx.length - 1; k++) {
+      const s = cornerIdx[k], e = cornerIdx[k + 1];
+      let maxDev = 0;
+      for (let i = s + 1; i < e; i++) maxDev = Math.max(maxDev, perpDist(rs[i], rs[s], rs[e]));
+      if (maxDev <= tol * 1.4) {
+        out.push(rs[e].slice()); corners.push(true);
+      } else {
+        const fine = rdpIdx(rs, Math.max(2.5, tol * 0.4), s, e);
+        for (let m = 1; m < fine.length - 1; m++) { out.push(rs[fine[m]].slice()); corners.push(false); }
+        out.push(rs[e].slice()); corners.push(true);
+      }
+    }
+    if (out.length < 2) return null;
+
+    // Snap straight legs (corner -> corner with no smooth vertices) to 45deg multiples,
+    // translating everything downstream so the shape stays connected.
+    for (let a = 0; a < out.length - 1; a++) {
+      const b = a + 1;
+      if (!corners[a] || !corners[b]) continue;
+      const dx = out[b][0] - out[a][0], dy = out[b][1] - out[a][1];
+      const [sx, sy] = G.snapVector(dx, dy, snapDeg);
+      const ddx = out[a][0] + sx - out[b][0], ddy = out[a][1] + sy - out[b][1];
+      if (ddx || ddy) for (let k = b; k < out.length; k++) { out[k][0] += ddx; out[k][1] += ddy; }
+    }
+
+    const ox = out[0][0], oy = out[0][1];
+    return {
+      pts: out.map(p => [Math.round((p[0] - ox) * 10) / 10, Math.round((p[1] - oy) * 10) / 10]),
+      corners
+    };
+  };
+
+  /* Catmull-Rom (uniform) through points -> cubic bezier segments as SVG path commands. */
+  function catmullRomPath(pts) {
+    let d = '';
+    for (let i = 0; i < pts.length - 1; i++) {
+      const p0 = pts[i - 1] || pts[i], p1 = pts[i], p2 = pts[i + 1], p3 = pts[i + 2] || p2;
+      const c1 = [p1[0] + (p2[0] - p0[0]) / 6, p1[1] + (p2[1] - p0[1]) / 6];
+      const c2 = [p2[0] - (p3[0] - p1[0]) / 6, p2[1] - (p3[1] - p1[1]) / 6];
+      d += ' C' + f(c1[0]) + ' ' + f(c1[1]) + ' ' + f(c2[0]) + ' ' + f(c2[1]) + ' ' + f(p2[0]) + ' ' + f(p2[1]);
+    }
+    return d;
+  }
+  const f = n => Math.round(n * 100) / 100;
+
+  /* Build an SVG path "d" string for a route placed at origin (ox, oy).
+   * The path is shortened at the end by `trimEnd` so an arrowhead can sit flush. */
+  G.routePath = function (route, ox, oy, trimEnd) {
+    const abs = route.pts.map(p => [p[0] + ox, p[1] + oy]);
+    if (abs.length < 2) return '';
+    if (trimEnd) {
+      const n = abs.length;
+      const a = abs[n - 2], b = abs[n - 1];
+      const L = dist(a, b);
+      if (L > trimEnd) {
+        const k = (L - trimEnd) / L;
+        abs[n - 1] = [a[0] + (b[0] - a[0]) * k, a[1] + (b[1] - a[1]) * k];
+      }
+    }
+    const corners = route.corners || abs.map(() => true);
+    let d = 'M' + f(abs[0][0]) + ' ' + f(abs[0][1]);
+    let i = 0;
+    while (i < abs.length - 1) {
+      let j = i + 1;
+      while (j < abs.length - 1 && !corners[j]) j++;
+      if (j - i > 1) d += catmullRomPath(abs.slice(i, j + 1));
+      else d += ' L' + f(abs[j][0]) + ' ' + f(abs[j][1]);
+      i = j;
+    }
+    return d;
+  };
+
+  /* Direction (unit vector) at the end of the route. */
+  G.endDirection = function (route) {
+    const n = route.pts.length;
+    if (n < 2) return [0, -1];
+    const a = route.pts[n - 2], b = route.pts[n - 1];
+    const L = dist(a, b) || 1;
+    return [(b[0] - a[0]) / L, (b[1] - a[1]) / L];
+  };
+
+  /* Where to put the step number: beside the first leg, ~45% along it,
+   * offset perpendicular. side = 1 (right of travel) or -1. */
+  G.labelPoint = function (route, ox, oy, side, offset) {
+    offset = offset || 24;
+    const a = route.pts[0], b = route.pts[1] || route.pts[0];
+    const L = dist(a, b) || 1;
+    const t = Math.min(0.5, Math.max(0.35, 40 / L));
+    const mx = ox + a[0] + (b[0] - a[0]) * t, my = oy + a[1] + (b[1] - a[1]) * t;
+    // perpendicular (rotate direction by +90deg)
+    const nx = -(b[1] - a[1]) / L, ny = (b[0] - a[0]) / L;
+    return [mx + nx * offset * side, my + ny * offset * side];
+  };
+
+  /* Distance from a point to a route (absolute coords), for hit testing. */
+  G.distanceToRoute = function (route, ox, oy, px, py) {
+    const abs = route.pts.map(p => [p[0] + ox, p[1] + oy]);
+    let best = Infinity;
+    for (let i = 1; i < abs.length; i++) best = Math.min(best, perpDist([px, py], abs[i - 1], abs[i]));
+    return best;
+  };
+
+  FB.geo = G;
+})();
+
+</script>
+<script>
+/* FlagBook — state, persistence, import/export and seed data. */
+(function () {
+  'use strict';
+  const FB = (window.FB = window.FB || {});
+  const U = FB.util;
+  const KEY = 'flagbook.v1';
+
+  const POSITIONS = ['Q', 'C', 'X', 'Y', 'Z', 'R'];
+  const POSITION_META = {
+    Q: { name: 'Quarterback', shape: 'diamond', fill: '#111111', text: '#ffffff' },
+    C: { name: 'Center',      shape: 'circle',  fill: '#808080', text: '#ffffff' },
+    X: { name: 'X receiver',  shape: 'circle',  fill: '#6A2C91', text: '#ffffff' },
+    Y: { name: 'Y receiver',  shape: 'circle',  fill: '#4A6FC4', text: '#ffffff' },
+    Z: { name: 'Z receiver',  shape: 'circle',  fill: '#F5D66F', text: '#ffffff' },
+    R: { name: 'R receiver',  shape: 'circle',  fill: '#4CAF50', text: '#ffffff' }
+  };
+
+  /* Default alignment used when a player is tapped onto the field from the bench. */
+  const DEFAULT_SPOTS = {
+    Y: [40, 376], Z: [180, 376], C: [360, 376], R: [530, 376], X: [690, 376], Q: [360, 420]
+  };
+
+  const FORMATIONS = {
+    'Spread':      { Y: [40, 376], Z: [180, 376], C: [360, 376], R: [530, 376], X: [690, 376], Q: [360, 420] },
+    'Trips Right': { Y: [60, 376], C: [300, 376], Z: [430, 376], R: [520, 376], X: [640, 376], Q: [300, 420] },
+    'Trips Left':  { X: [80, 376], R: [200, 376], Z: [290, 376], C: [420, 376], Y: [660, 376], Q: [420, 420] },
+    'Twins':       { Y: [60, 376], Z: [160, 376], C: [360, 376], R: [560, 376], X: [660, 376], Q: [360, 420] },
+    'Bunch Right': { Y: [80, 376], C: [330, 376], Z: [440, 376], R: [500, 400], X: [560, 376], Q: [330, 420] },
+    'Tight':       { Y: [230, 376], Z: [300, 376], C: [360, 376], R: [420, 376], X: [490, 376], Q: [360, 420] }
+  };
+
+  function emptyState() {
+    return {
+      version: 1,
+      team: { name: 'Raiders', season: '' },
+      roster: [],
+      practices: [],
+      games: [],
+      plays: [],
+      settings: { showYardGrid: false, quarters: 4 },
+      lineup: { show: true, gameId: '', quarter: 1 },   // which names the playbook shows
+      defaultRotation: {}                                // team lineup used when no game is picked
+    };
+  }
+
+  /* ---------- seed plays traced from Raiders.pdf ---------- */
+  function R(pts, o) {
+    // pts: absolute field coords starting at the player's centre
+    o = o || {};
+    const ox = pts[0][0], oy = pts[0][1];
+    const rel = pts.map(p => [Math.round((p[0] - ox) * 10) / 10, Math.round((p[1] - oy) * 10) / 10]);
+    const corners = pts.map((_, i) => (o.smooth ? (i === 0 || i === pts.length - 1) : true));
+    return {
+      pts: rel, corners,
+      hot: !!o.hot, steps: o.steps == null ? null : o.steps,
+      end: o.end || 'arrow', dashed: !!o.dashed, labelSide: o.labelSide || 1
+    };
+  }
+  const GO = (x, steps, top, side) => R([[x, 376], [x, top || 250]], { steps, labelSide: side || 1 });
+
+  function seedPlays() {
+    const now = Date.now();
+    const mk = (name, players, routes, extra) => Object.assign({
+      id: U.uid(), name, notes: '', players, routes,
+      spacing: { show: false, labels: {} }, createdAt: now, updatedAt: now
+    }, extra || {});
+
+    return [
+      mk('4 Verts – R Swing',
+        { Y: [25, 376], Z: [181, 376], C: [362, 376], R: [524, 376], X: [702, 376], Q: [362, 418] },
+        { Y: GO(25, 9), Z: GO(181, 9), C: GO(362, 9), X: GO(702, 9),
+          R: R([[524, 376], [500, 430], [420, 470], [330, 470], [270, 435], [250, 405]], { smooth: true }),
+          Q: R([[362, 418], [345, 440], [370, 452], [440, 452]], { smooth: true }) }),
+
+      mk('4 Verts – Z Swing',
+        { Y: [25, 376], Z: [187, 376], C: [362, 376], R: [524, 376], X: [702, 376], Q: [362, 418] },
+        { Y: GO(25, 9), C: GO(362, 9), R: GO(524, 9), X: GO(702, 9),
+          Z: R([[187, 376], [215, 430], [300, 472], [390, 472], [450, 438], [470, 405]], { smooth: true }),
+          Q: R([[362, 418], [385, 438], [360, 452], [295, 452]], { smooth: true }) }),
+
+      mk('Hooks',
+        { Y: [30, 376], Z: [163, 376], C: [362, 376], R: [557, 376], X: [702, 376], Q: [362, 418] },
+        { Z: R([[163, 376], [163, 224], [173, 250]], { steps: 5, end: 'dot' }),
+          C: R([[362, 376], [362, 224], [370, 250]], { steps: 5, end: 'dot' }),
+          R: R([[557, 376], [557, 224], [546, 250]], { steps: 5, end: 'dot', labelSide: -1 }),
+          Y: R([[30, 376], [45, 410], [95, 430], [165, 438]], { smooth: true, end: 'block' }),
+          X: R([[702, 376], [685, 410], [640, 430], [590, 440]], { smooth: true, end: 'block' }) }),
+
+      mk('Y Corner – Z Drag',
+        { Y: [173, 376], Z: [247, 376], C: [362, 376], R: [478, 376], X: [702, 376], Q: [362, 418] },
+        { Y: R([[173, 376], [173, 196], [300, 132]], { steps: 5 }),
+          Z: R([[247, 376], [275, 345], [360, 322], [480, 312], [620, 305]], { smooth: true, steps: 1, labelSide: -1 }),
+          C: R([[362, 376], [362, 245], [370, 268]], { steps: 5, end: 'dot' }),
+          X: GO(702, 5, 210),
+          R: R([[478, 376], [420, 420], [360, 450], [400, 462], [530, 454]], { smooth: true, hot: true, dashed: true, end: 'dot' }),
+          Q: R([[362, 418], [300, 462], [200, 475], [80, 430], [22, 258]], { smooth: true, hot: true, dashed: true }) }),
+
+      mk('Smash – 3s',
+        { Y: [25, 376], Z: [123, 376], C: [362, 376], R: [580, 376], X: [702, 376], Q: [362, 418] },
+        { Y: R([[25, 376], [40, 330], [120, 300], [260, 275]], { smooth: true, steps: 1, labelSide: -1 }),
+          Z: GO(123, 3, 190),
+          C: R([[362, 376], [362, 290], [418, 246]], { steps: 3, labelSide: -1 }),
+          R: GO(580, 3, 175, -1),
+          X: R([[702, 376], [688, 330], [610, 300], [460, 278]], { smooth: true, steps: 1 }) }),
+
+      mk('Y Out – Z Post – X Drag (hot)',
+        { Y: [182, 376], Z: [258, 376], C: [362, 376], R: [464, 376], X: [540, 376], Q: [362, 418] },
+        { Y: R([[182, 376], [182, 224], [264, 132]], { steps: 5, labelSide: -1 }),
+          Z: R([[258, 376], [258, 248], [150, 150]], { steps: 3, hot: true, labelSide: -1 }),
+          C: R([[362, 376], [362, 224], [370, 250]], { steps: 5, end: 'dot', labelSide: -1 }),
+          R: R([[464, 376], [464, 248], [545, 152]], { steps: 5 }),
+          X: R([[540, 376], [520, 340], [420, 326], [270, 325]], { smooth: true, steps: 1, hot: true, labelSide: 1 }) }),
+
+      mk('Y Post (hot) – R Out – X Drag (hot)',
+        { Y: [167, 376], Z: [258, 376], C: [362, 376], R: [462, 376], X: [552, 376], Q: [362, 418] },
+        { Y: R([[167, 376], [167, 248], [88, 135]], { steps: 5, hot: true, labelSide: -1 }),
+          Z: GO(258, 9, 160, -1),
+          C: R([[362, 376], [362, 257], [445, 257]], { steps: 5 }),
+          R: R([[462, 376], [462, 200], [565, 200]], { steps: 9 }),
+          X: R([[552, 376], [530, 340], [430, 326], [280, 325]], { smooth: true, steps: 1, hot: true, labelSide: 1 }) },
+        { spacing: { show: true, labels: { 'Y|Z': '1', 'Z|C': '4', 'C|R': '4', 'R|X': '1' } } }),
+
+      mk('Q Post – Trick',
+        { Z: [163, 376], Q: [262, 376], C: [362, 376], R: [462, 376], X: [362, 408], Y: [362, 505] },
+        { Z: GO(163, 7, 152, -1),
+          Q: R([[262, 376], [262, 222], [345, 127]], { steps: 7, labelSide: -1 }),
+          C: R([[362, 376], [362, 257], [450, 257]], { steps: 5 }),
+          R: R([[462, 376], [462, 200], [565, 200]], { steps: 9 }) },
+        { spacing: { show: true, labels: { 'Z|Q': '1', 'Q|C': '4', 'C|R': '4' } } })
+    ];
+  }
+
+  function seedRoster() {
+    return [];
+  }
+
+  /* ---------- store ---------- */
+  const listeners = new Set();
+  let state = null;
+
+  function migrate(s) {
+    const base = emptyState();
+    s = Object.assign(base, s || {});
+    s.team = Object.assign({ name: 'Raiders', season: '' }, s.team || {});
+    s.settings = Object.assign(base.settings, s.settings || {});
+    s.lineup = Object.assign({ show: true, gameId: '', quarter: 1 }, s.lineup || {});
+    s.defaultRotation = s.defaultRotation || {};
+    s.roster = (s.roster || []).map(p => Object.assign({ id: U.uid(), name: '', number: '', positions: [], guardian: '', phone: '', email: '', notes: '', active: true }, p));
+    s.practices = (s.practices || []).map(p => Object.assign({ id: U.uid(), date: '', time: '', location: '', notes: '' }, p));
+    s.games = (s.games || []).map(g => Object.assign({ id: U.uid(), date: '', time: '', location: '', opponent: '', snackPlayerId: '', notes: '', rotation: {}, sitting: {} }, g));
+    s.plays = (s.plays || []).map(p => Object.assign({ id: U.uid(), name: 'Untitled', notes: '', players: {}, routes: {}, spacing: { show: false, labels: {} } }, p));
+    for (const p of s.plays) {
+      p.spacing = Object.assign({ show: false, labels: {} }, p.spacing || {});
+      for (const k of Object.keys(p.routes || {})) {
+        p.routes[k] = Object.assign({ pts: [], corners: [], hot: false, steps: null, end: 'arrow', dashed: false, labelSide: 1 }, p.routes[k]);
+      }
+    }
+    return s;
+  }
+
+  const S = {
+    POSITIONS, POSITION_META, DEFAULT_SPOTS, FORMATIONS,
+
+    load() {
+      let raw = null;
+      try { raw = localStorage.getItem(KEY); } catch (e) { /* private mode */ }
+      if (raw) {
+        try { state = migrate(JSON.parse(raw)); } catch (e) { state = null; }
+      }
+      if (!state) {
+        state = emptyState();
+        state.plays = seedPlays();
+        state.roster = seedRoster();
+        S.save();
+      }
+      return state;
+    },
+
+    get() { return state; },
+
+    save() {
+      try { localStorage.setItem(KEY, JSON.stringify(state)); S.storageOK = true; }
+      catch (e) {
+        // Quick Look / private mode: nothing persists. Say so once instead of losing work silently.
+        if (S.storageOK !== false) { S.storageOK = false; setTimeout(() => U.toast('Heads up: this viewer cannot save. Changes are lost when you close the file.', 5000), 400); }
+      }
+      listeners.forEach(fn => { try { fn(state); } catch (e) { console.error(e); } });
+    },
+
+    /* mutate(fn) applies fn(state) then saves + notifies. */
+    mutate(fn) { fn(state); S.save(); },
+
+    subscribe(fn) { listeners.add(fn); return () => listeners.delete(fn); },
+
+    exportJSON() { return JSON.stringify(state, null, 2); },
+
+    importJSON(text, mode) {
+      const incoming = migrate(JSON.parse(text));
+      if (mode === 'merge') {
+        const byId = arr => new Map(arr.map(x => [x.id, x]));
+        for (const k of ['roster', 'practices', 'games', 'plays']) {
+          const cur = byId(state[k]);
+          for (const item of incoming[k]) cur.set(item.id, item);
+          state[k] = Array.from(cur.values());
+        }
+      } else {
+        state = incoming;
+      }
+      S.save();
+    },
+
+    resetSeedPlays() { state.plays = seedPlays().concat(state.plays); S.save(); },
+
+    reset() { state = emptyState(); state.plays = seedPlays(); S.save(); },
+
+    /* lookups */
+    player(id) { return state.roster.find(p => p.id === id) || null; },
+    playerName(id) { const p = S.player(id); return p ? p.name : ''; },
+    play(id) { return state.plays.find(p => p.id === id) || null; },
+    game(id) { return state.games.find(g => g.id === id) || null; },
+    practice(id) { return state.practices.find(p => p.id === id) || null; },
+    activeRoster() { return U.sortBy(state.roster.filter(p => p.active !== false), p => (parseInt(p.number, 10) || 999)); },
+
+    /* ---- playbook lineup: which rotation + quarter captions the tokens ---- */
+    lineupRotation() {
+      const L = state.lineup;
+      if (L.gameId) { const g = S.game(L.gameId); return g ? (g.rotation = g.rotation || {}) : null; }
+      return state.defaultRotation;
+    },
+    lineupNames() {
+      const L = state.lineup;
+      if (!L.show) return null;
+      const rot = S.lineupRotation(); if (!rot) return null;
+      const row = rot[L.quarter] || {}, names = {};
+      for (const pos of Object.keys(row)) if (row[pos]) { const n = S.playerName(row[pos]); if (n) names[pos] = n.split(' ')[0]; }
+      return names;
+    },
+    lineupLabel() {
+      const L = state.lineup;
+      if (!L.show) return '';
+      const g = L.gameId ? S.game(L.gameId) : null;
+      const src = g ? (g.opponent ? 'vs ' + g.opponent : U.fmtDate(g.date)) : 'Team lineup';
+      return src + ' · Q' + L.quarter;
+    },
+    setLineup(patch) { Object.assign(state.lineup, patch); S.save(); },
+
+    newPlay(name, formation) {
+      const spots = FORMATIONS[formation] || FORMATIONS['Spread'];
+      const players = {};
+      for (const k of Object.keys(spots)) players[k] = spots[k].slice();
+      const p = { id: U.uid(), name: name || 'New play', notes: '', players, routes: {}, spacing: { show: false, labels: {} }, createdAt: Date.now(), updatedAt: Date.now() };
+      state.plays.push(p); S.save();
+      return p;
+    },
+
+    duplicatePlay(id) {
+      const src = S.play(id); if (!src) return null;
+      const copy = JSON.parse(JSON.stringify(src));
+      copy.id = U.uid(); copy.name = src.name + ' (copy)'; copy.createdAt = copy.updatedAt = Date.now();
+      const idx = state.plays.indexOf(src);
+      state.plays.splice(idx + 1, 0, copy); S.save();
+      return copy;
+    }
+  };
+
+  S._seedPlays = seedPlays;
+  FB.store = S;
+})();
+
+</script>
+<script>
+/* FlagBook — quarter-by-quarter rotation and snack assignment. */
+(function () {
+  'use strict';
+  const FB = (window.FB = window.FB || {});
+  const ROT = {};
+
+  /* Deterministic tiny PRNG so "shuffle" is repeatable for a given seed. */
+  function rng(seed) {
+    let s = (seed >>> 0) || 1;
+    return () => { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; };
+  }
+
+  /**
+   * Build a fair rotation.
+   * @param players  [{id, positions:[...preferred spot letters]}]
+   * @param opts     { quarters=4, spots=[...6 letters], locked:{q:{spot:id}}, seed, history:{playerId:{spot:count}} }
+   * @returns { rotation:{1:{Q:id,...},...}, sitting:{1:[ids],...}, plays:{id:count} }
+   */
+  ROT.build = function (players, opts) {
+    opts = opts || {};
+    const quarters = opts.quarters || 4;
+    const spots = opts.spots || FB.store.POSITIONS;
+    const locked = opts.locked || {};
+    const rand = rng(opts.seed == null ? 7 : opts.seed);
+    const spotCount = {};          // playerId -> spot -> times played this game
+    const plays = {};              // playerId -> quarters played
+    const lastSat = {};            // playerId -> last quarter they sat (for fairness)
+    for (const p of players) { plays[p.id] = 0; spotCount[p.id] = {}; lastSat[p.id] = 0; }
+    const history = opts.history || {};
+
+    const rotation = {}, sitting = {};
+    for (let q = 1; q <= quarters; q++) {
+      const lockedQ = locked[q] || {};
+      const lockedIds = new Set(Object.values(lockedQ).filter(Boolean));
+      // Choose who plays this quarter: locked first, then fewest quarters played, then longest since sat.
+      const need = Math.min(spots.length, players.length);
+      const pool = players.filter(p => !lockedIds.has(p.id));
+      const order = pool.map(p => ({ p, r: rand() })).sort((a, b) => {
+        const d = plays[a.p.id] - plays[b.p.id];
+        if (d) return d;
+        const s = lastSat[b.p.id] - lastSat[a.p.id];
+        if (s) return s;                 // sat most recently plays first
+        return a.r - b.r;
+      }).map(x => x.p);
+      const playing = players.filter(p => lockedIds.has(p.id)).concat(order.slice(0, Math.max(0, need - lockedIds.size)));
+      const bench = players.filter(p => !playing.includes(p));
+
+      // Assign spots: locked, then preference-aware greedy (Q and C first since they're specialised).
+      const assign = {};
+      for (const s of spots) if (lockedQ[s]) assign[s] = lockedQ[s];
+      const free = playing.filter(p => !Object.values(assign).includes(p.id));
+      const spotOrder = ['Q', 'C'].filter(s => spots.includes(s)).concat(spots.filter(s => s !== 'Q' && s !== 'C'));
+      for (const s of spotOrder) {
+        if (assign[s]) continue;
+        if (!free.length) break;
+        // score: prefers this spot (+), has played it fewer times this game / historically (+)
+        let best = null, bestScore = -Infinity;
+        for (const p of free) {
+          const prefIdx = (p.positions || []).indexOf(s);
+          const hasPrefs = (p.positions || []).length > 0;
+          let score = 0;
+          if (prefIdx >= 0) score += 10 - prefIdx;
+          else if (hasPrefs) score -= 4;          // they'd rather be elsewhere
+          score -= (spotCount[p.id][s] || 0) * 3;
+          score -= ((history[p.id] || {})[s] || 0) * 0.5;
+          score += rand() * 0.01;
+          if (score > bestScore) { bestScore = score; best = p; }
+        }
+        assign[s] = best.id;
+        free.splice(free.indexOf(best), 1);
+      }
+      rotation[q] = assign;
+      sitting[q] = bench.map(p => p.id);
+      for (const id of Object.values(assign)) { plays[id]++; }
+      for (const s of Object.keys(assign)) { const id = assign[s]; spotCount[id][s] = (spotCount[id][s] || 0) + 1; }
+      for (const p of bench) lastSat[p.id] = q;
+    }
+    return { rotation, sitting, plays };
+  };
+
+  /* Summarise how many quarters each player plays in a rotation. */
+  ROT.playCounts = function (rotation) {
+    const out = {};
+    for (const q of Object.keys(rotation || {})) {
+      for (const id of Object.values(rotation[q] || {})) if (id) out[id] = (out[id] || 0) + 1;
+    }
+    return out;
+  };
+
+  /* Who sits in quarter q, given roster ids and a rotation. */
+  ROT.sittingFor = function (rotation, q, rosterIds) {
+    const on = new Set(Object.values((rotation || {})[q] || {}).filter(Boolean));
+    return rosterIds.filter(id => !on.has(id));
+  };
+
+  /* Assign snacks to games without one, cycling through the roster in order,
+   * starting after whoever most recently had it. */
+  ROT.assignSnacks = function (games, rosterIds) {
+    if (!rosterIds.length) return games;
+    const sorted = games.slice().sort((a, b) => (a.date || '').localeCompare(b.date || ''));
+    let idx = -1;
+    for (const g of sorted) {
+      if (g.snackPlayerId) { const i = rosterIds.indexOf(g.snackPlayerId); if (i >= 0) idx = i; }
+    }
+    // Count how many times each has done it, prefer fewest
+    const counts = {}; rosterIds.forEach(id => counts[id] = 0);
+    for (const g of sorted) if (g.snackPlayerId && counts[g.snackPlayerId] != null) counts[g.snackPlayerId]++;
+    for (const g of sorted) {
+      if (g.snackPlayerId) continue;
+      // next in order with the minimum count
+      const min = Math.min(...rosterIds.map(id => counts[id]));
+      let pick = null;
+      for (let k = 1; k <= rosterIds.length; k++) {
+        const id = rosterIds[(idx + k) % rosterIds.length];
+        if (counts[id] === min) { pick = id; idx = (idx + k) % rosterIds.length; break; }
+      }
+      g.snackPlayerId = pick; counts[pick]++;
+    }
+    return games;
+  };
+
+  FB.rotation = ROT;
+})();
+
+</script>
+<script>
+/* FlagBook — render a play as SVG in the Raiders.pdf visual style.
+ * FB.field.render(svgEl, play, opts)   opts: { selected, showGrid, names:{pos:name}, interactive }
+ * FB.field.svgString(play, opts)       standalone <svg> markup (thumbnails, print)
+ */
+(function () {
+  'use strict';
+  const FB = (window.FB = window.FB || {});
+  const G = FB.geo, U = FB.util;
+  const NS = 'http://www.w3.org/2000/svg';
+  const F = {};
+
+  const STROKE = 4;          // route width
+  const ARROW = 15;          // arrowhead length
+  const RED = '#E5352B';
+  const FONT = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+
+  function meta(pos) { return FB.store.POSITION_META[pos] || { shape: 'circle', fill: '#999', text: '#fff' }; }
+
+  function arrowHead(x, y, dx, dy, color) {
+    // filled triangle with tip at (x,y) pointing along (dx,dy)
+    const L = ARROW, W = ARROW * 0.62;
+    const bx = x - dx * L, by = y - dy * L;
+    const px = -dy, py = dx;
+    const p1 = [bx + px * W, by + py * W], p2 = [bx - px * W, by - py * W];
+    return `<polygon points="${f(x)},${f(y)} ${f(p1[0])},${f(p1[1])} ${f(p2[0])},${f(p2[1])}" fill="${color}" />`;
+  }
+  const f = n => Math.round(n * 100) / 100;
+
+  function routeMarkup(pos, play, opts) {
+    const r = play.routes[pos], at = play.players[pos];
+    if (!r || !at || !r.pts || r.pts.length < 2) return '';
+    const color = r.hot ? RED : '#111';
+    const [ox, oy] = at;
+    const end = r.end || 'arrow';
+    const d = G.routePath(r, ox, oy, end === 'arrow' ? ARROW * 0.8 : 0);
+    const dash = r.dashed ? ` stroke-dasharray="${STROKE * 3} ${STROKE * 2.2}"` : '';
+    const sel = opts.selected === pos ? ' route-selected' : '';
+    let s = `<g class="route${sel}" data-pos="${pos}">`;
+    // wide invisible hit area for taps
+    if (opts.interactive) s += `<path d="${G.routePath(r, ox, oy, 0)}" fill="none" stroke="rgba(0,0,0,0.001)" stroke-width="28" class="route-hit" data-pos="${pos}" />`;
+    s += `<path d="${d}" fill="none" stroke="${color}" stroke-width="${STROKE}" stroke-linecap="round" stroke-linejoin="round"${dash} class="route-line" />`;
+    const n = r.pts.length;
+    const ex = ox + r.pts[n - 1][0], ey = oy + r.pts[n - 1][1];
+    const [dx, dy] = G.endDirection(r);
+    if (end === 'arrow') s += arrowHead(ex, ey, dx, dy, color);
+    else if (end === 'dot') s += `<circle cx="${f(ex)}" cy="${f(ey)}" r="${STROKE * 1.6}" fill="${color}" />`;
+    else if (end === 'block') {
+      const px = -dy, py = dx, L = 20;
+      s += `<line x1="${f(ex + px * L)}" y1="${f(ey + py * L)}" x2="${f(ex - px * L)}" y2="${f(ey - py * L)}" stroke="${color}" stroke-width="${STROKE}" stroke-linecap="round" />`;
+    }
+    if (r.steps != null && r.steps !== '') {
+      const [lx, ly] = G.labelPoint(r, ox, oy, r.labelSide || 1, 22);
+      s += `<text x="${f(lx)}" y="${f(ly)}" text-anchor="middle" dominant-baseline="central" font-family="${FONT}" font-weight="800" font-size="36" fill="${color}">${U.esc(r.steps)}</text>`;
+    }
+    s += '</g>';
+    return s;
+  }
+
+  function tokenMarkup(pos, play, opts) {
+    const at = play.players[pos];
+    if (!at) return '';
+    const m = meta(pos), [x, y] = at, R = G.TOKEN_R;
+    const sel = opts.selected === pos;
+    let s = `<g class="token${sel ? ' token-selected' : ''}" data-pos="${pos}" transform="translate(${f(x)} ${f(y)})">`;
+    if (sel) s += m.shape === 'diamond'
+      ? `<polygon points="0,${-R - 12} ${R + 14},0 0,${R + 12} ${-R - 14},0" fill="none" stroke="#2A7DE1" stroke-width="3" stroke-dasharray="6 4" />`
+      : `<circle r="${R + 8}" fill="none" stroke="#2A7DE1" stroke-width="3" stroke-dasharray="6 4" />`;
+    if (m.shape === 'diamond') s += `<polygon points="0,${-R - 3} ${R + 9},0 0,${R + 3} ${-R - 9},0" fill="${m.fill}" />`;
+    else s += `<circle r="${R}" fill="${m.fill}" />`;
+    s += `<text text-anchor="middle" dominant-baseline="central" dy="1" font-family="${FONT}" font-weight="800" font-size="27" fill="${m.text}" style="paint-order:stroke" stroke="${pos === 'Z' ? 'rgba(90,70,0,0.55)' : 'none'}" stroke-width="1.2">${pos}</text>`;
+    const name = opts.names && opts.names[pos];
+    if (name) {
+      // If someone lines up directly below (Q under C), the caption goes to the upper right instead.
+      const crowded = Object.keys(play.players).some(o => o !== pos && Math.abs(play.players[o][0] - x) < 34 && play.players[o][1] - y > 20 && play.players[o][1] - y < 70);
+      // ...on the side away from the route's step number (which defaults to the right of travel).
+      const rt = play.routes && play.routes[pos];
+      const side = rt && rt.steps != null && (rt.labelSide || 1) === -1 ? 1 : -1;
+      const attrs = crowded ? `x="${side * (R - 2)}" y="${-R - 7}" text-anchor="${side > 0 ? 'start' : 'end'}"` : `y="${R + 19}" text-anchor="middle"`;
+      s += `<text ${attrs} font-family="${FONT}" font-weight="700" font-size="17" fill="#222" style="paint-order:stroke" stroke="#fff" stroke-width="3">${U.esc(name)}</text>`;
+    }
+    s += '</g>';
+    return s;
+  }
+
+  /* Red double-headed spacing arrows between adjacent on-the-line players. */
+  function spacingMarkup(play) {
+    if (!play.spacing || !play.spacing.show) return '';
+    const online = Object.keys(play.players)
+      .filter(p => Math.abs(play.players[p][1] - G.LOS_Y) < 45)
+      .sort((a, b) => play.players[a][0] - play.players[b][0]);
+    let s = '<g class="spacing">';
+    for (let i = 0; i < online.length - 1; i++) {
+      const a = online[i], b = online[i + 1];
+      const ax = play.players[a][0] + G.TOKEN_R + 6, bx = play.players[b][0] - G.TOKEN_R - 6;
+      if (bx - ax < 14) continue;
+      const y = G.RECEIVER_Y;
+      const key = a + '|' + b;
+      let label = play.spacing.labels && play.spacing.labels[key];
+      if (label == null || label === '') {
+        const yards = (play.players[b][0] - play.players[a][0]) / G.UNITS_PER_YARD;
+        label = String(Math.round(yards * 2) / 2).replace(/\.0$/, '');
+      }
+      s += `<g class="gap" data-gap="${key}">`;
+      s += `<line x1="${f(ax + 6)}" y1="${y}" x2="${f(bx - 6)}" y2="${y}" stroke="${RED}" stroke-width="3" />`;
+      s += arrowHead(ax, y, -1, 0, RED).replace(/points="[^"]*"/, m => m); // left head
+      s += arrowHead(bx, y, 1, 0, RED);
+      s += `<rect x="${f((ax + bx) / 2 - 22)}" y="${y + 8}" width="44" height="40" fill="rgba(255,255,255,0.001)" />`;
+      s += `<text x="${f((ax + bx) / 2)}" y="${y + 34}" text-anchor="middle" font-family="${FONT}" font-weight="800" font-size="34" fill="${RED}">${U.esc(label)}</text>`;
+      s += '</g>';
+    }
+    return s + '</g>';
+  }
+
+  function gridMarkup() {
+    // faint 5-yard lines for orientation (editor only, never printed)
+    let s = '<g class="grid" pointer-events="none">';
+    const yd = G.UNITS_PER_YARD;
+    for (let y = G.LOS_Y; y > 0; y -= yd * 5) s += `<line x1="0" y1="${f(y)}" x2="${G.FIELD_W}" y2="${f(y)}" stroke="#d8d8d8" stroke-width="1" stroke-dasharray="6 6" />`;
+    for (let y = G.LOS_Y + yd * 5; y < G.FIELD_H; y += yd * 5) s += `<line x1="0" y1="${f(y)}" x2="${G.FIELD_W}" y2="${f(y)}" stroke="#d8d8d8" stroke-width="1" stroke-dasharray="6 6" />`;
+    for (let y = G.LOS_Y - yd; y > 0; y -= yd) s += `<line x1="8" y1="${f(y)}" x2="18" y2="${f(y)}" stroke="#cfcfcf" stroke-width="1" /><line x1="${G.FIELD_W - 18}" y1="${f(y)}" x2="${G.FIELD_W - 8}" y2="${f(y)}" stroke="#cfcfcf" stroke-width="1" />`;
+    return s + '</g>';
+  }
+
+  F.innerMarkup = function (play, opts) {
+    opts = opts || {};
+    let s = `<rect x="0" y="0" width="${G.FIELD_W}" height="${G.FIELD_H}" fill="#ffffff" class="field-bg" />`;
+    if (opts.showGrid) s += gridMarkup();
+    s += `<line x1="0" y1="${G.LOS_Y}" x2="${G.FIELD_W}" y2="${G.LOS_Y}" stroke="#111" stroke-width="${STROKE}" class="los" />`;
+    s += spacingMarkup(play);
+    const order = Object.keys(play.players);
+    // routes under tokens
+    for (const pos of order) if (pos !== opts.selected) s += routeMarkup(pos, play, opts);
+    if (opts.selected && play.players[opts.selected]) s += routeMarkup(opts.selected, play, opts);
+    for (const pos of order) if (pos !== opts.selected) s += tokenMarkup(pos, play, opts);
+    if (opts.selected && play.players[opts.selected]) s += tokenMarkup(opts.selected, play, opts);
+    if (opts.liveStroke && opts.liveStroke.length > 1) {
+      s += `<polyline points="${opts.liveStroke.map(p => f(p[0]) + ',' + f(p[1])).join(' ')}" fill="none" stroke="#2A7DE1" stroke-width="3" stroke-opacity="0.6" stroke-linecap="round" stroke-linejoin="round" />`;
+    }
+    return s;
+  };
+
+  F.render = function (svg, play, opts) {
+    svg.setAttribute('viewBox', `0 0 ${G.FIELD_W} ${G.FIELD_H}`);
+    svg.innerHTML = F.innerMarkup(play, opts);
+  };
+
+  F.svgString = function (play, opts, attrs) {
+    return `<svg xmlns="${NS}" viewBox="0 0 ${G.FIELD_W} ${G.FIELD_H}" ${attrs || ''}>${F.innerMarkup(play, opts)}</svg>`;
+  };
+
+  /* Convert a pointer event to field coordinates. */
+  F.pointFromEvent = function (svg, ev) {
+    const pt = svg.createSVGPoint();
+    pt.x = ev.clientX; pt.y = ev.clientY;
+    const ctm = svg.getScreenCTM();
+    if (!ctm) return [0, 0];
+    const p = pt.matrixTransform(ctm.inverse());
+    return [p.x, p.y];
+  };
+
+  FB.field = F;
+})();
+
+</script>
+<script>
+(function () {
+  'use strict';
+  const FB = window.FB, U = FB.util, S = FB.store, UI = FB.ui || {};
+
+  function nextOf(list) {
+    const today = U.todayISO();
+    return U.sortBy(list.filter(x => x.date >= today), 'date')[0] || null;
+  }
+
+  FB.views.home = {
+    render(root) {
+      const st = S.get();
+      FB.ui.setTitle(`<h1>${U.esc(st.team.name || 'FlagBook')}</h1>${st.team.season ? `<span class="muted small">${U.esc(st.team.season)}</span>` : ''}`);
+      const g = nextOf(st.games), p = nextOf(st.practices);
+      const rosterN = st.roster.filter(x => x.active !== false).length;
+      let html = '';
+
+      html += `<div class="section"><h3>Next game</h3>`;
+      if (g) {
+        const snack = g.snackPlayerId ? S.playerName(g.snackPlayerId) : '';
+        const q1 = g.rotation && g.rotation[1] ? Object.keys(g.rotation[1]).filter(k => g.rotation[1][k]).length : 0;
+        html += `<a class="card tap" href="#/games/${g.id}" style="display:block;text-decoration:none">
+          <div class="row spread"><div class="card-title">${g.opponent ? 'vs ' + U.esc(g.opponent) : 'Game'}</div><div class="muted">${U.fmtDate(g.date)}${g.time ? ' · ' + U.fmtTime(g.time) : ''}</div></div>
+          ${g.location ? `<div class="muted small" style="margin-top:4px">📍 ${U.esc(g.location)}</div>` : ''}
+          <div class="row wrap" style="margin-top:10px;gap:14px">
+            <div><span class="muted small">Snacks</span><br><b>${snack ? U.esc(snack) : '<span class="muted">not assigned</span>'}</b></div>
+            <div><span class="muted small">Rotation</span><br><b>${q1 ? 'set' : '<span class="muted">not set</span>'}</b></div>
+          </div></a>`;
+      } else html += `<div class="card empty">No upcoming games. <a href="#/games">Add one</a></div>`;
+      html += `</div>`;
+
+      html += `<div class="section"><h3>Next practice</h3>`;
+      if (p) {
+        html += `<a class="card tap" href="#/practices" style="display:block;text-decoration:none">
+          <div class="row spread"><div class="card-title">${U.fmtDate(p.date, { weekday: 'long', month: 'short', day: 'numeric' })}</div><div class="muted">${U.fmtTime(p.time)}</div></div>
+          ${p.location ? `<div class="muted small" style="margin-top:4px">📍 ${U.esc(p.location)}</div>` : ''}
+          ${p.notes ? `<div class="small" style="margin-top:6px">${U.esc(p.notes)}</div>` : ''}</a>`;
+      } else html += `<div class="card empty">No upcoming practices. <a href="#/practices">Schedule one</a></div>`;
+      html += `</div>`;
+
+      html += `<div class="section"><h3>Team</h3><div class="row wrap">
+        <a class="card tap grow" href="#/roster" style="text-decoration:none;text-align:center"><div style="font-size:28px;font-weight:800">${rosterN}</div><div class="muted small">players</div></a>
+        <a class="card tap grow" href="#/playbook" style="text-decoration:none;text-align:center"><div style="font-size:28px;font-weight:800">${st.plays.length}</div><div class="muted small">plays</div></a>
+        <a class="card tap grow" href="#/games" style="text-decoration:none;text-align:center"><div style="font-size:28px;font-weight:800">${st.games.length}</div><div class="muted small">games</div></a>
+      </div></div>`;
+      root.innerHTML = html;
+    }
+  };
+})();
+
+</script>
+<script>
+(function () {
+  'use strict';
+  const FB = window.FB, U = FB.util, S = FB.store;
+
+  function editPlayer(id) {
+    const p = id ? S.player(id) : { name: '', number: '', positions: [], guardian: '', phone: '', email: '', notes: '', active: true };
+    const m = FB.ui.modal(`<h2>${id ? 'Edit player' : 'Add player'}</h2>
+      <form id="pf">
+        <div class="two">
+          <div class="field-row"><label>Name</label><input type="text" name="name" value="${U.esc(p.name)}" required autocomplete="off"></div>
+          <div class="field-row"><label>Jersey #</label><input type="number" name="number" value="${U.esc(p.number)}" inputmode="numeric"></div>
+        </div>
+        <div class="field-row"><label>Preferred spots (in order of preference)</label>
+          <div class="checks">${S.POSITIONS.map(pos => `<label><input type="checkbox" name="positions[]" value="${pos}"${(p.positions || []).includes(pos) ? ' checked' : ''}>${pos} <span class="muted small">${S.POSITION_META[pos].name}</span></label>`).join('')}</div></div>
+        <div class="two">
+          <div class="field-row"><label>Parent / guardian</label><input type="text" name="guardian" value="${U.esc(p.guardian)}"></div>
+          <div class="field-row"><label>Phone</label><input type="tel" name="phone" value="${U.esc(p.phone)}"></div>
+        </div>
+        <div class="field-row"><label>Email</label><input type="email" name="email" value="${U.esc(p.email)}"></div>
+        <div class="field-row"><label>Notes</label><textarea name="notes">${U.esc(p.notes)}</textarea></div>
+        <div class="field-row"><label class="switch" style="text-transform:none;letter-spacing:0;color:inherit"><input type="checkbox" name="active"${p.active !== false ? ' checked' : ''}> Active this season</label></div>
+        <div class="actions">${id ? '<button type="button" class="btn danger" id="del">Delete</button>' : ''}<button type="button" class="btn" id="cancel">Cancel</button><button type="submit" class="btn primary">Save</button></div>
+      </form>`);
+    const form = m.el.querySelector('#pf');
+    m.el.querySelector('#cancel').onclick = m.close;
+    if (id) m.el.querySelector('#del').onclick = () => {
+      if (!U.confirm('Delete ' + p.name + '? They will also be removed from game rotations.')) return;
+      S.mutate(st => {
+        st.roster = st.roster.filter(x => x.id !== id);
+        for (const g of st.games) {
+          if (g.snackPlayerId === id) g.snackPlayerId = '';
+          for (const q of Object.keys(g.rotation || {})) for (const k of Object.keys(g.rotation[q])) if (g.rotation[q][k] === id) g.rotation[q][k] = '';
+        }
+      });
+      m.close();
+    };
+    form.onsubmit = e => {
+      e.preventDefault();
+      const d = FB.ui.formData(form);
+      // keep preferred-position order as tapped: order checkboxes by original ordering is fine
+      S.mutate(st => {
+        if (id) Object.assign(S.player(id), d);
+        else st.roster.push(Object.assign({ id: U.uid() }, d));
+      });
+      m.close();
+    };
+  }
+
+  FB.views.roster = {
+    render(root) {
+      const st = S.get();
+      FB.ui.setTitle(`<h1>Roster</h1><button class="btn primary sm" id="add">+ Add</button>`);
+      document.getElementById('add').onclick = () => editPlayer(null);
+      const list = U.sortBy(st.roster, p => (parseInt(p.number, 10) || 999) + (p.active === false ? 1000 : 0));
+      if (!list.length) { root.innerHTML = `<div class="empty">No players yet.<br><br><button class="btn primary" id="add2">Add your first player</button></div>`; root.querySelector('#add2').onclick = () => editPlayer(null); return; }
+      root.innerHTML = list.map(p => `<div class="card tap" data-id="${p.id}" style="${p.active === false ? 'opacity:.55' : ''}">
+        <div class="row">
+          <div class="num">${U.esc(p.number || '–')}</div>
+          <div class="grow">
+            <div class="card-title">${U.esc(p.name)}${p.active === false ? ' <span class="chip">inactive</span>' : ''}</div>
+            <div class="row wrap" style="gap:4px;margin-top:4px">${(p.positions || []).map(FB.ui.posChip).join('')}${p.guardian ? `<span class="muted small">${U.esc(p.guardian)}</span>` : ''}</div>
+          </div>
+          ${p.phone ? `<a class="btn icon ghost" href="tel:${U.esc(p.phone)}" title="Call" onclick="event.stopPropagation()">📞</a>` : ''}
+        </div></div>`).join('');
+      root.querySelectorAll('.card[data-id]').forEach(c => c.onclick = () => editPlayer(c.dataset.id));
+    }
+  };
+  FB.views.roster.editPlayer = editPlayer;
+})();
+
+</script>
+<script>
+(function () {
+  'use strict';
+  const FB = window.FB, U = FB.util, S = FB.store;
+
+  function edit(id) {
+    const last = U.sortBy(S.get().practices, 'date').slice(-1)[0];
+    const p = id ? S.practice(id) : { date: U.todayISO(), time: last ? last.time : '17:30', location: last ? last.location : '', notes: '' };
+    const m = FB.ui.modal(`<h2>${id ? 'Edit practice' : 'Add practice'}</h2>
+      <form id="f">
+        <div class="two">
+          <div class="field-row"><label>Date</label><input type="date" name="date" value="${U.esc(p.date)}" required></div>
+          <div class="field-row"><label>Time</label><input type="time" name="time" value="${U.esc(p.time)}"></div>
+        </div>
+        <div class="field-row"><label>Location</label><input type="text" name="location" value="${U.esc(p.location)}" placeholder="Field name / address"></div>
+        <div class="field-row"><label>Notes / focus</label><textarea name="notes" placeholder="e.g. Install plays 1–4, flag pulling drills">${U.esc(p.notes)}</textarea></div>
+        ${id ? '' : `<div class="field-row"><label>Repeat weekly</label><select name="repeat"><option value="1">Just this one</option><option value="4">4 weeks</option><option value="6">6 weeks</option><option value="8">8 weeks</option><option value="10">10 weeks</option><option value="12">12 weeks</option></select></div>`}
+        <div class="actions">${id ? '<button type="button" class="btn danger" id="del">Delete</button>' : ''}<button type="button" class="btn" id="cancel">Cancel</button><button type="submit" class="btn primary">Save</button></div>
+      </form>`);
+    const form = m.el.querySelector('#f');
+    m.el.querySelector('#cancel').onclick = m.close;
+    if (id) m.el.querySelector('#del').onclick = () => { if (U.confirm('Delete this practice?')) { S.mutate(st => st.practices = st.practices.filter(x => x.id !== id)); m.close(); } };
+    form.onsubmit = e => {
+      e.preventDefault();
+      const d = FB.ui.formData(form);
+      const repeat = parseInt(d.repeat || '1', 10); delete d.repeat;
+      S.mutate(st => {
+        if (id) Object.assign(S.practice(id), d);
+        else for (let i = 0; i < repeat; i++) {
+          const dt = U.parseISODate(d.date); dt.setDate(dt.getDate() + i * 7);
+          const iso = dt.getFullYear() + '-' + String(dt.getMonth() + 1).padStart(2, '0') + '-' + String(dt.getDate()).padStart(2, '0');
+          st.practices.push(Object.assign({ id: U.uid() }, d, { date: iso }));
+        }
+      });
+      m.close();
+    };
+  }
+
+  FB.views.practices = {
+    render(root) {
+      const st = S.get();
+      FB.ui.setTitle(`<h1>Practice</h1><button class="btn primary sm" id="add">+ Add</button>`);
+      document.getElementById('add').onclick = () => edit(null);
+      const today = U.todayISO();
+      const all = U.sortBy(st.practices, p => p.date + (p.time || ''));
+      const upcoming = all.filter(p => p.date >= today), past = all.filter(p => p.date < today).reverse();
+      const card = p => `<div class="card tap" data-id="${p.id}">
+          <div class="row spread"><div class="card-title">${U.fmtDate(p.date, { weekday: 'long', month: 'short', day: 'numeric' })}</div><div class="muted">${U.fmtTime(p.time)}</div></div>
+          ${p.location ? `<div class="small" style="margin-top:4px">📍 <a href="${U.mapsLink(p.location)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${U.esc(p.location)}</a></div>` : ''}
+          ${p.notes ? `<div class="small muted" style="margin-top:6px">${U.esc(p.notes)}</div>` : ''}</div>`;
+      let html = '';
+      if (!all.length) html = `<div class="empty">No practices scheduled.<br><br><button class="btn primary" id="add2">Add practice</button></div>`;
+      else {
+        html += `<div class="section"><h3>Upcoming</h3>${upcoming.length ? upcoming.map(card).join('') : '<div class="card empty">Nothing upcoming</div>'}</div>`;
+        if (past.length) html += `<div class="section"><h3>Past</h3>${past.map(card).join('')}</div>`;
+      }
+      root.innerHTML = html;
+      const a2 = root.querySelector('#add2'); if (a2) a2.onclick = () => edit(null);
+      root.querySelectorAll('.card[data-id]').forEach(c => c.onclick = () => edit(c.dataset.id));
+    }
+  };
+})();
+
+</script>
+<script>
+(function () {
+  'use strict';
+  const FB = window.FB, U = FB.util, S = FB.store, ROT = FB.rotation;
+
+  function editGame(id) {
+    const last = U.sortBy(S.get().games, 'date').slice(-1)[0];
+    const g = id ? S.game(id) : { date: U.todayISO(), time: last ? last.time : '09:00', location: last ? last.location : '', opponent: '', notes: '' };
+    const m = FB.ui.modal(`<h2>${id ? 'Edit game' : 'Add game'}</h2>
+      <form id="f">
+        <div class="two">
+          <div class="field-row"><label>Date</label><input type="date" name="date" value="${U.esc(g.date)}" required></div>
+          <div class="field-row"><label>Kickoff</label><input type="time" name="time" value="${U.esc(g.time)}"></div>
+        </div>
+        <div class="field-row"><label>Opponent</label><input type="text" name="opponent" value="${U.esc(g.opponent)}"></div>
+        <div class="field-row"><label>Location</label><input type="text" name="location" value="${U.esc(g.location)}" placeholder="Field / address"></div>
+        <div class="field-row"><label>Notes</label><textarea name="notes">${U.esc(g.notes)}</textarea></div>
+        <div class="actions">${id ? '<button type="button" class="btn danger" id="del">Delete</button>' : ''}<button type="button" class="btn" id="cancel">Cancel</button><button type="submit" class="btn primary">Save</button></div>
+      </form>`);
+    const form = m.el.querySelector('#f');
+    m.el.querySelector('#cancel').onclick = m.close;
+    if (id) m.el.querySelector('#del').onclick = () => { if (U.confirm('Delete this game?')) { S.mutate(st => st.games = st.games.filter(x => x.id !== id)); m.close(); location.hash = '#/games'; } };
+    form.onsubmit = e => {
+      e.preventDefault();
+      const d = FB.ui.formData(form);
+      let newId = id;
+      S.mutate(st => {
+        if (id) Object.assign(S.game(id), d);
+        else { newId = U.uid(); st.games.push(Object.assign({ id: newId, snackPlayerId: '', rotation: {}, sitting: {} }, d)); }
+      });
+      m.close();
+      if (!id) location.hash = '#/games/' + newId;
+    };
+  }
+
+  function gameCard(g) {
+    const snack = g.snackPlayerId ? S.playerName(g.snackPlayerId) : '';
+    const set = g.rotation && Object.keys(g.rotation).some(q => Object.values(g.rotation[q]).some(Boolean));
+    return `<a class="card tap" href="#/games/${g.id}" style="display:block;text-decoration:none">
+      <div class="row spread"><div class="card-title">${g.opponent ? 'vs ' + U.esc(g.opponent) : 'Game'}</div><div class="muted">${U.fmtDate(g.date)}${g.time ? ' · ' + U.fmtTime(g.time) : ''}</div></div>
+      ${g.location ? `<div class="small muted" style="margin-top:4px">📍 ${U.esc(g.location)}</div>` : ''}
+      <div class="row wrap small" style="margin-top:8px;gap:12px"><span>🍎 ${snack ? U.esc(snack) : '<span class="muted">no snack assigned</span>'}</span><span>${set ? '✅ rotation set' : '<span class="muted">rotation not set</span>'}</span></div></a>`;
+  }
+
+  FB.views.games = {
+    render(root) {
+      const st = S.get();
+      FB.ui.setTitle(`<h1>Games</h1><button class="btn sm" id="snacks" title="Assign snacks to games without one">🍎 Auto-snacks</button><button class="btn primary sm" id="add">+ Add</button>`);
+      document.getElementById('add').onclick = () => editGame(null);
+      document.getElementById('snacks').onclick = () => {
+        const ids = S.activeRoster().map(p => p.id);
+        if (!ids.length) return U.toast('Add players to the roster first');
+        S.mutate(s => ROT.assignSnacks(s.games, ids));
+        U.toast('Snacks assigned');
+      };
+      const today = U.todayISO();
+      const all = U.sortBy(st.games, g => g.date + (g.time || ''));
+      const upcoming = all.filter(g => g.date >= today), past = all.filter(g => g.date < today).reverse();
+      let html = '';
+      if (!all.length) html = `<div class="empty">No games yet.<br><br><button class="btn primary" id="add2">Add a game</button></div>`;
+      else {
+        html += `<div class="section"><h3>Upcoming</h3>${upcoming.length ? upcoming.map(gameCard).join('') : '<div class="card empty">Nothing upcoming</div>'}</div>`;
+        if (past.length) html += `<div class="section"><h3>Past</h3>${past.map(gameCard).join('')}</div>`;
+      }
+      root.innerHTML = html;
+      const a2 = root.querySelector('#add2'); if (a2) a2.onclick = () => editGame(null);
+    }
+  };
+
+  /* ---------- single game: details, snack, rotation ---------- */
+  let fieldQ = 1;
+  FB.views.game = {
+    render(root, route) {
+      const g = S.game(route.id);
+      if (!g) { root.innerHTML = '<div class="empty">Game not found</div>'; return; }
+      const st = S.get();
+      const Q = st.settings.quarters || 4;
+      const roster = S.activeRoster();
+      FB.ui.setTitle(`<a class="btn ghost sm" href="#/games">‹ Games</a><h1>${g.opponent ? 'vs ' + U.esc(g.opponent) : 'Game'}</h1><button class="btn sm" id="edit">Edit</button>`);
+      document.getElementById('edit').onclick = () => editGame(g.id);
+      g.rotation = g.rotation || {};
+
+      const counts = ROT.playCounts(g.rotation);
+      const anySet = Object.keys(g.rotation).some(q => Object.values(g.rotation[q]).some(Boolean));
+
+      let html = `<div class="card">
+        <div class="row spread"><div><div class="card-title">${U.fmtDateLong(g.date)}</div><div class="muted">${g.time ? 'Kickoff ' + U.fmtTime(g.time) : ''}</div></div>
+        <a class="btn sm" href="#/gamesheet/${g.id}">🖨 Game sheet</a></div>
+        ${g.location ? `<div style="margin-top:8px">📍 <a href="${U.mapsLink(g.location)}" target="_blank" rel="noopener">${U.esc(g.location)}</a></div>` : ''}
+        ${g.notes ? `<div class="small muted" style="margin-top:6px">${U.esc(g.notes)}</div>` : ''}
+        <div class="field-row" style="margin:12px 0 0"><label>🍎 Snack duty</label><select id="snack">${FB.ui.playerOptions(g.snackPlayerId, true)}</select></div>
+      </div>`;
+
+      html += `<div class="section"><div class="row spread"><h3>Rotation by quarter</h3>
+        <div class="row" style="gap:6px"><button class="btn sm primary" id="auto">${anySet ? 'Fill empty spots' : '✨ Auto-rotate'}</button><button class="btn sm" id="shuffle" title="Re-do the whole rotation">↻</button><button class="btn sm" id="clear">Clear</button></div></div>`;
+      if (roster.length < 1) html += `<div class="card empty">Add players to the <a href="#/roster">roster</a> first.</div>`;
+      else {
+        html += `<div class="card">${rotationGridHTML(g.rotation, roster, Q)}</div>`;
+
+        // field view of a quarter
+        html += `<div class="section"><div class="row spread"><h3>On the field</h3><div class="seg" id="qseg">${Array.from({ length: Q }, (_, i) => `<button data-q="${i + 1}" class="${fieldQ === i + 1 ? 'on' : ''}">Q${i + 1}</button>`).join('')}</div></div>
+          <div class="card mini-field">${FB.field.svgString(lineupPlay(), { names: namesFor(g, fieldQ) })}
+          <div class="row spread" style="margin-top:10px"><button class="btn sm" id="openPB">Open playbook with Q${fieldQ} names</button></div></div></div>`;
+      }
+      html += `</div>`;
+      root.innerHTML = html;
+
+      root.querySelector('#snack').onchange = e => S.mutate(() => { g.snackPlayerId = e.target.value; });
+      bindRotationGrid(root, g.rotation);
+      const auto = root.querySelector('#auto'), shuffle = root.querySelector('#shuffle'), clear = root.querySelector('#clear');
+      const doAuto = (respectExisting, seed) => autoRotate(g.rotation, roster, Q, respectExisting, seed, spotHistory(g.id));
+      if (auto) auto.onclick = () => doAuto(true);
+      if (shuffle) shuffle.onclick = () => doAuto(false, Math.floor(Math.random() * 1e6));
+      if (clear) clear.onclick = () => { if (U.confirm('Clear the whole rotation?')) S.mutate(() => { g.rotation = {}; }); };
+      const openPB = root.querySelector('#openPB'); if (openPB) openPB.onclick = () => { S.setLineup({ show: true, gameId: g.id, quarter: fieldQ }); location.hash = '#/playbook'; };
+      const qseg = root.querySelector('#qseg'); if (qseg) qseg.querySelectorAll('button').forEach(b => b.onclick = () => { fieldQ = +b.dataset.q; FB.app.rerender(); });
+    }
+  };
+
+  /* ---------- shared rotation grid (game page + playbook lineup editor) ---------- */
+  function rotationGridHTML(rotation, roster, Q) {
+    rotation = rotation || {};
+    const ids = roster.map(p => p.id);
+    let html = `<div class="rot-wrap"><table class="rot"><thead><tr><th></th>${S.POSITIONS.map(p => `<th class="pos" style="background:${S.POSITION_META[p].fill};${p === 'Z' ? 'color:#5b4a00' : ''}">${p}</th>`).join('')}</tr></thead><tbody>`;
+    for (let q = 1; q <= Q; q++) {
+      const row = rotation[q] || {};
+      html += `<tr><td class="q">Q${q}</td>${S.POSITIONS.map(p => `<td><select data-q="${q}" data-pos="${p}">${shortOptions(roster, row[p] || '')}</select></td>`).join('')}</tr>`;
+      const sit = ROT.sittingFor(rotation, q, ids).map(id => S.playerName(id)).filter(Boolean);
+      html += `<tr><td></td><td colspan="${S.POSITIONS.length}" class="sit" style="text-align:left;border-bottom:2px solid var(--line)">${sit.length ? 'Sitting: ' + sit.map(U.esc).join(', ') : (roster.length > S.POSITIONS.length ? '' : 'Everyone plays')}</td></tr>`;
+    }
+    html += `</tbody></table></div>`;
+    const dups = [];
+    for (let q = 1; q <= Q; q++) { const vals = Object.values(rotation[q] || {}).filter(Boolean); if (new Set(vals).size !== vals.length) dups.push(q); }
+    if (dups.length) html += `<div class="small" style="color:var(--red);margin-top:8px">⚠️ Same player in two spots in Q${dups.join(', Q')}</div>`;
+    const anySet = Object.keys(rotation).some(q => Object.values(rotation[q]).some(Boolean));
+    if (anySet && roster.length) {
+      const counts = ROT.playCounts(rotation);
+      const max = Math.max(...roster.map(p => counts[p.id] || 0)), min = Math.min(...roster.map(p => counts[p.id] || 0));
+      html += `<div class="counts">${roster.map(p => `<span class="chip ${counts[p.id] === min && min !== max ? 'low' : counts[p.id] === max && min !== max ? 'high' : ''}">${U.esc(p.name)} · ${counts[p.id] || 0}</span>`).join('')}</div>`;
+    }
+    return html;
+  }
+  function bindRotationGrid(root, rotation) {
+    root.querySelectorAll('select[data-q]').forEach(sel => sel.onchange = () => S.mutate(() => {
+      rotation[sel.dataset.q] = rotation[sel.dataset.q] || {};
+      rotation[sel.dataset.q][sel.dataset.pos] = sel.value;
+    }));
+  }
+  function autoRotate(rotation, roster, Q, respectExisting, seed, history) {
+    if (!roster.length) return U.toast('Add players to the roster first');
+    const locked = {};
+    if (respectExisting) for (const q of Object.keys(rotation)) { locked[q] = {}; for (const p of Object.keys(rotation[q])) if (rotation[q][p]) locked[q][p] = rotation[q][p]; }
+    const res = ROT.build(roster.map(p => ({ id: p.id, positions: p.positions || [] })), { quarters: Q, locked, seed: seed == null ? 7 : seed, history: history || {} });
+    S.mutate(() => { for (const k of Object.keys(rotation)) delete rotation[k]; Object.assign(rotation, res.rotation); });
+    U.toast('Rotation built');
+  }
+  FB.rotationGrid = { html: rotationGridHTML, bind: bindRotationGrid, auto: autoRotate, spotHistory: id => spotHistory(id) };
+
+  function shortOptions(roster, selectedId) {
+    let s = '<option value="">—</option>';
+    for (const p of roster) s += `<option value="${p.id}"${p.id === selectedId ? ' selected' : ''}>${U.esc((p.name || '').split(' ')[0] || ('#' + p.number))}</option>`;
+    return s;
+  }
+
+  /* how often each player has played each spot in *other* games (for fairness across the season) */
+  function spotHistory(exceptGameId) {
+    const h = {};
+    for (const g of S.get().games) {
+      if (g.id === exceptGameId) continue;
+      for (const q of Object.keys(g.rotation || {})) for (const [pos, id] of Object.entries(g.rotation[q])) if (id) { h[id] = h[id] || {}; h[id][pos] = (h[id][pos] || 0) + 1; }
+    }
+    return h;
+  }
+
+  function lineupPlay() {
+    const players = {}; for (const k of Object.keys(S.FORMATIONS.Spread)) players[k] = S.FORMATIONS.Spread[k].slice();
+    players.Q = [360, 450];
+    return { players, routes: {}, spacing: { show: false, labels: {} } };
+  }
+  function namesFor(g, q) {
+    const names = {}; const row = (g.rotation || {})[q] || {};
+    for (const p of Object.keys(row)) if (row[p]) names[p] = (S.playerName(row[p]) || '').split(' ')[0];
+    return names;
+  }
+  FB.views.game.namesFor = namesFor;
+
+  /* ---------- printable game sheet ---------- */
+  FB.views.gamesheet = {
+    className: 'editor',
+    render(root, route) {
+      const g = S.game(route.id); if (!g) { root.innerHTML = '<div class="empty">Game not found</div>'; return; }
+      const st = S.get(), Q = st.settings.quarters || 4, roster = S.activeRoster();
+      FB.ui.setTitle(`<a class="btn ghost sm" href="#/games/${g.id}">‹ Back</a><h1>Game sheet</h1><button class="btn primary sm" id="print">🖨 Print / PDF</button>`);
+      document.getElementById('print').onclick = () => window.print();
+      let html = `<div class="gamesheet"><h1>${U.esc(st.team.name)}${g.opponent ? ' vs ' + U.esc(g.opponent) : ''}</h1>
+        <div>${U.fmtDateLong(g.date)}${g.time ? ' · ' + U.fmtTime(g.time) : ''}${g.location ? ' · ' + U.esc(g.location) : ''}</div>
+        <div style="margin:6px 0 14px">🍎 Snacks: <b>${g.snackPlayerId ? U.esc(S.playerName(g.snackPlayerId)) : '—'}</b></div>
+        <table><thead><tr><th></th>${S.POSITIONS.map(p => `<th>${p}</th>`).join('')}<th>Sitting</th></tr></thead><tbody>`;
+      for (let q = 1; q <= Q; q++) {
+        const row = (g.rotation || {})[q] || {};
+        const sit = ROT.sittingFor(g.rotation, q, roster.map(p => p.id)).map(id => S.playerName(id));
+        html += `<tr><th>Q${q}</th>${S.POSITIONS.map(p => `<td>${row[p] ? U.esc(S.playerName(row[p])) : ''}</td>`).join('')}<td style="font-size:12px">${sit.map(U.esc).join(', ')}</td></tr>`;
+      }
+      html += `</tbody></table>${g.notes ? `<p>${U.esc(g.notes)}</p>` : ''}</div>`;
+      root.innerHTML = html;
+    }
+  };
+  FB.views.games.editGame = editGame;
+})();
+
+</script>
+<script>
+/* FlagBook — playbook list + play editor. */
+(function () {
+  'use strict';
+  const FB = window.FB, U = FB.util, S = FB.store, G = FB.geo, F = FB.field;
+
+  /* ---------- lineup bar: which players' names caption the tokens ---------- */
+  function lineupBar(compact) {
+    const st = S.get(), L = st.lineup, Q = st.settings.quarters || 4;
+    const games = U.sortBy(st.games, 'date');
+    const src = `<select id="lineupSrc" aria-label="Lineup source"><option value="off"${!L.show ? ' selected' : ''}>Names off</option><option value=""${L.show && !L.gameId ? ' selected' : ''}>Team lineup</option>${games.map(g => `<option value="${g.id}"${L.show && L.gameId === g.id ? ' selected' : ''}>${g.opponent ? 'vs ' + U.esc(g.opponent) : 'Game'} · ${U.fmtDate(g.date, { month: 'short', day: 'numeric' })}</option>`).join('')}</select>`;
+    const qs = `<div class="seg qseg" id="lineupQ">${Array.from({ length: Q }, (_, i) => `<button data-q="${i + 1}" class="${L.quarter === i + 1 ? 'on' : ''}"${!L.show ? ' disabled' : ''}>Q${i + 1}</button>`).join('')}</div>`;
+    const edit = `<button class="btn sm" id="lineupEdit"${!L.show ? ' disabled' : ''}>Edit lineup</button>`;
+    return `<div class="lineup-bar${compact ? ' compact' : ''}">${src}${qs}${edit}</div>`;
+  }
+  function bindLineupBar(root) {
+    const src = root.querySelector('#lineupSrc');
+    if (src) src.onchange = e => {
+      const v = e.target.value;
+      if (v === 'off') S.setLineup({ show: false });
+      else S.setLineup({ show: true, gameId: v });
+    };
+    root.querySelectorAll('#lineupQ button').forEach(b => b.onclick = () => S.setLineup({ quarter: +b.dataset.q }));
+    const edit = root.querySelector('#lineupEdit');
+    if (edit) edit.onclick = lineupEditor;
+  }
+
+  /* Edit the rotation behind the current lineup (team lineup or a game's) in a modal. */
+  function lineupEditor() {
+    const st = S.get(), L = st.lineup, Q = st.settings.quarters || 4;
+    const roster = S.activeRoster();
+    const g = L.gameId ? S.game(L.gameId) : null;
+    const rotation = S.lineupRotation();
+    if (!rotation) return;
+    const title = g ? (g.opponent ? 'vs ' + g.opponent : 'Game') + ' lineup' : 'Team lineup';
+    const m = FB.ui.modal('', { sticky: true, focus: false });
+    const draw = () => {
+      m.el.innerHTML = `<h2>${U.esc(title)}</h2>
+        ${roster.length ? `<p class="hint" style="margin:0 0 10px">Who plays each spot in each quarter. The playbook shows these names under the tokens.${g ? '' : ' This is the team default; games can have their own rotation.'}</p>${FB.rotationGrid.html(rotation, roster, Q)}`
+                        : '<div class="empty">Add players to the <a href="#/roster">roster</a> first.</div>'}
+        <div class="actions" style="margin-top:14px">${roster.length ? '<button type="button" class="btn" id="auto">✨ Auto-fill</button><button type="button" class="btn" id="shuffle" title="Reshuffle">↻</button><button type="button" class="btn" id="clear">Clear</button>' : ''}<button type="button" class="btn primary" id="done">Done</button></div>`;
+      FB.rotationGrid.bind(m.el, rotation);
+      const q = sel => m.el.querySelector(sel);
+      q('#done').onclick = m.close;
+      if (q('#auto')) q('#auto').onclick = () => FB.rotationGrid.auto(rotation, roster, Q, true, 7, g ? FB.rotationGrid.spotHistory(g.id) : {});
+      if (q('#shuffle')) q('#shuffle').onclick = () => FB.rotationGrid.auto(rotation, roster, Q, false, Math.floor(Math.random() * 1e6), g ? FB.rotationGrid.spotHistory(g.id) : {});
+      if (q('#clear')) q('#clear').onclick = () => { if (U.confirm('Clear this lineup?')) S.mutate(() => { for (const k of Object.keys(rotation)) delete rotation[k]; }); };
+    };
+    draw();
+    // keep the modal in sync while the store changes underneath it (grid edits re-render the page)
+    const unsub = S.subscribe(() => { if (document.body.contains(m.bg)) draw(); else unsub(); });
+  }
+
+  /* ---------- list ---------- */
+  function newPlayDialog() {
+    const m = FB.ui.modal(`<h2>New play</h2><form id="f">
+      <div class="field-row"><label>Name</label><input type="text" name="name" placeholder="e.g. Trips Right – Y Corner" required autocomplete="off"></div>
+      <div class="field-row"><label>Starting formation</label><select name="formation">${Object.keys(S.FORMATIONS).map(k => `<option>${k}</option>`).join('')}<option value="__empty">Empty field</option></select></div>
+      <div class="actions"><button type="button" class="btn" id="cancel">Cancel</button><button type="submit" class="btn primary">Create</button></div></form>`);
+    m.el.querySelector('#cancel').onclick = m.close;
+    m.el.querySelector('#f').onsubmit = e => {
+      e.preventDefault();
+      const d = FB.ui.formData(e.target);
+      const p = S.newPlay(d.name, d.formation);
+      if (d.formation === '__empty') S.mutate(() => { p.players = {}; });
+      m.close();
+      location.hash = '#/playbook/' + p.id;
+    };
+  }
+
+  function renderList(root, route) {
+    const st = S.get();
+    const names = S.lineupNames();
+    FB.ui.setTitle(`<h1>Playbook</h1><a class="btn sm" href="#/print">🖨</a><button class="btn primary sm" id="add">+ New play</button>`);
+    document.getElementById('add').onclick = newPlayDialog;
+    let html = lineupBar(false);
+    if (names && !Object.keys(names).length) html += `<p class="hint" style="margin:0 0 12px">No players assigned for ${U.esc(S.lineupLabel())} yet. Tap <b>Edit lineup</b> to fill the quarters.</p>`;
+    if (!st.plays.length) html += `<div class="empty">No plays yet.<br><br><button class="btn primary" id="add2">Create your first play</button></div>`;
+    else html += `<div class="plays">${st.plays.map(p => `<a class="play-card" href="#/view/${p.id}">${F.svgString(p, { names })}<div class="cap"><span>${U.esc(p.name)}</span>${Object.values(p.routes).some(r => r.hot) ? '<i class="dot" title="has hot route"></i>' : ''}</div></a>`).join('')}</div>`;
+    root.innerHTML = html;
+    bindLineupBar(root);
+    const a2 = root.querySelector('#add2'); if (a2) a2.onclick = newPlayDialog;
+  }
+
+  /* ---------- editor ---------- */
+  const ed = { id: null, sel: null, mode: 'draw', showGrid: false, stroke: null, drag: null, svg: null, play: null, names: null };
+
+  function renderEditor(root, route) {
+    const play = S.play(route.id);
+    if (!play) { root.innerHTML = '<div class="empty">Play not found. <a href="#/playbook">Back to playbook</a></div>'; return; }
+    if (ed.id !== play.id) { ed.id = play.id; ed.sel = null; ed.stroke = null; ed.drag = null; }
+    ed.play = play; ed.names = S.lineupNames();
+    if (ed.sel && !play.players[ed.sel]) ed.sel = null;
+    const scrollY = window.scrollY;
+
+    FB.ui.setTitle(`<a class="btn ghost sm" href="#/playbook" aria-label="Back">‹</a>
+      <input class="play-name" id="pname" value="${U.esc(play.name)}" aria-label="Play name">
+      <a class="btn sm" href="#/view/${play.id}" title="View mode: present and annotate without changing the play">👁 View</a>
+      <button class="btn sm icon" id="menu" aria-label="More">⋯</button>`);
+    document.getElementById('pname').onchange = e => S.mutate(() => { play.name = e.target.value.trim() || 'Untitled'; play.updatedAt = Date.now(); });
+    document.getElementById('menu').onclick = () => playMenu(play, route);
+
+    const sel = ed.sel, r = sel ? play.routes[sel] : null;
+    const onField = pos => !!play.players[pos];
+    const tokBtn = pos => { const m = S.POSITION_META[pos]; return `<button class="tok ${m.shape}${onField(pos) ? ' onfield' : ''}${sel === pos ? ' sel' : ''}" data-bench="${pos}" style="background:${m.fill};${pos === 'Z' ? 'color:#5b4a00' : ''}" title="${m.name}"><span>${pos}</span></button>`; };
+
+    let html = `<div class="field-wrap"><svg class="field ${ed.mode}" id="field" xmlns="http://www.w3.org/2000/svg"></svg></div>
+    <div class="editor-body">
+      <div class="full">${lineupBar(true)}</div>
+      <div class="toolrow full">
+        <div class="seg" id="mode"><button data-mode="move" class="${ed.mode === 'move' ? 'on' : ''}">✋ Move</button><button data-mode="draw" class="${ed.mode === 'draw' ? 'on' : ''}">✏️ Draw route</button></div>
+        <div class="bench" id="bench">${S.POSITIONS.map(tokBtn).join('')}</div>
+        <span class="hint grow">${ed.mode === 'draw' ? (sel ? `Drag on the field to draw <b>${sel}</b>'s route.` : 'Tap a player, then drag to draw their route.') : 'Drag players to position them. Drag from the bench to add.'}</span>
+      </div>`;
+
+    if (sel) {
+      const m = S.POSITION_META[sel];
+      const hasRoute = r && r.pts && r.pts.length > 1;
+      html += `<div class="card route-panel">
+        <div class="head"><span class="tokdot" style="background:${m.fill};${sel === 'Z' ? 'color:#5b4a00' : ''}">${sel}</span><b>${m.name}</b>${ed.names && ed.names[sel] ? `<span class="muted">· ${U.esc(ed.names[sel])}</span>` : ''}<span class="grow"></span><button class="btn sm ghost danger" id="removeP">Remove from field</button></div>
+        ${hasRoute ? `
+        <div class="toolrow" style="margin-bottom:10px">
+          <button class="btn hot ${r.hot ? 'on' : ''}" id="hot">🔥 Hot route</button>
+          <div class="row" style="gap:6px"><span class="small muted">Ready on step</span>
+            <div class="stepper"><button id="stepDn">−</button><span class="val ${r.hot ? 'red' : ''}" id="stepVal">${r.steps == null ? '<span class="muted small">off</span>' : r.steps}</span><button id="stepUp">+</button></div>
+            ${r.steps != null ? '<button class="btn sm ghost" id="stepClr">clear</button>' : ''}</div>
+        </div>
+        <div class="toolrow">
+          <span class="small muted">Ending</span>
+          <div class="seg" id="ending">${[['arrow', '➔'], ['dot', '●'], ['block', '⊥'], ['none', '—']].map(([k, l]) => `<button data-end="${k}" class="${(r.end || 'arrow') === k ? 'on' : ''}" title="${k}">${l}</button>`).join('')}</div>
+          <button class="btn sm ${r.dashed ? 'on' : ''}" id="dashed">Dashed</button>
+          <button class="btn sm" id="flip" title="Move the step number to the other side">⇄ #</button>
+          <button class="btn sm danger" id="clearRoute">Clear route</button>
+        </div>
+        <p class="hint" style="margin:10px 0 0">Tip: tap a route on the field to select it; tap it again to toggle hot. Redraw any time — the route keeps its settings.</p>` :
+        `<p class="hint" style="margin:0">No route yet. Switch to <b>Draw route</b> and drag from ${sel} across the field. Sharp cuts stay sharp, curves get smoothed.</p>`}
+      </div>`;
+    }
+
+    html += `<div class="card">
+      <div class="toolrow">
+        <label class="switch"><input type="checkbox" id="spacing"${play.spacing.show ? ' checked' : ''}> Show spacing (yds)</label>
+        <label class="switch"><input type="checkbox" id="grid"${ed.showGrid ? ' checked' : ''}> Yard grid</label>
+        <select id="formation" style="width:auto;min-height:38px;padding:6px 10px"><option value="">Apply formation…</option>${Object.keys(S.FORMATIONS).map(k => `<option>${k}</option>`).join('')}</select>
+      </div>
+      ${play.spacing.show ? '<p class="hint" style="margin:8px 0 0">Spacing is measured in yards from the player positions. Tap a red number on the field to type your own.</p>' : ''}
+      <div class="field-row" style="margin:12px 0 0"><label>Coaching notes</label><textarea id="notes" placeholder="Who's the first read? Snap count? Motion?">${U.esc(play.notes)}</textarea></div>
+    </div></div>`;
+    root.innerHTML = html;
+
+    ed.svg = root.querySelector('#field');
+    drawField();
+    bindEditor(root, play, route);
+    bindLineupBar(root);
+    window.scrollTo(0, scrollY);
+  }
+
+  function drawField(live) {
+    if (!ed.svg || !ed.play) return;
+    F.render(ed.svg, ed.play, { selected: ed.sel, showGrid: ed.showGrid, names: ed.names, interactive: true, liveStroke: live });
+  }
+
+  function save(fn) { S.mutate(() => { fn(); ed.play.updatedAt = Date.now(); }); }
+
+  function tokenAt(play, x, y) {
+    let best = null, bd = Infinity;
+    for (const pos of Object.keys(play.players)) {
+      const d = Math.hypot(play.players[pos][0] - x, play.players[pos][1] - y);
+      if (d < G.TOKEN_R + 10 && d < bd) { bd = d; best = pos; }
+    }
+    return best;
+  }
+  function routeAt(play, x, y) {
+    let best = null, bd = 14;
+    for (const pos of Object.keys(play.routes)) {
+      const r = play.routes[pos]; if (!play.players[pos] || !r.pts || r.pts.length < 2) continue;
+      const d = G.distanceToRoute(r, play.players[pos][0], play.players[pos][1], x, y);
+      if (d < bd) { bd = d; best = pos; }
+    }
+    return best;
+  }
+
+  function bindEditor(root, play, route) {
+    const svg = ed.svg;
+    // mode
+    root.querySelectorAll('#mode button').forEach(b => b.onclick = () => { ed.mode = b.dataset.mode; FB.app.rerender(); });
+
+    // bench: tap to place, drag to drop
+    root.querySelectorAll('[data-bench]').forEach(btn => {
+      const pos = btn.dataset.bench;
+      let ghost = null, start = null;
+      btn.onpointerdown = e => {
+        e.preventDefault(); try { btn.setPointerCapture(e.pointerId); } catch (err) {}
+        start = [e.clientX, e.clientY];
+      };
+      btn.onpointermove = e => {
+        if (!start) return;
+        if (!ghost && Math.hypot(e.clientX - start[0], e.clientY - start[1]) > 8) {
+          ghost = document.createElement('div'); ghost.className = 'ghost-tok'; ghost.textContent = pos;
+          ghost.style.background = S.POSITION_META[pos].fill; document.body.appendChild(ghost);
+        }
+        if (ghost) { ghost.style.left = e.clientX + 'px'; ghost.style.top = e.clientY + 'px'; }
+      };
+      const finish = e => {
+        if (!start) return;
+        const wasDrag = !!ghost;
+        if (ghost) { ghost.remove(); ghost = null; }
+        start = null;
+        const rect = svg.getBoundingClientRect();
+        if (wasDrag) {
+          if (e.clientX >= rect.left && e.clientX <= rect.right && e.clientY >= rect.top && e.clientY <= rect.bottom) {
+            const [x, y] = F.pointFromEvent(svg, e);
+            save(() => { play.players[pos] = [Math.round(U.clamp(x, 10, G.FIELD_W - 10)), Math.round(U.clamp(y, 10, G.FIELD_H - 10))]; });
+            ed.sel = pos;
+          }
+        } else {
+          // tap: select if on field, else place at default spot
+          if (play.players[pos]) { ed.sel = ed.sel === pos ? null : pos; FB.app.rerender(); }
+          else { save(() => { play.players[pos] = S.DEFAULT_SPOTS[pos].slice(); }); ed.sel = pos; }
+        }
+      };
+      btn.onpointerup = finish; btn.onpointercancel = finish;
+    });
+
+    // field interactions
+    let downPt = null, moved = false, tapRoute = null, tapGap = null;
+    svg.onpointerdown = e => {
+      if (e.button != null && e.button !== 0) return;
+      e.preventDefault();
+      try { svg.setPointerCapture(e.pointerId); } catch (err) {}
+      const [x, y] = F.pointFromEvent(svg, e);
+      downPt = [x, y]; moved = false; tapRoute = null; tapGap = null;
+      const gapEl = e.target.closest && e.target.closest('.gap');
+      if (gapEl) { tapGap = gapEl.dataset.gap; return; }
+      const tok = tokenAt(play, x, y);
+      if (ed.mode === 'move') {
+        if (tok) { ed.sel = tok; ed.drag = { pos: tok, dx: play.players[tok][0] - x, dy: play.players[tok][1] - y }; drawField(); }
+        else tapRoute = routeAt(play, x, y);
+      } else {
+        const target = tok || ed.sel;
+        if (!target) { tapRoute = routeAt(play, x, y); if (!tapRoute) U.toast('Tap a player first'); return; }
+        if (tok && tok !== ed.sel) { ed.sel = tok; drawField(); }
+        // Pressing on a route (not a token): another player's route selects it; your own
+        // route toggles hot on a plain tap. Either way a drag still draws for the target.
+        if (!tok) { const rp = routeAt(play, x, y); if (rp) { tapRoute = rp; if (rp !== ed.sel) return; } }
+        ed.stroke = [play.players[target].slice()];
+      }
+    };
+    svg.onpointermove = e => {
+      if (!downPt) return;
+      const [x, y] = F.pointFromEvent(svg, e);
+      if (!moved && Math.hypot(x - downPt[0], y - downPt[1]) > 3) moved = true;
+      if (ed.drag) {
+        play.players[ed.drag.pos] = [U.clamp(x + ed.drag.dx, 10, G.FIELD_W - 10), U.clamp(y + ed.drag.dy, 10, G.FIELD_H - 10)];
+        drawField();
+      } else if (ed.stroke) {
+        const last = ed.stroke[ed.stroke.length - 1];
+        if (Math.hypot(x - last[0], y - last[1]) > 1.5) { ed.stroke.push([U.clamp(x, 0, G.FIELD_W), U.clamp(y, 0, G.FIELD_H)]); drawField(ed.stroke); }
+      }
+    };
+    const up = e => {
+      if (!downPt) return;
+      const wasDown = downPt; downPt = null;
+      if (tapGap && !moved) {
+        const cur = (play.spacing.labels || {})[tapGap] || '';
+        const v = prompt('Spacing label (yards) for this gap. Leave blank to auto-measure.', cur);
+        if (v !== null) save(() => { play.spacing.labels = play.spacing.labels || {}; if (v.trim()) play.spacing.labels[tapGap] = v.trim(); else delete play.spacing.labels[tapGap]; });
+        tapGap = null; return;
+      }
+      if (ed.drag) {
+        const pos = ed.drag.pos; ed.drag = null;
+        // snap onto the line of scrimmage if close
+        const p = play.players[pos];
+        if (Math.abs(p[1] - G.RECEIVER_Y) < 12) p[1] = G.RECEIVER_Y;
+        p[0] = Math.round(p[0]); p[1] = Math.round(p[1]);
+        save(() => {});
+        return;
+      }
+      if (ed.stroke) {
+        const stroke = ed.stroke; ed.stroke = null;
+        const target = ed.sel;
+        if (moved && stroke.length > 2) {
+          const r = G.processStroke(stroke);
+          if (r) {
+            save(() => {
+              const prev = play.routes[target] || {};
+              play.routes[target] = Object.assign({ hot: false, steps: null, end: 'arrow', dashed: false, labelSide: 1 }, prev, r);
+              // put the number on the side away from the field edge
+              if (!prev.pts) play.routes[target].labelSide = play.players[target][0] > G.FIELD_W - 90 ? -1 : 1;
+            });
+            return;
+          }
+        }
+        // tiny stroke = a tap: fall through to route-tap handling, else just refresh
+        if (!tapRoute) { FB.app.rerender(); return; }
+      }
+      if (tapRoute && !moved) {
+        if (ed.sel === tapRoute) save(() => { play.routes[tapRoute].hot = !play.routes[tapRoute].hot; if (play.routes[tapRoute].hot && play.routes[tapRoute].steps == null) play.routes[tapRoute].steps = 3; });
+        else { ed.sel = tapRoute; FB.app.rerender(); }
+        return;
+      }
+      if (!moved && ed.mode === 'move' && !tokenAt(play, wasDown[0], wasDown[1])) { if (ed.sel) { ed.sel = null; FB.app.rerender(); } }
+    };
+    svg.onpointerup = up; svg.onpointercancel = up;
+
+    // route panel
+    const q = s => root.querySelector(s);
+    const r = ed.sel ? play.routes[ed.sel] : null;
+    if (q('#removeP')) q('#removeP').onclick = () => { const pos = ed.sel; ed.sel = null; save(() => { delete play.players[pos]; delete play.routes[pos]; }); };
+    if (r) {
+      if (q('#hot')) q('#hot').onclick = () => save(() => { r.hot = !r.hot; if (r.hot && r.steps == null) r.steps = 3; });
+      if (q('#stepUp')) q('#stepUp').onclick = () => save(() => { r.steps = r.steps == null ? 1 : Math.min(15, r.steps + 1); });
+      if (q('#stepDn')) q('#stepDn').onclick = () => save(() => { r.steps = r.steps == null ? 1 : Math.max(1, r.steps - 1); });
+      if (q('#stepClr')) q('#stepClr').onclick = () => save(() => { r.steps = null; });
+      root.querySelectorAll('#ending button').forEach(b => b.onclick = () => save(() => { r.end = b.dataset.end; }));
+      if (q('#dashed')) q('#dashed').onclick = () => save(() => { r.dashed = !r.dashed; });
+      if (q('#flip')) q('#flip').onclick = () => save(() => { r.labelSide = (r.labelSide || 1) * -1; });
+      if (q('#clearRoute')) q('#clearRoute').onclick = () => save(() => { delete play.routes[ed.sel]; });
+    }
+    q('#spacing').onchange = e => save(() => { play.spacing.show = e.target.checked; });
+    q('#grid').onchange = e => { ed.showGrid = e.target.checked; drawField(); };
+    q('#formation').onchange = e => {
+      const f = S.FORMATIONS[e.target.value]; if (!f) return;
+      save(() => { for (const pos of Object.keys(f)) play.players[pos] = f[pos].slice(); });
+    };
+    q('#notes').onchange = e => save(() => { play.notes = e.target.value; });
+  }
+
+  function playMenu(play, route) {
+    const m = FB.ui.modal(`<h2>${U.esc(play.name)}</h2><div class="stack">
+      <a class="btn" href="#/print/${play.id}">🖨 Print this play</a>
+      <button class="btn" id="dup">Duplicate</button>
+      <button class="btn" id="up">Move up in playbook</button>
+      <button class="btn" id="down">Move down in playbook</button>
+      <button class="btn" id="clearAll">Clear all routes</button>
+      <button class="btn danger" id="del">Delete play</button>
+      <button class="btn ghost" id="cancel">Cancel</button></div>`);
+    const q = s => m.el.querySelector(s);
+    q('#cancel').onclick = m.close;
+    q('a.btn').onclick = m.close;
+    q('#dup').onclick = () => { const c = S.duplicatePlay(play.id); m.close(); location.hash = '#/playbook/' + c.id; };
+    const move = dir => { S.mutate(st => { const i = st.plays.indexOf(play), j = i + dir; if (j < 0 || j >= st.plays.length) return; st.plays.splice(i, 1); st.plays.splice(j, 0, play); }); m.close(); U.toast('Moved'); };
+    q('#up').onclick = () => move(-1); q('#down').onclick = () => move(1);
+    q('#clearAll').onclick = () => { if (U.confirm('Clear all routes on this play?')) { S.mutate(() => { play.routes = {}; }); m.close(); } };
+    q('#del').onclick = () => { if (U.confirm('Delete "' + play.name + '"?')) { S.mutate(st => { st.plays = st.plays.filter(p => p.id !== play.id); }); m.close(); location.hash = '#/playbook'; } };
+  }
+
+  FB.views.playbook = {
+    get className() { return FB.app && FB.app.route() && FB.app.route().id ? 'editor' : ''; },
+    render(root, route) { if (route.id) renderEditor(root, route); else renderList(root, route); },
+    destroy() { ed.id = null; ed.sel = null; ed.stroke = null; ed.drag = null; }
+  };
+})();
+
+</script>
+<script>
+/* FlagBook — View mode: show a play full-size and scribble over it without changing it.
+ * Annotations are kept in memory only and reset when the play changes. */
+(function () {
+  'use strict';
+  const FB = window.FB, U = FB.util, S = FB.store, G = FB.geo, F = FB.field;
+
+  const PENS = [
+    { id: 'yellow', color: '#F5C400', width: 12, opacity: 0.55, label: 'Highlighter' },
+    { id: 'red',    color: '#E5352B', width: 5,  opacity: 1,    label: 'Red pen' },
+    { id: 'blue',   color: '#2A7DE1', width: 5,  opacity: 1,    label: 'Blue pen' },
+    { id: 'black',  color: '#111111', width: 5,  opacity: 1,    label: 'Black pen' }
+  ];
+  const A = { playId: null, strokes: [], pen: 'red', live: null };
+
+  function resetFor(playId) { if (A.playId !== playId) { A.playId = playId; A.strokes = []; A.live = null; } }
+  function pen() { return PENS.find(p => p.id === A.pen) || PENS[1]; }
+  const f = n => Math.round(n * 10) / 10;
+
+  function strokeMarkup(s) {
+    if (s.pts.length === 1) { const p = s.pts[0]; return `<circle cx="${f(p[0])}" cy="${f(p[1])}" r="${s.width / 2}" fill="${s.color}" opacity="${s.opacity}" />`; }
+    return `<polyline points="${s.pts.map(p => f(p[0]) + ',' + f(p[1])).join(' ')}" fill="none" stroke="${s.color}" stroke-width="${s.width}" stroke-opacity="${s.opacity}" stroke-linecap="round" stroke-linejoin="round" />`;
+  }
+  function drawAnnots(svg) { svg.innerHTML = A.strokes.map(strokeMarkup).join(''); }
+
+  FB.views.viewer = {
+    className: 'editor viewer-page',
+    render(root, route) {
+      const st = S.get();
+      const plays = st.plays;
+      const idx = plays.findIndex(p => p.id === route.id);
+      const play = plays[idx];
+      if (!play) { root.innerHTML = '<div class="empty">Play not found. <a href="#/playbook">Back to playbook</a></div>'; return; }
+      resetFor(play.id);
+      document.body.classList.add('viewing');
+      const prev = plays[(idx - 1 + plays.length) % plays.length], next = plays[(idx + 1) % plays.length];
+      const L = st.lineup, Q = st.settings.quarters || 4;
+      const names = S.lineupNames();
+
+      FB.ui.setTitle(`<a class="btn ghost sm" href="#/playbook" aria-label="Back to playbook">‹</a>
+        <h1 style="font-size:18px">${U.esc(play.name)}</h1>
+        <span class="muted small">${idx + 1}/${plays.length}</span>
+        <a class="btn sm" href="#/playbook/${play.id}" title="Edit this play">✏️ Edit</a>`);
+
+      root.innerHTML = `
+        <div class="viewer">
+          <div class="stage">
+            <svg class="field" id="vfield" xmlns="http://www.w3.org/2000/svg"></svg>
+            <svg class="annot" id="annot" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${G.FIELD_W} ${G.FIELD_H}"></svg>
+          </div>
+          <div class="vtools">
+            <div class="vgroup nav-plays">
+              <button class="btn icon" id="prevPlay" title="Previous play: ${U.esc(prev.name)}">‹</button>
+              <button class="btn icon" id="nextPlay" title="Next play: ${U.esc(next.name)}">›</button>
+            </div>
+            <div class="vgroup pens">
+              ${PENS.map(p => `<button class="pen${A.pen === p.id ? ' on' : ''}" data-pen="${p.id}" title="${p.label}" style="--pen:${p.color}"></button>`).join('')}
+              <button class="btn icon" id="undo" title="Undo last mark">↶</button>
+              <button class="btn icon" id="clear" title="Clear marks">✕</button>
+            </div>
+            ${L.show ? `<div class="vgroup seg qseg small-seg">${Array.from({ length: Q }, (_, i) => `<button data-q="${i + 1}" class="${L.quarter === i + 1 ? 'on' : ''}">Q${i + 1}</button>`).join('')}</div>` : ''}
+          </div>
+          ${play.notes ? `<div class="vnotes">${U.esc(play.notes)}</div>` : ''}
+        </div>`;
+
+      const field = root.querySelector('#vfield'), annot = root.querySelector('#annot');
+      F.render(field, play, { names });
+      drawAnnots(annot);
+
+      root.querySelector('#prevPlay').onclick = () => { location.hash = '#/view/' + prev.id; };
+      root.querySelector('#nextPlay').onclick = () => { location.hash = '#/view/' + next.id; };
+      root.querySelectorAll('[data-pen]').forEach(b => b.onclick = () => { A.pen = b.dataset.pen; root.querySelectorAll('[data-pen]').forEach(x => x.classList.toggle('on', x === b)); });
+      root.querySelector('#undo').onclick = () => { A.strokes.pop(); drawAnnots(annot); };
+      root.querySelector('#clear').onclick = () => { A.strokes = []; drawAnnots(annot); };
+      root.querySelectorAll('[data-q]').forEach(b => b.onclick = () => S.setLineup({ quarter: +b.dataset.q }));
+
+      // freehand drawing on the overlay (raw strokes, lightly thinned)
+      let el = null;
+      annot.onpointerdown = e => {
+        if (e.button != null && e.button !== 0) return;
+        e.preventDefault();
+        try { annot.setPointerCapture(e.pointerId); } catch (err) {}
+        const p = pen();
+        const [x, y] = F.pointFromEvent(annot, e);
+        A.live = { color: p.color, width: p.width, opacity: p.opacity, pts: [[x, y]] };
+        el = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        el.innerHTML = strokeMarkup(A.live);
+        annot.appendChild(el);
+      };
+      annot.onpointermove = e => {
+        if (!A.live) return;
+        const [x, y] = F.pointFromEvent(annot, e);
+        const last = A.live.pts[A.live.pts.length - 1];
+        if (Math.hypot(x - last[0], y - last[1]) < 1.2) return;
+        A.live.pts.push([U.clamp(x, 0, G.FIELD_W), U.clamp(y, 0, G.FIELD_H)]);
+        el.innerHTML = strokeMarkup(A.live);
+      };
+      const up = () => { if (!A.live) return; A.strokes.push(A.live); A.live = null; el = null; drawAnnots(annot); };
+      annot.onpointerup = up; annot.onpointercancel = up;
+
+      // keyboard: arrows flip plays, Z undoes, Backspace clears
+      document.onkeydown = e => {
+        if (e.target && /INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return;
+        if (e.key === 'ArrowLeft') location.hash = '#/view/' + prev.id;
+        else if (e.key === 'ArrowRight') location.hash = '#/view/' + next.id;
+        else if (e.key === 'z' || e.key === 'Z') { A.strokes.pop(); drawAnnots(annot); }
+        else if (e.key === 'Backspace') { A.strokes = []; drawAnnots(annot); }
+      };
+    },
+    destroy() {
+      document.body.classList.remove('viewing');
+      document.onkeydown = null;
+      A.playId = null; A.strokes = []; A.live = null;
+    }
+  };
+})();
+
+</script>
+<script>
+(function () {
+  'use strict';
+  const FB = window.FB, U = FB.util, S = FB.store;
+
+  FB.views.print = {
+    className: 'editor',
+    render(root, route) {
+      const st = S.get();
+      const plays = route.id ? [S.play(route.id)].filter(Boolean) : st.plays;
+      const Q = st.settings.quarters || 4;
+      const showTitles = route.query.titles !== '0';
+      const allQ = route.query.quarters === 'all' && st.lineup.show;
+      const names = S.lineupNames();
+      const label = S.lineupLabel();
+
+      // one sheet per play, or one per play per quarter when printing all quarters
+      const sheets = [];
+      if (allQ) {
+        const saved = st.lineup.quarter;
+        for (let q = 1; q <= Q; q++) {
+          st.lineup.quarter = q;
+          const n = S.lineupNames(), l = S.lineupLabel();
+          for (const p of plays) sheets.push({ p, names: n, label: l });
+        }
+        st.lineup.quarter = saved;
+      } else for (const p of plays) sheets.push({ p, names, label });
+
+      FB.ui.setTitle(`<a class="btn ghost sm" href="${route.id ? '#/playbook/' + route.id : '#/playbook'}">‹ Back</a><h1>Print playbook</h1>`);
+      root.innerHTML = `<div class="print-bar"><div class="row wrap"><label class="switch"><input type="checkbox" id="titles"${showTitles ? ' checked' : ''}> Play names</label>
+          ${st.lineup.show ? `<label class="switch"><input type="checkbox" id="allq"${allQ ? ' checked' : ''}> All ${Q} quarters</label>` : ''}
+          <span class="small muted">${sheets.length} page${sheets.length === 1 ? '' : 's'} · ${label ? U.esc(label) + ' · ' : ''}10in × 7.5in</span></div>
+          <button class="btn primary" id="print">🖨 Print / Save PDF</button></div>
+        <div class="print-pages" style="padding:14px">${sheets.map(s => `<div class="sheet">${FB.field.svgString(s.p, { names: s.names })}${showTitles ? `<div class="title">${U.esc(s.p.name)}</div>` : ''}${s.label ? `<div class="names">${U.esc(s.label)}</div>` : ''}</div>`).join('')}</div>`;
+      root.querySelector('#print').onclick = () => window.print();
+      const setQuery = patch => {
+        const q = Object.assign({}, route.query, patch);
+        location.hash = route.path + '?' + Object.keys(q).filter(k => q[k] !== '').map(k => k + '=' + encodeURIComponent(q[k])).join('&');
+      };
+      root.querySelector('#titles').onchange = e => setQuery({ titles: e.target.checked ? '1' : '0' });
+      const allq = root.querySelector('#allq'); if (allq) allq.onchange = e => setQuery({ quarters: e.target.checked ? 'all' : '' });
+    }
+  };
+})();
+
+</script>
+<script>
+(function () {
+  'use strict';
+  const FB = window.FB, U = FB.util, S = FB.store;
+
+  FB.views.settings = {
+    render(root) {
+      const st = S.get();
+      FB.ui.setTitle('<h1>More</h1>');
+      const standalone = window.navigator.standalone || matchMedia('(display-mode: standalone)').matches;
+      root.innerHTML = `
+        <div class="card"><h2 style="margin-bottom:10px">Team</h2>
+          <div class="two"><div class="field-row"><label>Team name</label><input type="text" id="tname" value="${U.esc(st.team.name)}"></div>
+          <div class="field-row"><label>Season</label><input type="text" id="tseason" value="${U.esc(st.team.season)}" placeholder="Fall 2026"></div></div>
+          <div class="field-row"><label>Quarters per game</label><select id="quarters">${[2, 4].map(n => `<option value="${n}"${(st.settings.quarters || 4) === n ? ' selected' : ''}>${n}</option>`).join('')}</select></div>
+        </div>
+        <div class="card"><h2 style="margin-bottom:10px">Backup & sharing</h2>
+          <p class="small muted">Everything is stored on this device. Export a backup file regularly, or send it to an assistant coach who can import it.</p>
+          <div class="row wrap"><button class="btn primary" id="export">⬇︎ Export backup</button>${navigator.share ? '<button class="btn" id="share">Share…</button>' : ''}<label class="btn">⬆︎ Import<input type="file" id="import" accept="application/json,.json" class="hidden"></label></div>
+        </div>
+        <div class="card"><h2 style="margin-bottom:10px">Playbook</h2>
+          <div class="row wrap"><a class="btn" href="#/print">🖨 Print all plays</a><button class="btn" id="seed">Restore sample Raiders plays</button></div>
+        </div>
+        <div class="card"><h2 style="margin-bottom:10px">Install on your phone</h2>
+          ${standalone ? '<p class="small">✅ Installed. Works offline.</p>'
+            : location.protocol === 'file:' ? `<p class="small muted">You are running the single-file version${S.storageOK === false ? ', and this viewer <b>does not keep saved data</b>' : ''}. For a home-screen app that saves and works offline, open the hosted version in Safari and choose <b>Add to Home Screen</b>.</p>`
+            : `<p class="small muted">iPhone/iPad: tap the Share button in Safari, then <b>Add to Home Screen</b>. Android: menu → <b>Install app</b>. The app then works offline on the field.</p>`}
+        </div>
+        <div class="card"><h2 style="margin-bottom:10px">Danger zone</h2><button class="btn danger" id="reset">Erase everything</button></div>
+        <p class="small muted" style="text-align:center;margin-top:16px">FlagBook · data stays on this device</p>`;
+      root.querySelector('#tname').onchange = e => S.mutate(s => s.team.name = e.target.value.trim());
+      root.querySelector('#tseason').onchange = e => S.mutate(s => s.team.season = e.target.value.trim());
+      root.querySelector('#quarters').onchange = e => S.mutate(s => s.settings.quarters = +e.target.value);
+      root.querySelector('#export').onclick = () => U.download(`flagbook-${(st.team.name || 'team').replace(/\W+/g, '-')}-${U.todayISO()}.json`, S.exportJSON());
+      const share = root.querySelector('#share');
+      if (share) share.onclick = async () => {
+        try {
+          const file = new File([S.exportJSON()], `flagbook-${U.todayISO()}.json`, { type: 'application/json' });
+          if (navigator.canShare && navigator.canShare({ files: [file] })) await navigator.share({ files: [file], title: 'FlagBook backup' });
+          else await navigator.share({ title: 'FlagBook backup', text: S.exportJSON() });
+        } catch (e) { /* cancelled */ }
+      };
+      root.querySelector('#import').onchange = e => {
+        const f = e.target.files[0]; if (!f) return;
+        const r = new FileReader();
+        r.onload = () => {
+          const mode = U.confirm('Replace everything with the imported file?\n\nOK = replace, Cancel = merge into current data') ? 'replace' : 'merge';
+          try { S.importJSON(r.result, mode); U.toast('Imported'); } catch (err) { alert('Could not import: ' + err.message); }
+        };
+        r.readAsText(f);
+      };
+      root.querySelector('#seed').onclick = () => { S.resetSeedPlays(); U.toast('Sample plays added'); };
+      root.querySelector('#reset').onclick = () => { if (U.confirm('Erase roster, schedule, games and plays on this device?') && U.confirm('Really erase everything? Export a backup first if unsure.')) { S.reset(); U.toast('Erased'); } };
+    }
+  };
+})();
+
+</script>
+<script>
+/* FlagBook — router, shared UI helpers, boot. */
+(function () {
+  'use strict';
+  const FB = (window.FB = window.FB || {});
+  const U = FB.util, S = FB.store;
+  FB.views = FB.views || {};
+
+  /* ---------- UI helpers ---------- */
+  const UI = {};
+  UI.modal = function (html, opts) {
+    opts = opts || {};
+    const bg = document.createElement('div'); bg.className = 'modal-bg';
+    bg.innerHTML = '<div class="modal" role="dialog">' + html + '</div>';
+    document.body.appendChild(bg);
+    const close = () => { if (bg.parentNode) bg.parentNode.removeChild(bg); if (opts.onClose) opts.onClose(); };
+    bg.addEventListener('click', e => { if (e.target === bg && !opts.sticky) close(); });
+    const first = bg.querySelector('input:not([type=hidden]), select, textarea');
+    if (first && opts.focus !== false) setTimeout(() => first.focus(), 50);
+    return { el: bg.firstElementChild, bg, close };
+  };
+  UI.formData = function (form) {
+    const o = {};
+    for (const el of form.elements) {
+      if (!el.name) continue;
+      if (el.type === 'checkbox') {
+        if (el.name.endsWith('[]')) { const k = el.name.slice(0, -2); (o[k] = o[k] || []); if (el.checked) o[k].push(el.value); }
+        else o[el.name] = el.checked;
+      } else o[el.name] = el.value.trim ? el.value.trim() : el.value;
+    }
+    return o;
+  };
+  UI.posChip = function (pos) {
+    const m = S.POSITION_META[pos];
+    return `<span class="chip pos" style="background:${m.fill};${pos === 'Z' ? 'color:#5b4a00' : ''}">${pos}</span>`;
+  };
+  UI.playerOptions = function (selectedId, includeBlank) {
+    let s = includeBlank ? '<option value="">—</option>' : '';
+    for (const p of S.activeRoster()) s += `<option value="${p.id}"${p.id === selectedId ? ' selected' : ''}>${p.number ? '#' + U.esc(p.number) + ' ' : ''}${U.esc(p.name)}</option>`;
+    return s;
+  };
+  UI.setTitle = function (html) { document.getElementById('topbar').innerHTML = '<div class="topbar-in">' + html + '</div>'; };
+  FB.ui = UI;
+
+  /* ---------- router ---------- */
+  const ROUTES = [
+    [/^#?\/?$/, 'home'], [/^#\/home/, 'home'], [/^#\/roster/, 'roster'], [/^#\/practices/, 'practices'],
+    [/^#\/games\/([^/?]+)/, 'game', 'games'], [/^#\/games/, 'games'],
+    [/^#\/playbook\/([^/?]+)/, 'playbook', 'playbook'], [/^#\/playbook/, 'playbook'],
+    [/^#\/view\/([^/?]+)/, 'viewer', 'playbook'],
+    [/^#\/print(?:\/([^/?]+))?/, 'print', 'playbook'], [/^#\/gamesheet\/([^/?]+)/, 'gamesheet', 'games'],
+    [/^#\/settings/, 'settings']
+  ];
+  let current = null;
+
+  function parse() {
+    const hash = location.hash || '#/home';
+    const [path, qs] = hash.split('?');
+    const query = {};
+    if (qs) for (const kv of qs.split('&')) { const [k, v] = kv.split('='); query[decodeURIComponent(k)] = decodeURIComponent(v || ''); }
+    for (const r of ROUTES) {
+      const m = r[0].exec(path);
+      if (m) return { view: r[1], nav: r[2] || r[1], id: m[1] ? decodeURIComponent(m[1]) : null, query, path };
+    }
+    return { view: 'home', nav: 'home', id: null, query, path };
+  }
+
+  function render() {
+    const route = parse();
+    const view = FB.views[route.view];
+    const root = document.getElementById('app');
+    if (current && current.view !== route.view && FB.views[current.view] && FB.views[current.view].destroy) FB.views[current.view].destroy();
+    current = route;
+    root.className = 'page' + (view && view.className ? ' ' + view.className : '');
+    document.querySelectorAll('#nav a').forEach(a => a.classList.toggle('active', a.dataset.nav === route.nav));
+    if (!view) { root.innerHTML = '<div class="empty">Not found</div>'; return; }
+    try { view.render(root, route); } catch (e) { console.error(e); root.innerHTML = '<div class="empty">Something went wrong: ' + U.esc(e.message) + '</div>'; }
+  }
+
+  FB.app = {
+    go(hash) { if (location.hash === hash) render(); else location.hash = hash; },
+    rerender: render,
+    route: () => current
+  };
+
+  window.addEventListener('hashchange', render);
+  S.subscribe(() => { const v = FB.views[current && current.view]; if (v && !v.selfManaged) render(); });
+
+  document.addEventListener('DOMContentLoaded', () => {
+    S.load();
+    render();
+    if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+      navigator.serviceWorker.register('sw.js').catch(() => {});
+    }
+  });
+})();
+
+</script>
+</body>
+</html>
