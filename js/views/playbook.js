@@ -89,13 +89,13 @@
   }
 
   /* ---------- editor ---------- */
-  const ed = { id: null, sel: null, mode: 'move', showGrid: false, stroke: null, drag: null, dragLabel: null, svg: null, play: null, names: null };
+  const ed = { id: null, sel: null, mode: 'move', showGrid: false, stroke: null, drag: null, dragLabel: null, svg: null, play: null, names: null, zoom: null /* [x,y,w,h] viewBox when pinched in */ };
 
   function renderEditor(root, route) {
     const play = S.play(route.id);
     if (!play) { root.innerHTML = '<div class="empty">Play not found. <a href="#/playbook">Back to playbook</a></div>'; return; }
     // every play opens in Move: drawing a route is an explicit opt-in so a stray drag never rewrites one
-    if (ed.id !== play.id) { ed.id = play.id; ed.sel = null; ed.stroke = null; ed.drag = null; ed.dragLabel = null; ed.mode = 'move'; }
+    if (ed.id !== play.id) { ed.id = play.id; ed.sel = null; ed.stroke = null; ed.drag = null; ed.dragLabel = null; ed.mode = 'move'; ed.zoom = null; }
     ed.play = play; ed.names = S.lineupNames();
     if (ed.sel && !play.players[ed.sel]) ed.sel = null;
     const scrollY = window.scrollY;
@@ -116,6 +116,7 @@
       <div class="full">${lineupBar(true)}</div>
       <div class="toolrow full">
         <div class="seg" id="mode"><button data-mode="move" class="${ed.mode === 'move' ? 'on' : ''}">✋ Move</button><button data-mode="draw" class="${ed.mode === 'draw' ? 'on' : ''}">✏️ Draw route</button></div>
+        <button class="btn sm${ed.zoom ? '' : ' hidden'}" id="zoomReset" title="Show the whole field again (pinch with two fingers to zoom)">⤢ Whole field</button>
         <div class="bench" id="bench">${S.POSITIONS.map(tokBtn).join('')}</div>
         <span class="hint grow">${ed.mode === 'draw' ? (sel ? `Drag on the field to draw <b>${sel}</b>'s route.` : 'Tap a player, then drag to draw their route.') : 'Drag players to position them. Drag from the bench to add.'}</span>
       </div>`;
@@ -164,7 +165,7 @@
 
   function drawField(live) {
     if (!ed.svg || !ed.play) return;
-    F.render(ed.svg, ed.play, { selected: ed.sel, showGrid: ed.showGrid, names: ed.names, interactive: true, liveStroke: live });
+    F.render(ed.svg, ed.play, { selected: ed.sel, showGrid: ed.showGrid, names: ed.names, interactive: true, liveStroke: live, viewBox: ed.zoom ? ed.zoom.join(' ') : null });
   }
 
   function save(fn) { S.mutate(() => { fn(); ed.play.updatedAt = Date.now(); }); }
@@ -231,10 +232,47 @@
 
     // field interactions
     let downPt = null, moved = false, tapRoute = null, tapGap = null;
+
+    // Two fingers = pinch: zoom and pan the field. Whatever the first finger had started (a stroke,
+    // a token or step-number drag) is thrown away, so a pinch can never draw or move anything.
+    const pointers = new Map();
+    let pinch = null, pinchEnded = false;
+    const WHOLE = [0, 0, G.FIELD_W, G.FIELD_H];
+    function startPinch() {
+      if (ed.drag) { if (ed.drag.from) play.players[ed.drag.pos] = ed.drag.from; ed.drag = null; }
+      if (ed.dragLabel) { const r = play.routes[ed.dragLabel.pos]; if (r) { if (ed.dragLabel.from) r.labelAt = ed.dragLabel.from; else delete r.labelAt; } ed.dragLabel = null; }
+      ed.stroke = null; downPt = null; tapRoute = null; tapGap = null; moved = false; pinchEnded = false;
+      drawField();
+      const [a, b] = Array.from(pointers.values());
+      const rect = svg.getBoundingClientRect(), box = ed.zoom || WHOLE;
+      const mid = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
+      pinch = {
+        d0: Math.hypot(a[0] - b[0], a[1] - b[1]) || 1, z0: G.FIELD_W / box[2],
+        anchor: [box[0] + (mid[0] - rect.left) / rect.width * box[2], box[1] + (mid[1] - rect.top) / rect.height * box[3]]   // field point under the fingers
+      };
+    }
+    function movePinch() {
+      if (pointers.size < 2) return;
+      const [a, b] = Array.from(pointers.values());
+      const rect = svg.getBoundingClientRect();
+      const z = U.clamp(pinch.z0 * (Math.hypot(a[0] - b[0], a[1] - b[1]) / pinch.d0), 1, 4);
+      const w = G.FIELD_W / z, h = G.FIELD_H / z;
+      const mid = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
+      const x = U.clamp(pinch.anchor[0] - (mid[0] - rect.left) / rect.width * w, 0, G.FIELD_W - w);
+      const y = U.clamp(pinch.anchor[1] - (mid[1] - rect.top) / rect.height * h, 0, G.FIELD_H - h);
+      ed.zoom = z > 1.01 ? [x, y, w, h].map(v => Math.round(v * 10) / 10) : null;
+      svg.setAttribute('viewBox', (ed.zoom || WHOLE).join(' '));
+    }
+    const syncZoomUI = () => { const b = root.querySelector('#zoomReset'); if (b) b.classList.toggle('hidden', !ed.zoom); };
+    const zoomReset = root.querySelector('#zoomReset'); if (zoomReset) zoomReset.onclick = () => { ed.zoom = null; drawField(); syncZoomUI(); };
+
     svg.onpointerdown = e => {
       if (e.button != null && e.button !== 0) return;
       e.preventDefault();
+      pointers.set(e.pointerId, [e.clientX, e.clientY]);
       try { svg.setPointerCapture(e.pointerId); } catch (err) {}
+      if (pointers.size >= 2 && !pinch) startPinch();
+      if (pinch || pinchEnded) return;
       const [x, y] = F.pointFromEvent(svg, e);
       downPt = [x, y]; moved = false; tapRoute = null; tapGap = null;
       const gapEl = e.target.closest && e.target.closest('.gap');
@@ -244,13 +282,13 @@
         // grab the step number: works in either mode and takes priority over drawing
         const pos = lblEl.dataset.pos, r = play.routes[pos], at = play.players[pos];
         const cur = r.labelAt ? [at[0] + r.labelAt[0], at[1] + r.labelAt[1]] : G.labelPoint(r, at[0], at[1], r.labelSide || 1, 22);
-        ed.dragLabel = { pos, dx: cur[0] - x, dy: cur[1] - y };
+        ed.dragLabel = { pos, dx: cur[0] - x, dy: cur[1] - y, from: r.labelAt ? r.labelAt.slice() : null };
         if (ed.sel !== pos) { ed.sel = pos; drawField(); }
         return;
       }
       const tok = tokenAt(play, x, y);
       if (ed.mode === 'move') {
-        if (tok) { ed.sel = tok; ed.drag = { pos: tok, dx: play.players[tok][0] - x, dy: play.players[tok][1] - y }; drawField(); }
+        if (tok) { ed.sel = tok; ed.drag = { pos: tok, dx: play.players[tok][0] - x, dy: play.players[tok][1] - y, from: play.players[tok].slice() }; drawField(); }
         else tapRoute = routeAt(play, x, y);
       } else {
         const target = tok || ed.sel;
@@ -263,7 +301,9 @@
       }
     };
     svg.onpointermove = e => {
-      if (!downPt) return;
+      if (pointers.has(e.pointerId)) pointers.set(e.pointerId, [e.clientX, e.clientY]);
+      if (pinch) { movePinch(); return; }
+      if (pinchEnded || !downPt) return;
       const [x, y] = F.pointFromEvent(svg, e);
       if (!moved && Math.hypot(x - downPt[0], y - downPt[1]) > 3) moved = true;
       if (ed.dragLabel) {
@@ -279,6 +319,9 @@
       }
     };
     const up = e => {
+      pointers.delete(e.pointerId);
+      if (pinch) { if (pointers.size < 2) { pinch = null; pinchEnded = pointers.size > 0; syncZoomUI(); } return; }   // the finger still down must not start drawing
+      if (pinchEnded) { if (!pointers.size) pinchEnded = false; return; }
       if (!downPt) return;
       const wasDown = downPt; downPt = null;
       if (tapGap && !moved) {
