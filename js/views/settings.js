@@ -47,13 +47,16 @@
         const f = e.target.files[0]; if (!f) return;
         const r = new FileReader();
         r.onload = () => {
-          const mode = U.confirm('Replace everything with the imported file?\n\nOK = replace, Cancel = merge into current data') ? 'replace' : 'merge';
-          try { S.importJSON(r.result, mode); U.toast('Imported'); } catch (err) { alert('Could not import: ' + err.message); }
+          U.confirm('Import this backup.\n\nReplace everything with the file, or merge it into the data already here?', { ok: 'Replace', cancel: 'Merge', danger: true }).then(replace => {
+            try { S.importJSON(r.result, replace ? 'replace' : 'merge'); U.toast('Imported'); } catch (err) { U.toast('Could not import: ' + err.message, 4000); }
+          });
         };
         r.readAsText(f);
       };
       root.querySelector('#seed').onclick = () => { S.resetSeedPlays(); U.toast('Sample plays added'); };
-      root.querySelector('#reset').onclick = () => { if (U.confirm('Erase roster, schedule, games, plays and clips on this device?') && U.confirm('Really erase everything? Export a backup first if unsure.')) { FB.media.clear().catch(() => {}); S.reset(); U.toast('Erased'); } };
+      root.querySelector('#reset').onclick = () => U.confirm('Erase roster, schedule, games, plays and clips on this device?', { ok: 'Erase', danger: true })
+        .then(ok => ok && U.confirm('Really erase everything? Export a backup first if unsure.', { ok: 'Erase everything', danger: true }))
+        .then(ok => { if (ok) { FB.media.clear().catch(() => {}); S.reset(); U.toast('Erased'); } });
       if (st.videos.length) FB.media.usage().then(u => { const el = root.querySelector('#mediaUse'); if (el && u && u.usage) el.textContent = ` Using ${FB.media.fmtBytes(u.usage)}${u.quota ? ' of ' + FB.media.fmtBytes(u.quota) : ''}.`; });
     }
   };

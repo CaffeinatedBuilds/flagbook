@@ -81,7 +81,10 @@ switch quarters without leaving the play.
 the built-in Camera UI, rear camera). Tap stop, then **Use Video**, and you land back on the
 playbook ready to call the next play while the clip is saved underneath, tagged with the play,
 the game and the quarter the lineup was showing. A small sheet lets you rename it, **Save to
-Photos** (share sheet → Save Video) or delete it. iOS caps these recordings at 10 minutes and
+Photos** (share sheet → Save Video) or delete it. Clips are numbered per game ("Play 1 · Slant · Q2",
+"Play 2 · …") and each game in the Clips list has **Save all to Photos**, which puts every clip of
+that game in one share sheet. The Clips page lists games; open one to see just its clips, and tap a
+clip to give it a label and a comment. iOS caps these recordings at 10 minutes and
 records them at medium quality, so this is for a play or a drive, not the whole game. Clips are
 kept on this device (IndexedDB) and are **not** part of the JSON backup; browse them from a
 game's **🎥 Clips** button or **More → All clips**. The single-file `dist/flagbook.html` build can
@@ -137,7 +140,7 @@ service-worker version deployed, bump `CACHE` in `sw.js` so installed phones pic
   "plays":     [{ "id", "name", "notes", "players": { "Y": [x, y] },
                   "routes": { "Y": { "pts": [[dx, dy]], "corners": [true], "hot", "steps", "end", "dashed", "labelSide" } },
                   "spacing": { "show": true, "labels": { "Y|Z": "1" } } }],
-  "videos":    [{ "id", "playId", "playName", "gameId", "quarter", "label", "createdAt", "durationMs", "sizeBytes", "mimeType" }]
+  "videos":    [{ "id", "playId", "playName", "gameId", "quarter", "seq", "label", "notes", "createdAt", "durationMs", "sizeBytes", "mimeType" }]
                 // clip metadata only — the video file itself is in this device's IndexedDB and is not exported
 }
 ```

@@ -91,7 +91,21 @@
 
   U.hideToast = function () { const t = document.getElementById('toast'); if (t) t.classList.remove('show'); clearTimeout(U._toastTimer); };
 
-  U.confirm = function (msg) { return window.confirm(msg); };
+  /* Ask yes/no with an in-app sheet; resolves true/false. (window.confirm silently fails in iOS
+   * home-screen web apps, which is why "Clear" looked broken.) opts: {ok, cancel, danger} */
+  U.confirm = function (msg, opts) {
+    opts = opts || {};
+    if (!FB.ui || !FB.ui.modal || typeof document === 'undefined' || !document.body) return Promise.resolve(!!window.confirm(msg));
+    return new Promise(res => {
+      let done = false, m = null;
+      const finish = v => { if (done) return; done = true; if (m) m.close(); res(v); };
+      m = FB.ui.modal(`<p style="margin:0 0 16px;font-size:16px;white-space:pre-wrap">${U.esc(msg)}</p>
+        <div class="actions"><button type="button" class="btn" id="cNo">${U.esc(opts.cancel || 'Cancel')}</button><button type="button" class="btn ${opts.danger ? 'danger' : 'primary'}" id="cYes">${U.esc(opts.ok || 'OK')}</button></div>`,
+        { focus: false, onClose: () => finish(false) });
+      m.el.querySelector('#cYes').onclick = () => finish(true);
+      m.el.querySelector('#cNo').onclick = () => finish(false);
+    });
+  };
 
   FB.util = U;
 })();

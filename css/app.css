@@ -102,6 +102,7 @@ textarea { min-height: 80px; resize: vertical; }
 .clip-video { display: block; width: 100%; max-height: 55vh; background: #000; border-radius: 10px; }
 .clip-row { display: flex; align-items: center; gap: 10px; }
 .clip-row .btn.icon.danger { color: var(--red); }
+.clip-notes { margin-top: 4px; white-space: pre-wrap; }
 
 /* roster */
 .num { width: 40px; height: 40px; border-radius: 10px; background: var(--ink); color: #fff; display: inline-flex; align-items: center; justify-content: center; font-weight: 800; flex: 0 0 auto; }

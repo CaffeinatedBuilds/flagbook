@@ -43,7 +43,7 @@
       q('#done').onclick = m.close;
       if (q('#auto')) q('#auto').onclick = () => FB.rotationGrid.auto(rotation, roster, Q, true, 7, g ? FB.rotationGrid.spotHistory(g.id) : {});
       if (q('#shuffle')) q('#shuffle').onclick = () => FB.rotationGrid.auto(rotation, roster, Q, false, Math.floor(Math.random() * 1e6), g ? FB.rotationGrid.spotHistory(g.id) : {});
-      if (q('#clear')) q('#clear').onclick = () => { if (U.confirm('Clear this lineup?')) S.mutate(() => { for (const k of Object.keys(rotation)) delete rotation[k]; }); };
+      if (q('#clear')) q('#clear').onclick = () => U.confirm('Clear this lineup?', { ok: 'Clear', danger: true }).then(ok => { if (ok) S.mutate(() => { for (const k of Object.keys(rotation)) delete rotation[k]; }); });
     };
     draw();
     // keep the modal in sync while the store changes underneath it (grid edits re-render the page)
@@ -411,8 +411,8 @@
     q('#dup').onclick = () => { const c = S.duplicatePlay(play.id); m.close(); location.hash = '#/playbook/' + c.id; };
     const move = dir => { S.mutate(st => { const i = st.plays.indexOf(play), j = i + dir; if (j < 0 || j >= st.plays.length) return; st.plays.splice(i, 1); st.plays.splice(j, 0, play); }); m.close(); U.toast('Moved'); };
     q('#up').onclick = () => move(-1); q('#down').onclick = () => move(1);
-    q('#clearAll').onclick = () => { if (U.confirm('Clear all routes on this play?')) { S.mutate(() => { play.routes = {}; }); m.close(); } };
-    q('#del').onclick = () => { if (U.confirm('Delete "' + play.name + '"?')) { S.mutate(st => { st.plays = st.plays.filter(p => p.id !== play.id); }); m.close(); location.hash = '#/playbook'; } };
+    q('#clearAll').onclick = () => U.confirm('Clear all routes on this play?', { ok: 'Clear', danger: true }).then(ok => { if (ok) { S.mutate(() => { play.routes = {}; }); m.close(); } });
+    q('#del').onclick = () => U.confirm('Delete "' + play.name + '"?', { ok: 'Delete', danger: true }).then(ok => { if (ok) { S.mutate(st => { st.plays = st.plays.filter(p => p.id !== play.id); }); m.close(); location.hash = '#/playbook'; } });
   }
 
   FB.views.playbook = {

@@ -81,13 +81,16 @@
     const play = o.play || {}, L = o.lineup || {}, file = o.file || {};
     const quarter = L.quarter ? +L.quarter : null;
     const playName = play.name || 'Play';
+    const seq = o.seq ? +o.seq : null;                       // 1, 2, 3… within the game
     return {
       id: o.id || FB.util.uid(),
       playId: play.id || '',
       playName,
       gameId: L.gameId || '',
       quarter,
-      label: o.label || (playName + (quarter ? ' · Q' + quarter : '')),
+      seq,
+      label: o.label || ((seq ? 'Play ' + seq + ' · ' : '') + playName + (quarter ? ' · Q' + quarter : '')),
+      notes: o.notes || '',
       createdAt: o.createdAt || Date.now(),
       durationMs: o.durationMs == null ? null : o.durationMs,
       sizeBytes: file.size || 0,

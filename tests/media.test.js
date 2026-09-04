@@ -16,9 +16,9 @@
     eq(M.extFor('video/quicktime'), '.mov'); eq(M.extFor('video/mp4'), '.mp4'); eq(M.extFor(''), '.mov');
   });
   test('meta() tags a clip with the play and the lineup game/quarter', () => {
-    const m = M.meta({ id: 'v9', file: { size: 1234, type: 'video/quicktime' }, play: { id: 'p1', name: 'Slant' }, lineup: { show: true, gameId: 'g1', quarter: 3 }, durationMs: 4200, createdAt: 7 });
-    eq(m, { id: 'v9', playId: 'p1', playName: 'Slant', gameId: 'g1', quarter: 3, label: 'Slant · Q3', createdAt: 7, durationMs: 4200, sizeBytes: 1234, mimeType: 'video/quicktime' });
+    const m = M.meta({ id: 'v9', file: { size: 1234, type: 'video/quicktime' }, play: { id: 'p1', name: 'Slant' }, lineup: { show: true, gameId: 'g1', quarter: 3 }, durationMs: 4200, createdAt: 7, seq: 4 });
+    eq(m, { id: 'v9', playId: 'p1', playName: 'Slant', gameId: 'g1', quarter: 3, seq: 4, label: 'Play 4 · Slant · Q3', notes: '', createdAt: 7, durationMs: 4200, sizeBytes: 1234, mimeType: 'video/quicktime' });
     const m2 = M.meta({ file: {}, play: {}, lineup: {} });
-    assert(m2.id, 'id generated'); eq(m2.label, 'Play'); eq(m2.quarter, null); eq(m2.gameId, ''); eq(m2.durationMs, null); eq(m2.sizeBytes, 0);
+    assert(m2.id, 'id generated'); eq(m2.label, 'Play'); eq(m2.quarter, null); eq(m2.seq, null); eq(m2.gameId, ''); eq(m2.durationMs, null); eq(m2.sizeBytes, 0);
   });
 })();

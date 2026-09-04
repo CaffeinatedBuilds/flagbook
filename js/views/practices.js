@@ -18,7 +18,7 @@
       </form>`);
     const form = m.el.querySelector('#f');
     m.el.querySelector('#cancel').onclick = m.close;
-    if (id) m.el.querySelector('#del').onclick = () => { if (U.confirm('Delete this practice?')) { S.mutate(st => st.practices = st.practices.filter(x => x.id !== id)); m.close(); } };
+    if (id) m.el.querySelector('#del').onclick = () => U.confirm('Delete this practice?', { ok: 'Delete', danger: true }).then(ok => { if (ok) { S.mutate(st => st.practices = st.practices.filter(x => x.id !== id)); m.close(); } });
     form.onsubmit = e => {
       e.preventDefault();
       const d = FB.ui.formData(form);

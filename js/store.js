@@ -151,7 +151,7 @@
     s.practices = (s.practices || []).map(p => Object.assign({ id: U.uid(), date: '', time: '', location: '', notes: '' }, p));
     s.games = (s.games || []).map(g => Object.assign({ id: U.uid(), date: '', time: '', location: '', opponent: '', snackPlayerId: '', notes: '', rotation: {}, sitting: {} }, g));
     s.plays = (s.plays || []).map(p => Object.assign({ id: U.uid(), name: 'Untitled', notes: '', players: {}, routes: {}, spacing: { show: false, labels: {} } }, p));
-    s.videos = (Array.isArray(s.videos) ? s.videos : []).map(v => Object.assign({ id: U.uid(), playId: '', playName: '', gameId: '', quarter: null, label: '', createdAt: 0, durationMs: null, sizeBytes: 0, mimeType: '' }, v));
+    s.videos = (Array.isArray(s.videos) ? s.videos : []).map(v => Object.assign({ id: U.uid(), playId: '', playName: '', gameId: '', quarter: null, seq: null, label: '', notes: '', createdAt: 0, durationMs: null, sizeBytes: 0, mimeType: '' }, v));
     for (const p of s.plays) {
       p.spacing = Object.assign({ show: false, labels: {} }, p.spacing || {});
       for (const k of Object.keys(p.routes || {})) {
@@ -235,7 +235,9 @@
     play(id) { return state.plays.find(p => p.id === id) || null; },
     game(id) { return state.games.find(g => g.id === id) || null; },
     practice(id) { return state.practices.find(p => p.id === id) || null; },
-    clipsFor(gameId) { return state.videos.filter(v => v.gameId === gameId); },
+    clipsFor(gameId) { return state.videos.filter(v => (v.gameId || '') === (gameId || '')); },
+    /* Play numbers count up within a game (clips with no game share their own sequence). */
+    nextClipSeq(gameId) { return Math.max(0, ...S.clipsFor(gameId).map(v => +v.seq || 0)) + 1; },
     activeRoster() { return U.sortBy(state.roster.filter(p => p.active !== false), p => (parseInt(p.number, 10) || 999)); },
 
     /* ---- playbook lineup: which rotation + quarter captions the tokens ---- */

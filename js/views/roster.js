@@ -30,8 +30,8 @@
       </form>`);
     const form = m.el.querySelector('#pf');
     m.el.querySelector('#cancel').onclick = m.close;
-    if (id) m.el.querySelector('#del').onclick = () => {
-      if (!U.confirm('Delete ' + p.name + '? They will also be removed from game rotations.')) return;
+    if (id) m.el.querySelector('#del').onclick = () => U.confirm('Delete ' + p.name + '? They will also be removed from game rotations.', { ok: 'Delete', danger: true }).then(ok => {
+      if (!ok) return;
       S.mutate(st => {
         st.roster = st.roster.filter(x => x.id !== id);
         for (const g of st.games) {
@@ -40,7 +40,7 @@
         }
       });
       m.close();
-    };
+    });
     form.onsubmit = e => {
       e.preventDefault();
       const d = FB.ui.formData(form);

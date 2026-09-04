@@ -18,7 +18,7 @@
       </form>`);
     const form = m.el.querySelector('#f');
     m.el.querySelector('#cancel').onclick = m.close;
-    if (id) m.el.querySelector('#del').onclick = () => { if (U.confirm('Delete this game?')) { S.mutate(st => st.games = st.games.filter(x => x.id !== id)); m.close(); location.hash = '#/games'; } };
+    if (id) m.el.querySelector('#del').onclick = () => U.confirm('Delete this game?', { ok: 'Delete', danger: true }).then(ok => { if (!ok) return; S.mutate(st => st.games = st.games.filter(x => x.id !== id)); m.close(); location.hash = '#/games'; });
     form.onsubmit = e => {
       e.preventDefault();
       const d = FB.ui.formData(form);
@@ -112,7 +112,7 @@
       const doAuto = (respectExisting, seed) => autoRotate(g.rotation, roster, Q, respectExisting, seed, spotHistory(g.id));
       if (auto) auto.onclick = () => doAuto(true);
       if (shuffle) shuffle.onclick = () => doAuto(false, Math.floor(Math.random() * 1e6));
-      if (clear) clear.onclick = () => { if (U.confirm('Clear the whole rotation?')) S.mutate(() => { g.rotation = {}; }); };
+      if (clear) clear.onclick = () => U.confirm('Clear the whole rotation for this game?', { ok: 'Clear', danger: true }).then(ok => { if (ok) { S.mutate(() => { g.rotation = {}; }); U.toast('Rotation cleared'); } });
       const openPB = root.querySelector('#openPB'); if (openPB) openPB.onclick = () => { S.setLineup({ show: true, gameId: g.id, quarter: fieldQ }); location.hash = '#/playbook'; };
       const qseg = root.querySelector('#qseg'); if (qseg) qseg.querySelectorAll('button').forEach(b => b.onclick = () => { fieldQ = +b.dataset.q; FB.app.rerender(); });
     }

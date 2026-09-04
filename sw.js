@@ -1,5 +1,5 @@
 /* FlagBook service worker: cache-first for the app shell so it works offline on the field. */
-const CACHE = 'flagbook-v7';
+const CACHE = 'flagbook-v8';
 const ASSETS = [
   './', './index.html', './css/app.css', './manifest.webmanifest',
   './js/util.js', './js/geometry.js', './js/store.js', './js/media.js', './js/rotation.js', './js/field.js',

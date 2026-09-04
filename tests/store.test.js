@@ -65,6 +65,10 @@
     S.importJSON(JSON.stringify({ videos: [{ id: 'v1', label: 'renamed' }, { id: 'v2' }] }), 'merge');
     eq(S.get().videos.length, 2); eq(S.get().videos.find(x => x.id === 'v1').label, 'renamed', 'merge is by id');
     assert(S.exportJSON().includes('"videos"'), 'exported');
+    eq(S.get().videos[0].seq, null, 'old clips have no number');
+    eq(S.nextClipSeq('g1'), 1, 'numbering starts at 1 when no clip is numbered');
+    S.importJSON(JSON.stringify({ videos: [{ id: 'v3', gameId: 'g1', seq: 3 }, { id: 'v7', gameId: '', seq: 7 }] }), 'merge');
+    eq(S.nextClipSeq('g1'), 4); eq(S.nextClipSeq(''), 8, 'clips without a game count separately'); eq(S.nextClipSeq('other'), 1);
     S.importJSON(JSON.stringify({ videos: 'garbage' }), 'replace');
     eq(S.get().videos, [], 'bad shape tolerated');
   });
