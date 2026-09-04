@@ -64,6 +64,13 @@ move to another play with the ‹ › arrows. **✏️ Edit** switches to the ed
 screen: on tablets and desktops the field sits inside a one-inch margin with the tools in the
 bottom margin; on a phone the tools sit below the field (portrait) or beside it (landscape).
 
+**Substitutions.** When a kid swaps out for a play, tap their token on the field (or the **🔁**
+button) and pick who goes in from the bench, trade spots with another player on the field, or leave
+the spot empty. The new name shows in blue under the token in every play, the editor and the
+printout, without changing the saved lineup. Subs last until you change the quarter or the lineup
+source, or tap **Undo subs** (in the 🔁 sheet or the playbook). The Q1–Q4 buttons in view mode
+switch quarters without leaving the play.
+
 ## Games & rotation
 
 Each game has a date, kickoff, location (tap to open in Maps), opponent, notes and **snack duty**.

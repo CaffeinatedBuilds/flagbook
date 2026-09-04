@@ -28,6 +28,33 @@
     eq(S.get().plays.length, 9);
     eq(S.get().plays[1].id, dup.id, 'inserted after source');
   });
+  test('substitutions overlay the lineup and reset with the quarter', () => {
+    S.importJSON(JSON.stringify({
+      roster: [{ id: 'a', name: 'Ava A' }, { id: 'b', name: 'Ben B' }, { id: 'c', name: 'Cy C' }, { id: 'd', name: 'Dee D' }],
+      defaultRotation: { 1: { Q: 'a', C: 'b', X: 'c' }, 2: { Q: 'b', C: 'c', X: 'd' } },
+      lineup: { show: true, gameId: '', quarter: 1 }
+    }), 'replace');
+    eq(S.lineupNames(), { Q: 'Ava', C: 'Ben', X: 'Cy' });
+    eq(S.benchPlayers().map(p => p.id), ['d']);
+    S.setSub('C', 'd');                                   // Dee in for Ben
+    eq(S.lineupNames(), { Q: 'Ava', C: 'Dee', X: 'Cy' });
+    eq(S.subbedPositions(), ['C']);
+    eq(S.benchPlayers().map(p => p.id), ['b']);
+    eq(S.get().defaultRotation[1].C, 'b', 'rotation record untouched');
+    S.setSub('Q', 'c');                                   // Cy moves from X to Q: X empties
+    eq(S.lineupNames(), { Q: 'Cy', C: 'Dee' });
+    S.swapSpots('Q', 'C');
+    eq(S.lineupNames(), { Q: 'Dee', C: 'Cy' });
+    S.setSub('X', 'c'); S.setSub('C', 'b'); S.setSub('Q', 'a');   // manually back to the lineup
+    eq(S.subbedPositions(), []);
+    eq(Object.keys(S.lineupSubs()).length, 0, 'subs equal to the lineup are dropped');
+    S.setSub('C', 'd');
+    S.setLineup({ quarter: 2 });
+    eq(S.subbedPositions(), [], 'quarter change clears subs');
+    eq(S.lineupNames(), { Q: 'Ben', C: 'Cy', X: 'Dee' });
+    S.setSub('X', 'a'); S.clearSubs();
+    eq(S.lineupNames(), { Q: 'Ben', C: 'Cy', X: 'Dee' });
+  });
   test('migrate fills defaults on partial data', () => {
     S.importJSON(JSON.stringify({ plays: [{ id: 'a', name: 'x', players: { Q: [1, 2] }, routes: { Q: { pts: [[0, 0], [0, -50]], corners: [true, true] } } }] }), 'replace');
     const p = S.get().plays[0];

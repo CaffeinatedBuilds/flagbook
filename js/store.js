@@ -38,7 +38,7 @@
       games: [],
       plays: [],
       settings: { showYardGrid: false, quarters: 4 },
-      lineup: { show: true, gameId: '', quarter: 1 },   // which names the playbook shows
+      lineup: { show: true, gameId: '', quarter: 1, subs: {}, subsKey: '' },   // which names the playbook shows (+ in-game substitutions)
       defaultRotation: {}                                // team lineup used when no game is picked
     };
   }
@@ -143,7 +143,8 @@
     s = Object.assign(base, s || {});
     s.team = Object.assign({ name: 'Raiders', season: '' }, s.team || {});
     s.settings = Object.assign(base.settings, s.settings || {});
-    s.lineup = Object.assign({ show: true, gameId: '', quarter: 1 }, s.lineup || {});
+    s.lineup = Object.assign({ show: true, gameId: '', quarter: 1, subs: {}, subsKey: '' }, s.lineup || {});
+    if (!s.lineup.subs || typeof s.lineup.subs !== 'object') s.lineup.subs = {};
     s.defaultRotation = s.defaultRotation || {};
     s.roster = (s.roster || []).map(p => Object.assign({ id: U.uid(), name: '', number: '', positions: [], guardian: '', phone: '', email: '', notes: '', active: true }, p));
     s.practices = (s.practices || []).map(p => Object.assign({ id: U.uid(), date: '', time: '', location: '', notes: '' }, p));
@@ -227,14 +228,66 @@
       if (L.gameId) { const g = S.game(L.gameId); return g ? (g.rotation = g.rotation || {}) : null; }
       return state.defaultRotation;
     },
+    /* The row of the rotation the playbook is showing: {pos: playerId} straight from the lineup. */
+    lineupBaseRow() {
+      const rot = S.lineupRotation();
+      return rot ? Object.assign({}, rot[state.lineup.quarter] || {}) : {};
+    },
+    /* ---- substitutions: in-game swaps made from view mode. They sit on top of the lineup
+     * (so the rotation record stays honest) and are dropped when the quarter or game changes. ---- */
+    subsKey() { const L = state.lineup; return (L.gameId || '') + ':' + L.quarter; },
+    lineupSubs() {
+      const L = state.lineup;
+      if (L.subsKey !== S.subsKey()) return {};
+      return L.subs || {};
+    },
+    /* Effective {pos: playerId} after substitutions ('' means the spot was emptied). */
+    lineupRow() {
+      const row = S.lineupBaseRow(), subs = S.lineupSubs();
+      for (const pos of Object.keys(subs)) { if (subs[pos]) row[pos] = subs[pos]; else delete row[pos]; }
+      return row;
+    },
     lineupNames() {
       const L = state.lineup;
       if (!L.show) return null;
-      const rot = S.lineupRotation(); if (!rot) return null;
-      const row = rot[L.quarter] || {}, names = {};
+      if (!S.lineupRotation()) return null;
+      const row = S.lineupRow(), names = {};
       for (const pos of Object.keys(row)) if (row[pos]) { const n = S.playerName(row[pos]); if (n) names[pos] = n.split(' ')[0]; }
       return names;
     },
+    /* Positions whose player differs from the lineup because of a substitution. */
+    subbedPositions() {
+      const base = S.lineupBaseRow(), subs = S.lineupSubs();
+      return Object.keys(subs).filter(pos => (subs[pos] || '') !== (base[pos] || ''));
+    },
+    /* Active players not in any spot right now (after substitutions). */
+    benchPlayers() {
+      const on = new Set(Object.values(S.lineupRow()).filter(Boolean));
+      return S.activeRoster().filter(p => !on.has(p.id));
+    },
+    /* Put playerId ('' = nobody) at pos for the current quarter. A player pulled from another spot leaves it empty. */
+    setSub(pos, playerId) {
+      const L = state.lineup, key = S.subsKey();
+      if (L.subsKey !== key) { L.subs = {}; L.subsKey = key; }
+      const base = S.lineupBaseRow(), row = S.lineupRow();
+      playerId = playerId || '';
+      if (playerId) for (const o of Object.keys(row)) if (o !== pos && row[o] === playerId) L.subs[o] = '';
+      L.subs[pos] = playerId;
+      for (const o of Object.keys(L.subs)) if ((L.subs[o] || '') === (base[o] || '')) delete L.subs[o];
+      S.save();
+    },
+    /* Two players on the field trade spots. */
+    swapSpots(a, b) {
+      const row = S.lineupRow();
+      const pa = row[a] || '', pb = row[b] || '';
+      const L = state.lineup, key = S.subsKey();
+      if (L.subsKey !== key) { L.subs = {}; L.subsKey = key; }
+      const base = S.lineupBaseRow();
+      L.subs[a] = pb; L.subs[b] = pa;
+      for (const o of Object.keys(L.subs)) if ((L.subs[o] || '') === (base[o] || '')) delete L.subs[o];
+      S.save();
+    },
+    clearSubs() { state.lineup.subs = {}; state.lineup.subsKey = ''; S.save(); },
     lineupLabel() {
       const L = state.lineup;
       if (!L.show) return '';
@@ -242,7 +295,12 @@
       const src = g ? (g.opponent ? 'vs ' + g.opponent : U.fmtDate(g.date)) : 'Team lineup';
       return src + ' · Q' + L.quarter;
     },
-    setLineup(patch) { Object.assign(state.lineup, patch); S.save(); },
+    setLineup(patch) {
+      const L = state.lineup, before = S.subsKey();
+      Object.assign(L, patch);
+      if (S.subsKey() !== before) { L.subs = {}; L.subsKey = ''; }   // a new quarter / game starts clean
+      S.save();
+    },
 
     newPlay(name, formation) {
       const spots = FORMATIONS[formation] || FORMATIONS['Spread'];

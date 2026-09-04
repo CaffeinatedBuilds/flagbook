@@ -74,10 +74,17 @@
     document.getElementById('add').onclick = newPlayDialog;
     let html = lineupBar(false);
     if (names && !Object.keys(names).length) html += `<p class="hint" style="margin:0 0 12px">No players assigned for ${U.esc(S.lineupLabel())} yet. Tap <b>Edit lineup</b> to fill the quarters.</p>`;
+    const subbed = names ? S.subbedPositions() : [];
+    if (subbed.length) {
+      const row = S.lineupRow(), base = S.lineupBaseRow();
+      const desc = subbed.map(pos => `<b>${pos}</b>: ${row[pos] ? U.esc(S.playerName(row[pos]).split(' ')[0]) : 'empty'}${base[pos] ? ' for ' + U.esc(S.playerName(base[pos]).split(' ')[0]) : ''}`).join(', ');
+      html += `<p class="hint subs-note" style="margin:0 0 12px">🔁 Subs in ${U.esc(S.lineupLabel())} — ${desc}. <button type="button" class="btn sm" id="clearSubs">Undo subs</button></p>`;
+    }
     if (!st.plays.length) html += `<div class="empty">No plays yet.<br><br><button class="btn primary" id="add2">Create your first play</button></div>`;
     else html += `<div class="plays">${st.plays.map(p => `<a class="play-card" href="#/view/${p.id}">${F.svgString(p, { names })}<div class="cap"><span>${U.esc(p.name)}</span>${Object.values(p.routes).some(r => r.hot) ? '<i class="dot" title="has hot route"></i>' : ''}</div></a>`).join('')}</div>`;
     root.innerHTML = html;
     bindLineupBar(root);
+    const cs = root.querySelector('#clearSubs'); if (cs) cs.onclick = () => S.clearSubs();
     const a2 = root.querySelector('#add2'); if (a2) a2.onclick = newPlayDialog;
   }
 

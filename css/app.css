@@ -132,6 +132,17 @@ textarea { min-height: 80px; resize: vertical; }
 .stepper .val.red { color: var(--red); }
 .hint { font-size: 13px; color: var(--muted); }
 
+/* substitution sheet (view mode) */
+.subhead { font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; margin: 12px 0 6px; }
+.sublist { display: flex; flex-direction: column; gap: 6px; }
+.subrow { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; border: 1px solid var(--line); background: var(--card); border-radius: 10px; padding: 10px 12px; font-size: 15px; font-weight: 600; min-height: 46px; }
+.subrow:active { background: #f1f2f4; }
+.subrow .who { flex: 1; }
+.subrow .go { color: var(--muted); font-weight: 700; }
+.subrow.undo { border-color: var(--blue); color: var(--blue); margin-bottom: 4px; }
+.subs-note { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.subs-note .btn { margin-left: auto; }
+
 /* rotation grid */
 .rot { width: 100%; border-collapse: collapse; font-size: 14px; }
 .rot th, .rot td { padding: 6px 4px; text-align: center; border-bottom: 1px solid var(--line); }
