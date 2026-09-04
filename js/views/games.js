@@ -33,7 +33,7 @@
   }
 
   function gameCard(g) {
-    const snack = g.snackPlayerId ? S.playerName(g.snackPlayerId) : '';
+    const snack = g.snackPlayerId ? S.snackLabel(g.snackPlayerId) : '';
     const set = g.rotation && Object.keys(g.rotation).some(q => Object.values(g.rotation[q]).some(Boolean));
     const clips = S.clipsFor(g.id).length;
     return `<a class="card tap" href="#/games/${g.id}" style="display:block;text-decoration:none">
@@ -88,7 +88,8 @@
         <div class="row" style="gap:6px"><a class="btn sm" href="#/clips?game=${g.id}">🎥 Clips${S.clipsFor(g.id).length ? ' · ' + S.clipsFor(g.id).length : ''}</a><a class="btn sm" href="#/gamesheet/${g.id}">🖨 Game sheet</a></div></div>
         ${g.location ? `<div style="margin-top:8px">📍 <a href="${U.mapsLink(g.location)}" target="_blank" rel="noopener">${U.esc(g.location)}</a></div>` : ''}
         ${g.notes ? `<div class="small muted" style="margin-top:6px">${U.esc(g.notes)}</div>` : ''}
-        <div class="field-row" style="margin:12px 0 0"><label>🍎 Snack duty</label><select id="snack">${FB.ui.playerOptions(g.snackPlayerId, true)}</select></div>
+        <div class="field-row" style="margin:12px 0 0"><label>🍎 Snack duty (the family brings snacks)</label><select id="snack"><option value="">—</option>${S.activeRoster().map(p => `<option value="${p.id}"${p.id === g.snackPlayerId ? ' selected' : ''}>${U.esc(S.snackLabel(p.id))}</option>`).join('')}</select></div>
+        ${g.snackPlayerId && S.guardians(g.snackPlayerId).length ? `<div class="row wrap small" style="gap:10px;margin-top:8px">${S.guardians(g.snackPlayerId).map(gd => `<span>${U.esc(gd.name || 'Parent')}${gd.phone ? ` · <a href="tel:${U.esc(gd.phone)}">${U.esc(gd.phone)}</a>` : ''}</span>`).join('')}</div>` : ''}
       </div>`;
 
       html += `<div class="section"><div class="row spread"><h3>Rotation by quarter</h3>
@@ -194,7 +195,7 @@
       document.getElementById('print').onclick = () => window.print();
       let html = `<div class="gamesheet"><h1>${U.esc(st.team.name)}${g.opponent ? ' vs ' + U.esc(g.opponent) : ''}</h1>
         <div>${U.fmtDateLong(g.date)}${g.time ? ' · ' + U.fmtTime(g.time) : ''}${g.location ? ' · ' + U.esc(g.location) : ''}</div>
-        <div style="margin:6px 0 14px">🍎 Snacks: <b>${g.snackPlayerId ? U.esc(S.playerName(g.snackPlayerId)) : '—'}</b></div>
+        <div style="margin:6px 0 14px">🍎 Snacks: <b>${g.snackPlayerId ? U.esc(S.snackLabel(g.snackPlayerId)) : '—'}</b></div>
         <table><thead><tr><th></th>${S.POSITIONS.map(p => `<th>${p}</th>`).join('')}<th>Sitting</th></tr></thead><tbody>`;
       for (let q = 1; q <= Q; q++) {
         const row = (g.rotation || {})[q] || {};

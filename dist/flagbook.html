@@ -214,8 +214,10 @@ body.viewing .nav { display: none !important; }
 .viewer.has-notes { --notes-h: 48px; }
 .viewer .stage { position: relative; background: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: var(--vpad) var(--vpad) calc(var(--vpad) + var(--safe-b)); height: calc(100vh - var(--topbar)); overflow: hidden; }
 .viewer .frame { --ar: 1.3333; position: relative; width: 100%; aspect-ratio: var(--ar); max-width: min(calc(100vw - 2 * var(--vpad)), calc((100vh - var(--topbar) - var(--vtools-h) - var(--notes-h) - var(--safe-b) - 2 * var(--vpad)) * var(--ar))); }
+.viewer .canvas { position: relative; flex: 1 1 auto; align-self: stretch; min-height: 0; min-width: 0; display: flex; align-items: center; justify-content: center; }
 .viewer .frame svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-.viewer .frame .annot { touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; cursor: crosshair; }
+/* the scribble layer sits over the whole canvas (play + white space), never over the tools */
+.viewer .annot { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; cursor: crosshair; }
 .vtools { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; justify-content: center; padding: 10px 14px; min-height: var(--vtools-h); }
 .vgroup { display: flex; gap: 8px; align-items: center; }
 .vtools .btn.icon { width: 46px; min-height: 46px; font-size: 22px; }
@@ -229,6 +231,7 @@ body.viewing .nav { display: none !important; }
   .viewer { --vpad: 1in; --vtools-h: 0px; }
   .viewer.has-notes { --notes-h: 0px; }
   .viewer .stage { height: calc(100vh - var(--topbar)); min-height: 0; }
+  .viewer .canvas { position: absolute; left: 0; right: 0; top: 0; bottom: 1in; }   /* everything above the tool margin is scribble space */
   .vtools { position: absolute; left: 0; right: 0; bottom: calc((1in - 48px) / 2); padding: 0 1in; min-height: 48px; flex-wrap: nowrap; gap: 10px 22px; }
   .vtools .btn.icon { width: 44px; min-height: 44px; }
   .pen { width: 36px; height: 36px; }
@@ -787,7 +790,7 @@ body.viewing .nav { display: none !important; }
     s.lineup = Object.assign({ show: true, gameId: '', quarter: 1, subs: {}, subsKey: '' }, s.lineup || {});
     if (!s.lineup.subs || typeof s.lineup.subs !== 'object') s.lineup.subs = {};
     s.defaultRotation = s.defaultRotation || {};
-    s.roster = (s.roster || []).map(p => Object.assign({ id: U.uid(), name: '', number: '', positions: [], guardian: '', phone: '', email: '', notes: '', active: true }, p));
+    s.roster = (s.roster || []).map(p => Object.assign({ id: U.uid(), name: '', number: '', positions: [], guardian: '', phone: '', email: '', guardian2: '', phone2: '', email2: '', notes: '', active: true }, p));
     s.practices = (s.practices || []).map(p => Object.assign({ id: U.uid(), date: '', time: '', location: '', notes: '' }, p));
     s.games = (s.games || []).map(g => Object.assign({ id: U.uid(), date: '', time: '', location: '', opponent: '', snackPlayerId: '', notes: '', rotation: {}, sitting: {} }, g));
     s.plays = (s.plays || []).map(p => Object.assign({ id: U.uid(), name: 'Untitled', notes: '', players: {}, routes: {}, spacing: { show: false, labels: {} } }, p));
@@ -859,6 +862,19 @@ body.viewing .nav { display: none !important; }
     /* lookups */
     player(id) { return state.roster.find(p => p.id === id) || null; },
     playerName(id) { const p = S.player(id); return p ? p.name : ''; },
+    /* The parents/guardians on file for a player: [{name, phone, email}], first one first. */
+    guardians(id) {
+      const p = S.player(id); if (!p) return [];
+      return [{ name: p.guardian, phone: p.phone, email: p.email }, { name: p.guardian2, phone: p.phone2, email: p.email2 }]
+        .filter(g => (g.name || '').trim() || (g.phone || '').trim());
+    },
+    /* Snack duty belongs to the family: "Jane & John Doe (Ava)"; falls back to the player's name. */
+    snackLabel(id) {
+      const p = S.player(id); if (!p) return '';
+      const names = S.guardians(id).map(g => (g.name || '').trim()).filter(Boolean);
+      if (!names.length) return p.name;
+      return names.join(' & ') + ' (' + ((p.name || '').split(' ')[0] || p.name) + ')';
+    },
     play(id) { return state.plays.find(p => p.id === id) || null; },
     game(id) { return state.games.find(g => g.id === id) || null; },
     practice(id) { return state.practices.find(p => p.id === id) || null; },
@@ -1440,7 +1456,7 @@ body.viewing .nav { display: none !important; }
 
       html += `<div class="section"><h3>Next game</h3>`;
       if (g) {
-        const snack = g.snackPlayerId ? S.playerName(g.snackPlayerId) : '';
+        const snack = g.snackPlayerId ? S.snackLabel(g.snackPlayerId) : '';
         const q1 = g.rotation && g.rotation[1] ? Object.keys(g.rotation[1]).filter(k => g.rotation[1][k]).length : 0;
         html += `<a class="card tap" href="#/games/${g.id}" style="display:block;text-decoration:none">
           <div class="row spread"><div class="card-title">${g.opponent ? 'vs ' + U.esc(g.opponent) : 'Game'}</div><div class="muted">${U.fmtDate(g.date)}${g.time ? ' · ' + U.fmtTime(g.time) : ''}</div></div>
@@ -1478,7 +1494,7 @@ body.viewing .nav { display: none !important; }
   const FB = window.FB, U = FB.util, S = FB.store;
 
   function editPlayer(id) {
-    const p = id ? S.player(id) : { name: '', number: '', positions: [], guardian: '', phone: '', email: '', notes: '', active: true };
+    const p = id ? S.player(id) : { name: '', number: '', positions: [], guardian: '', phone: '', email: '', guardian2: '', phone2: '', email2: '', notes: '', active: true };
     const m = FB.ui.modal(`<h2>${id ? 'Edit player' : 'Add player'}</h2>
       <form id="pf">
         <div class="two">
@@ -1487,11 +1503,18 @@ body.viewing .nav { display: none !important; }
         </div>
         <div class="field-row"><label>Preferred spots (in order of preference)</label>
           <div class="checks">${S.POSITIONS.map(pos => `<label><input type="checkbox" name="positions[]" value="${pos}"${(p.positions || []).includes(pos) ? ' checked' : ''}>${pos} <span class="muted small">${S.POSITION_META[pos].name}</span></label>`).join('')}</div></div>
+        <div class="subhead">Parent / guardian 1 <span class="muted">(required)</span></div>
         <div class="two">
-          <div class="field-row"><label>Parent / guardian</label><input type="text" name="guardian" value="${U.esc(p.guardian)}"></div>
+          <div class="field-row"><label>Name</label><input type="text" name="guardian" value="${U.esc(p.guardian)}" required autocomplete="off"></div>
           <div class="field-row"><label>Phone</label><input type="tel" name="phone" value="${U.esc(p.phone)}"></div>
         </div>
         <div class="field-row"><label>Email</label><input type="email" name="email" value="${U.esc(p.email)}"></div>
+        <div class="subhead">Parent / guardian 2 <span class="muted">(optional)</span></div>
+        <div class="two">
+          <div class="field-row"><label>Name</label><input type="text" name="guardian2" value="${U.esc(p.guardian2 || '')}" autocomplete="off"></div>
+          <div class="field-row"><label>Phone</label><input type="tel" name="phone2" value="${U.esc(p.phone2 || '')}"></div>
+        </div>
+        <div class="field-row"><label>Email</label><input type="email" name="email2" value="${U.esc(p.email2 || '')}"></div>
         <div class="field-row"><label>Notes</label><textarea name="notes">${U.esc(p.notes)}</textarea></div>
         <div class="field-row"><label class="switch" style="text-transform:none;letter-spacing:0;color:inherit"><input type="checkbox" name="active"${p.active !== false ? ' checked' : ''}> Active this season</label></div>
         <div class="actions">${id ? '<button type="button" class="btn danger" id="del">Delete</button>' : ''}<button type="button" class="btn" id="cancel">Cancel</button><button type="submit" class="btn primary">Save</button></div>
@@ -1533,9 +1556,10 @@ body.viewing .nav { display: none !important; }
           <div class="num">${U.esc(p.number || '–')}</div>
           <div class="grow">
             <div class="card-title">${U.esc(p.name)}${p.active === false ? ' <span class="chip">inactive</span>' : ''}</div>
-            <div class="row wrap" style="gap:4px;margin-top:4px">${(p.positions || []).map(FB.ui.posChip).join('')}${p.guardian ? `<span class="muted small">${U.esc(p.guardian)}</span>` : ''}</div>
+            <div class="row wrap" style="gap:4px;margin-top:4px">${(p.positions || []).map(FB.ui.posChip).join('')}</div>
+            ${S.guardians(p.id).map(g => `<div class="row small guardian" style="gap:8px;margin-top:4px"><span class="muted">${U.esc(g.name || '—')}</span>${g.phone ? `<a href="tel:${U.esc(g.phone)}" onclick="event.stopPropagation()">${U.esc(g.phone)}</a>` : ''}${g.email ? `<a href="mailto:${U.esc(g.email)}" onclick="event.stopPropagation()" class="muted">✉︎</a>` : ''}</div>`).join('')}
           </div>
-          ${p.phone ? `<a class="btn icon ghost" href="tel:${U.esc(p.phone)}" title="Call" onclick="event.stopPropagation()">📞</a>` : ''}
+          ${p.phone ? `<a class="btn icon ghost" href="tel:${U.esc(p.phone)}" title="Call ${U.esc(p.guardian || 'parent')}" onclick="event.stopPropagation()">📞</a>` : ''}
         </div></div>`).join('');
       root.querySelectorAll('.card[data-id]').forEach(c => c.onclick = () => editPlayer(c.dataset.id));
     }
@@ -1644,7 +1668,7 @@ body.viewing .nav { display: none !important; }
   }
 
   function gameCard(g) {
-    const snack = g.snackPlayerId ? S.playerName(g.snackPlayerId) : '';
+    const snack = g.snackPlayerId ? S.snackLabel(g.snackPlayerId) : '';
     const set = g.rotation && Object.keys(g.rotation).some(q => Object.values(g.rotation[q]).some(Boolean));
     const clips = S.clipsFor(g.id).length;
     return `<a class="card tap" href="#/games/${g.id}" style="display:block;text-decoration:none">
@@ -1699,7 +1723,8 @@ body.viewing .nav { display: none !important; }
         <div class="row" style="gap:6px"><a class="btn sm" href="#/clips?game=${g.id}">🎥 Clips${S.clipsFor(g.id).length ? ' · ' + S.clipsFor(g.id).length : ''}</a><a class="btn sm" href="#/gamesheet/${g.id}">🖨 Game sheet</a></div></div>
         ${g.location ? `<div style="margin-top:8px">📍 <a href="${U.mapsLink(g.location)}" target="_blank" rel="noopener">${U.esc(g.location)}</a></div>` : ''}
         ${g.notes ? `<div class="small muted" style="margin-top:6px">${U.esc(g.notes)}</div>` : ''}
-        <div class="field-row" style="margin:12px 0 0"><label>🍎 Snack duty</label><select id="snack">${FB.ui.playerOptions(g.snackPlayerId, true)}</select></div>
+        <div class="field-row" style="margin:12px 0 0"><label>🍎 Snack duty (the family brings snacks)</label><select id="snack"><option value="">—</option>${S.activeRoster().map(p => `<option value="${p.id}"${p.id === g.snackPlayerId ? ' selected' : ''}>${U.esc(S.snackLabel(p.id))}</option>`).join('')}</select></div>
+        ${g.snackPlayerId && S.guardians(g.snackPlayerId).length ? `<div class="row wrap small" style="gap:10px;margin-top:8px">${S.guardians(g.snackPlayerId).map(gd => `<span>${U.esc(gd.name || 'Parent')}${gd.phone ? ` · <a href="tel:${U.esc(gd.phone)}">${U.esc(gd.phone)}</a>` : ''}</span>`).join('')}</div>` : ''}
       </div>`;
 
       html += `<div class="section"><div class="row spread"><h3>Rotation by quarter</h3>
@@ -1805,7 +1830,7 @@ body.viewing .nav { display: none !important; }
       document.getElementById('print').onclick = () => window.print();
       let html = `<div class="gamesheet"><h1>${U.esc(st.team.name)}${g.opponent ? ' vs ' + U.esc(g.opponent) : ''}</h1>
         <div>${U.fmtDateLong(g.date)}${g.time ? ' · ' + U.fmtTime(g.time) : ''}${g.location ? ' · ' + U.esc(g.location) : ''}</div>
-        <div style="margin:6px 0 14px">🍎 Snacks: <b>${g.snackPlayerId ? U.esc(S.playerName(g.snackPlayerId)) : '—'}</b></div>
+        <div style="margin:6px 0 14px">🍎 Snacks: <b>${g.snackPlayerId ? U.esc(S.snackLabel(g.snackPlayerId)) : '—'}</b></div>
         <table><thead><tr><th></th>${S.POSITIONS.map(p => `<th>${p}</th>`).join('')}<th>Sitting</th></tr></thead><tbody>`;
       for (let q = 1; q <= Q; q++) {
         const row = (g.rotation || {})[q] || {};
@@ -2348,8 +2373,10 @@ body.viewing .nav { display: none !important; }
       root.innerHTML = `
         <div class="viewer${play.notes ? ' has-notes' : ''}">
           <div class="stage">
-            <div class="frame" style="--ar:${crop.ratio.toFixed(4)}">
-              <svg class="field" id="vfield" xmlns="http://www.w3.org/2000/svg"></svg>
+            <div class="canvas" id="canvas">
+              <div class="frame" style="--ar:${crop.ratio.toFixed(4)}">
+                <svg class="field" id="vfield" xmlns="http://www.w3.org/2000/svg"></svg>
+              </div>
               <svg class="annot" id="annot" xmlns="http://www.w3.org/2000/svg" viewBox="${crop.viewBox}"></svg>
             </div>
           <div class="vtools">
@@ -2375,6 +2402,21 @@ body.viewing .nav { display: none !important; }
 
       const field = root.querySelector('#vfield'), annot = root.querySelector('#annot');
       F.render(field, play, { names, subbed, viewBox: crop.viewBox });
+      // The annotation layer covers the whole white canvas around the play (not the tools), in field
+      // units: its viewBox is the play's crop box extended to the canvas edges, so marks stay glued
+      // to the play when the layout changes.
+      const fitAnnot = () => {
+        const c = root.querySelector('#canvas'), fr = root.querySelector('.frame');
+        if (!c || !fr || !annot.isConnected) return;
+        const cr = c.getBoundingClientRect(), f = fr.getBoundingClientRect();
+        if (!cr.width || !f.width) return;
+        const k = G.FIELD_W / f.width;                        // field units per px
+        const r = n => Math.round(n * 100) / 100;
+        annot.setAttribute('viewBox', `${r(-(f.left - cr.left) * k)} ${r(crop.top - (f.top - cr.top) * k)} ${r(cr.width * k)} ${r(cr.height * k)}`);
+      };
+      fitAnnot();
+      if (A.onResize) window.removeEventListener('resize', A.onResize);
+      A.onResize = fitAnnot; window.addEventListener('resize', fitAnnot);
       drawAnnots(annot);
       const subBtn = root.querySelector('#subBtn'); if (subBtn) subBtn.onclick = () => subSheet(play);
       // notes are clamped to two lines so the whole view fits the screen without scrolling; tap for all of them
@@ -2418,7 +2460,7 @@ body.viewing .nav { display: none !important; }
         const last = A.live.pts[A.live.pts.length - 1];
         if (Math.hypot(x - last[0], y - last[1]) < 1.2) return;
         if (tapPos && Math.hypot(x - tapAt[0], y - tapAt[1]) > 6) tapPos = null;   // it's a drag: draw as usual
-        A.live.pts.push([U.clamp(x, 0, G.FIELD_W), U.clamp(y, 0, G.FIELD_H)]);
+        A.live.pts.push([x, y]);                       // anywhere on the canvas, not just inside the play
         el.innerHTML = strokeMarkup(A.live);
       };
       const up = () => {
@@ -2443,6 +2485,7 @@ body.viewing .nav { display: none !important; }
     destroy() {
       document.body.classList.remove('viewing');
       document.onkeydown = null;
+      if (A.onResize) { window.removeEventListener('resize', A.onResize); A.onResize = null; }
       A.playId = null; A.strokes = []; A.live = null;
     }
   };

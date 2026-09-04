@@ -99,8 +99,10 @@
       root.innerHTML = `
         <div class="viewer${play.notes ? ' has-notes' : ''}">
           <div class="stage">
-            <div class="frame" style="--ar:${crop.ratio.toFixed(4)}">
-              <svg class="field" id="vfield" xmlns="http://www.w3.org/2000/svg"></svg>
+            <div class="canvas" id="canvas">
+              <div class="frame" style="--ar:${crop.ratio.toFixed(4)}">
+                <svg class="field" id="vfield" xmlns="http://www.w3.org/2000/svg"></svg>
+              </div>
               <svg class="annot" id="annot" xmlns="http://www.w3.org/2000/svg" viewBox="${crop.viewBox}"></svg>
             </div>
           <div class="vtools">
@@ -126,6 +128,21 @@
 
       const field = root.querySelector('#vfield'), annot = root.querySelector('#annot');
       F.render(field, play, { names, subbed, viewBox: crop.viewBox });
+      // The annotation layer covers the whole white canvas around the play (not the tools), in field
+      // units: its viewBox is the play's crop box extended to the canvas edges, so marks stay glued
+      // to the play when the layout changes.
+      const fitAnnot = () => {
+        const c = root.querySelector('#canvas'), fr = root.querySelector('.frame');
+        if (!c || !fr || !annot.isConnected) return;
+        const cr = c.getBoundingClientRect(), f = fr.getBoundingClientRect();
+        if (!cr.width || !f.width) return;
+        const k = G.FIELD_W / f.width;                        // field units per px
+        const r = n => Math.round(n * 100) / 100;
+        annot.setAttribute('viewBox', `${r(-(f.left - cr.left) * k)} ${r(crop.top - (f.top - cr.top) * k)} ${r(cr.width * k)} ${r(cr.height * k)}`);
+      };
+      fitAnnot();
+      if (A.onResize) window.removeEventListener('resize', A.onResize);
+      A.onResize = fitAnnot; window.addEventListener('resize', fitAnnot);
       drawAnnots(annot);
       const subBtn = root.querySelector('#subBtn'); if (subBtn) subBtn.onclick = () => subSheet(play);
       // notes are clamped to two lines so the whole view fits the screen without scrolling; tap for all of them
@@ -169,7 +186,7 @@
         const last = A.live.pts[A.live.pts.length - 1];
         if (Math.hypot(x - last[0], y - last[1]) < 1.2) return;
         if (tapPos && Math.hypot(x - tapAt[0], y - tapAt[1]) > 6) tapPos = null;   // it's a drag: draw as usual
-        A.live.pts.push([U.clamp(x, 0, G.FIELD_W), U.clamp(y, 0, G.FIELD_H)]);
+        A.live.pts.push([x, y]);                       // anywhere on the canvas, not just inside the play
         el.innerHTML = strokeMarkup(A.live);
       };
       const up = () => {
@@ -194,6 +211,7 @@
     destroy() {
       document.body.classList.remove('viewing');
       document.onkeydown = null;
+      if (A.onResize) { window.removeEventListener('resize', A.onResize); A.onResize = null; }
       A.playId = null; A.strokes = []; A.live = null;
     }
   };

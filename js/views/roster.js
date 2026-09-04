@@ -3,7 +3,7 @@
   const FB = window.FB, U = FB.util, S = FB.store;
 
   function editPlayer(id) {
-    const p = id ? S.player(id) : { name: '', number: '', positions: [], guardian: '', phone: '', email: '', notes: '', active: true };
+    const p = id ? S.player(id) : { name: '', number: '', positions: [], guardian: '', phone: '', email: '', guardian2: '', phone2: '', email2: '', notes: '', active: true };
     const m = FB.ui.modal(`<h2>${id ? 'Edit player' : 'Add player'}</h2>
       <form id="pf">
         <div class="two">
@@ -12,11 +12,18 @@
         </div>
         <div class="field-row"><label>Preferred spots (in order of preference)</label>
           <div class="checks">${S.POSITIONS.map(pos => `<label><input type="checkbox" name="positions[]" value="${pos}"${(p.positions || []).includes(pos) ? ' checked' : ''}>${pos} <span class="muted small">${S.POSITION_META[pos].name}</span></label>`).join('')}</div></div>
+        <div class="subhead">Parent / guardian 1 <span class="muted">(required)</span></div>
         <div class="two">
-          <div class="field-row"><label>Parent / guardian</label><input type="text" name="guardian" value="${U.esc(p.guardian)}"></div>
+          <div class="field-row"><label>Name</label><input type="text" name="guardian" value="${U.esc(p.guardian)}" required autocomplete="off"></div>
           <div class="field-row"><label>Phone</label><input type="tel" name="phone" value="${U.esc(p.phone)}"></div>
         </div>
         <div class="field-row"><label>Email</label><input type="email" name="email" value="${U.esc(p.email)}"></div>
+        <div class="subhead">Parent / guardian 2 <span class="muted">(optional)</span></div>
+        <div class="two">
+          <div class="field-row"><label>Name</label><input type="text" name="guardian2" value="${U.esc(p.guardian2 || '')}" autocomplete="off"></div>
+          <div class="field-row"><label>Phone</label><input type="tel" name="phone2" value="${U.esc(p.phone2 || '')}"></div>
+        </div>
+        <div class="field-row"><label>Email</label><input type="email" name="email2" value="${U.esc(p.email2 || '')}"></div>
         <div class="field-row"><label>Notes</label><textarea name="notes">${U.esc(p.notes)}</textarea></div>
         <div class="field-row"><label class="switch" style="text-transform:none;letter-spacing:0;color:inherit"><input type="checkbox" name="active"${p.active !== false ? ' checked' : ''}> Active this season</label></div>
         <div class="actions">${id ? '<button type="button" class="btn danger" id="del">Delete</button>' : ''}<button type="button" class="btn" id="cancel">Cancel</button><button type="submit" class="btn primary">Save</button></div>
@@ -58,9 +65,10 @@
           <div class="num">${U.esc(p.number || '–')}</div>
           <div class="grow">
             <div class="card-title">${U.esc(p.name)}${p.active === false ? ' <span class="chip">inactive</span>' : ''}</div>
-            <div class="row wrap" style="gap:4px;margin-top:4px">${(p.positions || []).map(FB.ui.posChip).join('')}${p.guardian ? `<span class="muted small">${U.esc(p.guardian)}</span>` : ''}</div>
+            <div class="row wrap" style="gap:4px;margin-top:4px">${(p.positions || []).map(FB.ui.posChip).join('')}</div>
+            ${S.guardians(p.id).map(g => `<div class="row small guardian" style="gap:8px;margin-top:4px"><span class="muted">${U.esc(g.name || '—')}</span>${g.phone ? `<a href="tel:${U.esc(g.phone)}" onclick="event.stopPropagation()">${U.esc(g.phone)}</a>` : ''}${g.email ? `<a href="mailto:${U.esc(g.email)}" onclick="event.stopPropagation()" class="muted">✉︎</a>` : ''}</div>`).join('')}
           </div>
-          ${p.phone ? `<a class="btn icon ghost" href="tel:${U.esc(p.phone)}" title="Call" onclick="event.stopPropagation()">📞</a>` : ''}
+          ${p.phone ? `<a class="btn icon ghost" href="tel:${U.esc(p.phone)}" title="Call ${U.esc(p.guardian || 'parent')}" onclick="event.stopPropagation()">📞</a>` : ''}
         </div></div>`).join('');
       root.querySelectorAll('.card[data-id]').forEach(c => c.onclick = () => editPlayer(c.dataset.id));
     }

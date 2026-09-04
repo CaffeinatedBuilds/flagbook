@@ -61,7 +61,8 @@ The eight plays from `Raiders.pdf` are loaded as samples the first time the app 
 
 Tapping a play in the playbook opens **View mode**: the play fills the screen with the current
 quarter's names, and you can scribble over it with a finger (highlighter, red, blue, black pens,
-undo, clear) to walk the team through it. Those marks never touch the play and disappear when you
+undo, clear) to walk the team through it. You can scribble anywhere in the white space around the
+play too, not just inside it (the tool bar is the only no-draw zone). Those marks never touch the play and disappear when you
 move to another play with the ‹ › arrows. **✏️ Edit** switches to the editor; the editor's
 **👁 View** button goes back. View mode hides the app navigation and gives the play the whole
 screen: on tablets and desktops the field sits inside a one-inch margin with the tools in the
@@ -89,7 +90,10 @@ record and Save to Photos but cannot keep clips.
 ## Games & rotation
 
 Each game has a date, kickoff, location (tap to open in Maps), opponent, notes and **snack duty**.
-**Auto-snacks** on the Games page cycles snack duty through the roster for any game without one.
+Snack duty is assigned per player but belongs to the family: everywhere it shows, you see the
+parents' names ("Jane & John Doe (Ava)") with tap-to-call numbers. Each player has a required
+first parent/guardian and an optional second one. **Auto-snacks** on the Games page cycles snack
+duty through the roster for any game without one.
 
 The rotation grid is quarters × the six spots. **Auto-rotate** fills it so playing time is as
 even as possible (nobody sits two quarters in a row when avoidable), honours preferred spots from
@@ -125,7 +129,8 @@ service-worker version deployed, bump `CACHE` in `sw.js` so installed phones pic
 ```jsonc
 {
   "team": { "name": "Raiders", "season": "Fall 2026" },
-  "roster":    [{ "id", "name", "number", "positions": ["Q"], "guardian", "phone", "email", "notes", "active" }],
+  "roster":    [{ "id", "name", "number", "positions": ["Q"], "guardian", "phone", "email",
+                  "guardian2", "phone2", "email2", "notes", "active" }],
   "practices": [{ "id", "date", "time", "location", "notes" }],
   "games":     [{ "id", "date", "time", "location", "opponent", "snackPlayerId", "notes",
                   "rotation": { "1": { "Q": "playerId", "C": "…" }, "2": {} } }],

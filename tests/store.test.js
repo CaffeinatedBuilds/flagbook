@@ -68,6 +68,19 @@
     S.importJSON(JSON.stringify({ videos: 'garbage' }), 'replace');
     eq(S.get().videos, [], 'bad shape tolerated');
   });
+  test('two guardians per player; snack duty is labelled by the family', () => {
+    S.importJSON(JSON.stringify({ roster: [
+      { id: 'a', name: 'Ava Adams', guardian: 'Jane Adams', phone: '555-1', guardian2: 'John Adams', phone2: '555-2' },
+      { id: 'b', name: 'Ben Brown', guardian: 'Pat Brown' },
+      { id: 'c', name: 'Cy Cole' }] }), 'replace');
+    eq(S.get().roster[2].guardian2, '', 'migrate default');
+    eq(S.guardians('a').map(g => g.name), ['Jane Adams', 'John Adams']);
+    eq(S.guardians('b').length, 1); eq(S.guardians('c'), []); eq(S.guardians('nope'), []);
+    eq(S.snackLabel('a'), 'Jane & John Adams (Ava)'.replace('Jane & John Adams', 'Jane Adams & John Adams'));
+    eq(S.snackLabel('b'), 'Pat Brown (Ben)');
+    eq(S.snackLabel('c'), 'Cy Cole', 'falls back to the player');
+    eq(S.snackLabel('nope'), '');
+  });
   test('migrate fills defaults on partial data', () => {
     S.importJSON(JSON.stringify({ plays: [{ id: 'a', name: 'x', players: { Q: [1, 2] }, routes: { Q: { pts: [[0, 0], [0, -50]], corners: [true, true] } } }] }), 'replace');
     const p = S.get().plays[0];

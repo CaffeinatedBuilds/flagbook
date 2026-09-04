@@ -147,7 +147,7 @@
     s.lineup = Object.assign({ show: true, gameId: '', quarter: 1, subs: {}, subsKey: '' }, s.lineup || {});
     if (!s.lineup.subs || typeof s.lineup.subs !== 'object') s.lineup.subs = {};
     s.defaultRotation = s.defaultRotation || {};
-    s.roster = (s.roster || []).map(p => Object.assign({ id: U.uid(), name: '', number: '', positions: [], guardian: '', phone: '', email: '', notes: '', active: true }, p));
+    s.roster = (s.roster || []).map(p => Object.assign({ id: U.uid(), name: '', number: '', positions: [], guardian: '', phone: '', email: '', guardian2: '', phone2: '', email2: '', notes: '', active: true }, p));
     s.practices = (s.practices || []).map(p => Object.assign({ id: U.uid(), date: '', time: '', location: '', notes: '' }, p));
     s.games = (s.games || []).map(g => Object.assign({ id: U.uid(), date: '', time: '', location: '', opponent: '', snackPlayerId: '', notes: '', rotation: {}, sitting: {} }, g));
     s.plays = (s.plays || []).map(p => Object.assign({ id: U.uid(), name: 'Untitled', notes: '', players: {}, routes: {}, spacing: { show: false, labels: {} } }, p));
@@ -219,6 +219,19 @@
     /* lookups */
     player(id) { return state.roster.find(p => p.id === id) || null; },
     playerName(id) { const p = S.player(id); return p ? p.name : ''; },
+    /* The parents/guardians on file for a player: [{name, phone, email}], first one first. */
+    guardians(id) {
+      const p = S.player(id); if (!p) return [];
+      return [{ name: p.guardian, phone: p.phone, email: p.email }, { name: p.guardian2, phone: p.phone2, email: p.email2 }]
+        .filter(g => (g.name || '').trim() || (g.phone || '').trim());
+    },
+    /* Snack duty belongs to the family: "Jane & John Doe (Ava)"; falls back to the player's name. */
+    snackLabel(id) {
+      const p = S.player(id); if (!p) return '';
+      const names = S.guardians(id).map(g => (g.name || '').trim()).filter(Boolean);
+      if (!names.length) return p.name;
+      return names.join(' & ') + ' (' + ((p.name || '').split(' ')[0] || p.name) + ')';
+    },
     play(id) { return state.plays.find(p => p.id === id) || null; },
     game(id) { return state.games.find(g => g.id === id) || null; },
     practice(id) { return state.practices.find(p => p.id === id) || null; },

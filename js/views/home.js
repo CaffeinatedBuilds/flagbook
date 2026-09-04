@@ -17,7 +17,7 @@
 
       html += `<div class="section"><h3>Next game</h3>`;
       if (g) {
-        const snack = g.snackPlayerId ? S.playerName(g.snackPlayerId) : '';
+        const snack = g.snackPlayerId ? S.snackLabel(g.snackPlayerId) : '';
         const q1 = g.rotation && g.rotation[1] ? Object.keys(g.rotation[1]).filter(k => g.rotation[1][k]).length : 0;
         html += `<a class="card tap" href="#/games/${g.id}" style="display:block;text-decoration:none">
           <div class="row spread"><div class="card-title">${g.opponent ? 'vs ' + U.esc(g.opponent) : 'Game'}</div><div class="muted">${U.fmtDate(g.date)}${g.time ? ' · ' + U.fmtTime(g.time) : ''}</div></div>
