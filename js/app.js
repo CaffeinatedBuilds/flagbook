@@ -90,6 +90,11 @@
     S.load();
     render();
     if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+      // When an updated worker takes over an already-running app, reload once so every script comes
+      // from the same release (otherwise the old app.js keeps running against the new index.html).
+      const hadController = !!navigator.serviceWorker.controller;
+      let reloaded = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => { if (hadController && !reloaded) { reloaded = true; location.reload(); } });
       navigator.serviceWorker.register('sw.js').catch(() => {});
     }
   });

@@ -103,6 +103,8 @@ textarea { min-height: 80px; resize: vertical; }
 .clip-row { display: flex; align-items: center; gap: 10px; }
 .clip-row .btn.icon.danger { color: var(--red); }
 .clip-notes { margin-top: 4px; white-space: pre-wrap; }
+.chip.side-off { background: #e8f0fe; color: #1a4fa3; margin-right: 4px; }
+.chip.side-def { background: #fdecea; color: #a32020; margin-right: 4px; }
 .comment { padding: 8px 10px; border-radius: 10px; background: #f3f4f6; margin-bottom: 6px; }
 .comment .btn.ghost.sm { min-height: 26px; padding: 0 6px; color: var(--muted); }
 .comment-text { white-space: pre-wrap; font-size: 14px; margin-top: 2px; }

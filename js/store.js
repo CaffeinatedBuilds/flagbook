@@ -152,7 +152,7 @@
     s.games = (s.games || []).map(g => Object.assign({ id: U.uid(), date: '', time: '', location: '', opponent: '', snackPlayerId: '', notes: '', rotation: {}, sitting: {} }, g));
     s.plays = (s.plays || []).map(p => Object.assign({ id: U.uid(), name: 'Untitled', notes: '', players: {}, routes: {}, spacing: { show: false, labels: {} } }, p));
     s.videos = (Array.isArray(s.videos) ? s.videos : []).map(v => {
-      v = Object.assign({ id: U.uid(), playId: '', playName: '', gameId: '', quarter: null, seq: null, label: '', comments: [], createdAt: 0, durationMs: null, sizeBytes: 0, mimeType: '' }, v);
+      v = Object.assign({ id: U.uid(), playId: '', playName: '', gameId: '', quarter: null, seq: null, side: 'offense', label: '', comments: [], createdAt: 0, durationMs: null, sizeBytes: 0, mimeType: '' }, v);
       v.comments = (Array.isArray(v.comments) ? v.comments : []).map(c => Object.assign({ id: U.uid(), by: '', text: '', at: 0 }, c));
       if (v.notes) { if (!v.comments.length) v.comments.push({ id: U.uid(), by: '', text: String(v.notes), at: v.createdAt || 0 }); delete v.notes; }   // pre-comments builds kept one note
       return v;

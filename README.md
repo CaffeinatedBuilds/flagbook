@@ -81,8 +81,10 @@ switch quarters without leaving the play.
 the built-in Camera UI, rear camera). Tap stop, then **Use Video**, and you land back on the
 playbook ready to call the next play while the clip is saved underneath, tagged with the play,
 the game and the quarter the lineup was showing. A small sheet lets you rename it, **Save to
-Photos** (share sheet → Save Video) or delete it. Clips are numbered per game ("Play 1 · Slant · Q2",
-"Play 2 · …") and each game in the Clips list has **Save all to Photos**, which puts every clip of
+Photos** (share sheet → Save Video) or delete it. When the defense is on the field, the **🎥 Defense**
+button at the top of the playbook records the same way and tags the clip **DEF**. Clips are numbered
+per game across offense and defense ("Play 1 · Slant · Q2", "Play 2 · Defense · Q2", "Play 3 · …")
+so the whole game reads in order and each game in the Clips list has **Save all to Photos**, which puts every clip of
 that game in one share sheet. The **Film** tab lists games; open one to see just its clips, and tap a
 clip to rename it or add comments. Comments are threaded, signed with the name from **More → Your
 name** and time-stamped, and they travel in the JSON backup. iOS caps these recordings at 10 minutes and
@@ -141,7 +143,7 @@ service-worker version deployed, bump `CACHE` in `sw.js` so installed phones pic
   "plays":     [{ "id", "name", "notes", "players": { "Y": [x, y] },
                   "routes": { "Y": { "pts": [[dx, dy]], "corners": [true], "hot", "steps", "end", "dashed", "labelSide" } },
                   "spacing": { "show": true, "labels": { "Y|Z": "1" } } }],
-  "videos":    [{ "id", "playId", "playName", "gameId", "quarter", "seq", "label", "createdAt", "durationMs", "sizeBytes", "mimeType",
+  "videos":    [{ "id", "playId", "playName", "gameId", "quarter", "seq", "side", "label", "createdAt", "durationMs", "sizeBytes", "mimeType",
                   "comments": [{ "id", "by", "text", "at" }] }]
                 // clip metadata only — the video file itself is in this device's IndexedDB and is not exported
 }

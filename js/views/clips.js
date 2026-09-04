@@ -21,6 +21,7 @@
       <div class="row" style="gap:8px;margin-bottom:12px"><input type="text" id="cby" placeholder="Your name" value="${U.esc(name)}" autocomplete="name" style="flex:1"><button type="button" class="btn" id="cpost">Post</button></div>`;
   }
   function detail(c) { return `${U.esc(c.playName)}${c.quarter ? ' · Q' + c.quarter : ''} · ${M.fmtDuration(c.durationMs) || '?:??'} · ${M.fmtBytes(c.sizeBytes)}`; }
+  const sideChip = c => c.side === 'defense' ? '<span class="chip side-def">DEF</span>' : '<span class="chip side-off">OFF</span>';
   function fileFor(c, blob) {
     const base = (c.seq ? 'Play-' + String(c.seq).padStart(2, '0') + ' ' : '') + clipLabel(c).replace(/^Play \d+ · /, '');
     const name = base.replace(/[^\w\- ]+/g, '').trim().replace(/\s+/g, '-') || 'clip';
@@ -55,8 +56,11 @@
   const mediaCleanup = (m, url) => () => { const v = m && m.el && m.el.querySelector('video'); if (v) { try { v.pause(); v.removeAttribute('src'); v.load(); } catch (e) { /* ignore */ } } URL.revokeObjectURL(url); };
 
   /* ---------- from view mode: the camera just handed us a file ---------- */
-  C.capture = async function (file, play) {
+  /* opts.side = 'defense' for a defensive snap (recorded from the playbook grid); the play number keeps
+   * counting across offense and defense so the whole game reads in order. */
+  C.capture = async function (file, play, opts) {
     if (!file) return;
+    opts = opts || {};
     const L = S.get().lineup;
     const lineup = { show: L.show, gameId: L.gameId || '', quarter: L.quarter || null };
     const id = U.uid();
@@ -64,7 +68,7 @@
     U.toast('Saving clip…', 60000);
     const seq = S.nextClipSeq(lineup.gameId);
     const durationMs = await M.probeDuration(file);
-    const meta = M.meta({ id, file, play, lineup, durationMs, seq });
+    const meta = M.meta({ id, file, play, lineup, durationMs, seq, side: opts.side });
     let stored = false, why = '';
     if (!M.available) why = location.protocol === 'file:' ? 'The single-file version cannot keep clips.' : 'This browser cannot store clips.';
     else if (file.size > M.MAX_KEEP_BYTES) why = 'This clip is too big to keep in FlagBook (' + M.fmtBytes(file.size) + ').';
@@ -147,7 +151,7 @@
   function rowHTML(c) {
     const cs = c.comments || [], last = cs[cs.length - 1];
     return `<div class="card clip-row tap" data-clip="${c.id}" title="Tap for comments">
-      <div class="grow"><div class="card-title">${U.esc(clipLabel(c))}</div>
+      <div class="grow"><div class="card-title">${sideChip(c)} ${U.esc(clipLabel(c))}</div>
         <div class="small muted">${detail(c)}${c.createdAt ? ' · ' + U.esc(when(c.createdAt)) : ''}</div>
         ${last ? `<div class="small clip-notes">💬 ${cs.length > 1 ? cs.length + ' · ' : ''}<b>${U.esc(byLabel(last))}:</b> ${U.esc(last.text)}</div>` : `<div class="small muted clip-notes">💬 <i>Add a comment</i></div>`}
         <div class="small missing-note hidden" style="color:var(--red)">Not on this device</div></div>
@@ -195,7 +199,8 @@
       root.innerHTML = `<div class="empty">No film for this game yet.<br><br><span class="small">Pick this game in the playbook's lineup bar, open a play and tap <b>🎥</b>.</span></div>`;
       return;
     }
-    root.innerHTML = `<div class="section" style="margin-top:0"><div class="row spread"><h3>${g ? U.fmtDate(g.date) + ' · ' : ''}${clips.length} clip${clips.length === 1 ? '' : 's'}</h3>${canShare ? `<button class="btn sm" id="shareAll" title="Every clip of this game in one share sheet → Save Video">⤴ Save all to Photos</button>` : ''}</div>${clips.map(rowHTML).join('')}</div>${FOOT}`;
+    const nDef = clips.filter(c => c.side === 'defense').length, nOff = clips.length - nDef;
+    root.innerHTML = `<div class="section" style="margin-top:0"><div class="row spread"><h3>${g ? U.fmtDate(g.date) + ' · ' : ''}${clips.length} clip${clips.length === 1 ? '' : 's'}${nDef ? ` <span class="muted" style="font-weight:600">· ${nOff} off · ${nDef} def</span>` : ''}</h3>${canShare ? `<button class="btn sm" id="shareAll" title="Every clip of this game in one share sheet → Save Video">⤴ Save all to Photos</button>` : ''}</div>${clips.map(rowHTML).join('')}</div>${FOOT}`;
     const sa = root.querySelector('#shareAll'); if (sa) sa.onclick = () => shareAll(clips, g ? gameTitle(g) + ' clips' : 'FlagBook clips');
     root.querySelectorAll('[data-clip]').forEach(el => {
         const c = st.videos.find(v => v.id === el.dataset.clip); if (!c) return;

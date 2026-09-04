@@ -60,7 +60,7 @@
     eq(S.get().videos, [], 'empty by default');
     S.importJSON(JSON.stringify({ videos: [{ id: 'v1', playId: 'p1', playName: 'Slant', gameId: 'g1', quarter: 2, sizeBytes: 5 }] }), 'merge');
     const v = S.get().videos[0];
-    eq(v.id, 'v1'); eq(v.label, ''); eq(v.durationMs, null); eq(v.mimeType, '');
+    eq(v.id, 'v1'); eq(v.label, ''); eq(v.durationMs, null); eq(v.mimeType, ''); eq(v.side, 'offense', 'old clips count as offense');
     eq(S.clipsFor('g1').length, 1); eq(S.clipsFor('nope').length, 0);
     S.importJSON(JSON.stringify({ videos: [{ id: 'v1', label: 'renamed' }, { id: 'v2' }] }), 'merge');
     eq(S.get().videos.length, 2); eq(S.get().videos.find(x => x.id === 'v1').label, 'renamed', 'merge is by id');

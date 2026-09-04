@@ -116,6 +116,8 @@ textarea { min-height: 80px; resize: vertical; }
 .clip-row { display: flex; align-items: center; gap: 10px; }
 .clip-row .btn.icon.danger { color: var(--red); }
 .clip-notes { margin-top: 4px; white-space: pre-wrap; }
+.chip.side-off { background: #e8f0fe; color: #1a4fa3; margin-right: 4px; }
+.chip.side-def { background: #fdecea; color: #a32020; margin-right: 4px; }
 .comment { padding: 8px 10px; border-radius: 10px; background: #f3f4f6; margin-bottom: 6px; }
 .comment .btn.ghost.sm { min-height: 26px; padding: 0 6px; color: var(--muted); }
 .comment-text { white-space: pre-wrap; font-size: 14px; margin-top: 2px; }
@@ -814,7 +816,7 @@ body.viewing .nav { display: none !important; }
     s.games = (s.games || []).map(g => Object.assign({ id: U.uid(), date: '', time: '', location: '', opponent: '', snackPlayerId: '', notes: '', rotation: {}, sitting: {} }, g));
     s.plays = (s.plays || []).map(p => Object.assign({ id: U.uid(), name: 'Untitled', notes: '', players: {}, routes: {}, spacing: { show: false, labels: {} } }, p));
     s.videos = (Array.isArray(s.videos) ? s.videos : []).map(v => {
-      v = Object.assign({ id: U.uid(), playId: '', playName: '', gameId: '', quarter: null, seq: null, label: '', comments: [], createdAt: 0, durationMs: null, sizeBytes: 0, mimeType: '' }, v);
+      v = Object.assign({ id: U.uid(), playId: '', playName: '', gameId: '', quarter: null, seq: null, side: 'offense', label: '', comments: [], createdAt: 0, durationMs: null, sizeBytes: 0, mimeType: '' }, v);
       v.comments = (Array.isArray(v.comments) ? v.comments : []).map(c => Object.assign({ id: U.uid(), by: '', text: '', at: 0 }, c));
       if (v.notes) { if (!v.comments.length) v.comments.push({ id: U.uid(), by: '', text: String(v.notes), at: v.createdAt || 0 }); delete v.notes; }   // pre-comments builds kept one note
       return v;
@@ -1109,11 +1111,13 @@ body.viewing .nav { display: none !important; }
     const play = o.play || {}, L = o.lineup || {}, file = o.file || {};
     const quarter = L.quarter ? +L.quarter : null;
     const playName = play.name || 'Play';
-    const seq = o.seq ? +o.seq : null;                       // 1, 2, 3… within the game
+    const seq = o.seq ? +o.seq : null;                       // 1, 2, 3… within the game, offense and defense alike
+    const side = o.side === 'defense' ? 'defense' : 'offense';
     return {
       id: o.id || FB.util.uid(),
       playId: play.id || '',
       playName,
+      side,
       gameId: L.gameId || '',
       quarter,
       seq,
@@ -1961,9 +1965,9 @@ body.viewing .nav { display: none !important; }
   function renderList(root, route) {
     const st = S.get();
     const names = S.lineupNames();
-    FB.ui.setTitle(`<h1>Playbook</h1><a class="btn sm" href="#/print">🖨</a><button class="btn primary sm" id="add">+ New play</button>`);
+    FB.ui.setTitle(`<h1>Playbook</h1><button class="btn sm" id="recDef" title="Record the defense: the clip takes the game's next play number">🎥 Defense</button><a class="btn sm" href="#/print">🖨</a><button class="btn primary sm" id="add">+ New play</button>`);
     document.getElementById('add').onclick = newPlayDialog;
-    let html = lineupBar(false);
+    let html = `<input type="file" accept="video/*" capture="environment" id="recDefIn" class="hidden" aria-hidden="true" tabindex="-1">` + lineupBar(false);
     if (names && !Object.keys(names).length) html += `<p class="hint" style="margin:0 0 12px">No players assigned for ${U.esc(S.lineupLabel())} yet. Tap <b>Edit lineup</b> to fill the quarters.</p>`;
     const subbed = names ? S.subbedPositions() : [];
     if (subbed.length) {
@@ -1975,6 +1979,10 @@ body.viewing .nav { display: none !important; }
     else html += `<div class="plays">${st.plays.map(p => `<a class="play-card" href="#/view/${p.id}">${F.svgString(p, { names })}<div class="cap"><span>${U.esc(p.name)}</span>${Object.values(p.routes).some(r => r.hot) ? '<i class="dot" title="has hot route"></i>' : ''}</div></a>`).join('')}</div>`;
     root.innerHTML = html;
     bindLineupBar(root);
+    // 🎥 Defense: same camera hand-off as the 🎥 in view mode, tagged as a defensive snap
+    const recDefIn = root.querySelector('#recDefIn');
+    document.getElementById('recDef').onclick = () => { recDefIn.value = ''; recDefIn.click(); };
+    recDefIn.onchange = () => { const file = recDefIn.files && recDefIn.files[0]; recDefIn.value = ''; if (file) FB.clips.capture(file, { id: '', name: 'Defense' }, { side: 'defense' }); };
     const cs = root.querySelector('#clearSubs'); if (cs) cs.onclick = () => S.clearSubs();
     const a2 = root.querySelector('#add2'); if (a2) a2.onclick = newPlayDialog;
   }
@@ -2559,6 +2567,7 @@ body.viewing .nav { display: none !important; }
       <div class="row" style="gap:8px;margin-bottom:12px"><input type="text" id="cby" placeholder="Your name" value="${U.esc(name)}" autocomplete="name" style="flex:1"><button type="button" class="btn" id="cpost">Post</button></div>`;
   }
   function detail(c) { return `${U.esc(c.playName)}${c.quarter ? ' · Q' + c.quarter : ''} · ${M.fmtDuration(c.durationMs) || '?:??'} · ${M.fmtBytes(c.sizeBytes)}`; }
+  const sideChip = c => c.side === 'defense' ? '<span class="chip side-def">DEF</span>' : '<span class="chip side-off">OFF</span>';
   function fileFor(c, blob) {
     const base = (c.seq ? 'Play-' + String(c.seq).padStart(2, '0') + ' ' : '') + clipLabel(c).replace(/^Play \d+ · /, '');
     const name = base.replace(/[^\w\- ]+/g, '').trim().replace(/\s+/g, '-') || 'clip';
@@ -2593,8 +2602,11 @@ body.viewing .nav { display: none !important; }
   const mediaCleanup = (m, url) => () => { const v = m && m.el && m.el.querySelector('video'); if (v) { try { v.pause(); v.removeAttribute('src'); v.load(); } catch (e) { /* ignore */ } } URL.revokeObjectURL(url); };
 
   /* ---------- from view mode: the camera just handed us a file ---------- */
-  C.capture = async function (file, play) {
+  /* opts.side = 'defense' for a defensive snap (recorded from the playbook grid); the play number keeps
+   * counting across offense and defense so the whole game reads in order. */
+  C.capture = async function (file, play, opts) {
     if (!file) return;
+    opts = opts || {};
     const L = S.get().lineup;
     const lineup = { show: L.show, gameId: L.gameId || '', quarter: L.quarter || null };
     const id = U.uid();
@@ -2602,7 +2614,7 @@ body.viewing .nav { display: none !important; }
     U.toast('Saving clip…', 60000);
     const seq = S.nextClipSeq(lineup.gameId);
     const durationMs = await M.probeDuration(file);
-    const meta = M.meta({ id, file, play, lineup, durationMs, seq });
+    const meta = M.meta({ id, file, play, lineup, durationMs, seq, side: opts.side });
     let stored = false, why = '';
     if (!M.available) why = location.protocol === 'file:' ? 'The single-file version cannot keep clips.' : 'This browser cannot store clips.';
     else if (file.size > M.MAX_KEEP_BYTES) why = 'This clip is too big to keep in FlagBook (' + M.fmtBytes(file.size) + ').';
@@ -2685,7 +2697,7 @@ body.viewing .nav { display: none !important; }
   function rowHTML(c) {
     const cs = c.comments || [], last = cs[cs.length - 1];
     return `<div class="card clip-row tap" data-clip="${c.id}" title="Tap for comments">
-      <div class="grow"><div class="card-title">${U.esc(clipLabel(c))}</div>
+      <div class="grow"><div class="card-title">${sideChip(c)} ${U.esc(clipLabel(c))}</div>
         <div class="small muted">${detail(c)}${c.createdAt ? ' · ' + U.esc(when(c.createdAt)) : ''}</div>
         ${last ? `<div class="small clip-notes">💬 ${cs.length > 1 ? cs.length + ' · ' : ''}<b>${U.esc(byLabel(last))}:</b> ${U.esc(last.text)}</div>` : `<div class="small muted clip-notes">💬 <i>Add a comment</i></div>`}
         <div class="small missing-note hidden" style="color:var(--red)">Not on this device</div></div>
@@ -2733,7 +2745,8 @@ body.viewing .nav { display: none !important; }
       root.innerHTML = `<div class="empty">No film for this game yet.<br><br><span class="small">Pick this game in the playbook's lineup bar, open a play and tap <b>🎥</b>.</span></div>`;
       return;
     }
-    root.innerHTML = `<div class="section" style="margin-top:0"><div class="row spread"><h3>${g ? U.fmtDate(g.date) + ' · ' : ''}${clips.length} clip${clips.length === 1 ? '' : 's'}</h3>${canShare ? `<button class="btn sm" id="shareAll" title="Every clip of this game in one share sheet → Save Video">⤴ Save all to Photos</button>` : ''}</div>${clips.map(rowHTML).join('')}</div>${FOOT}`;
+    const nDef = clips.filter(c => c.side === 'defense').length, nOff = clips.length - nDef;
+    root.innerHTML = `<div class="section" style="margin-top:0"><div class="row spread"><h3>${g ? U.fmtDate(g.date) + ' · ' : ''}${clips.length} clip${clips.length === 1 ? '' : 's'}${nDef ? ` <span class="muted" style="font-weight:600">· ${nOff} off · ${nDef} def</span>` : ''}</h3>${canShare ? `<button class="btn sm" id="shareAll" title="Every clip of this game in one share sheet → Save Video">⤴ Save all to Photos</button>` : ''}</div>${clips.map(rowHTML).join('')}</div>${FOOT}`;
     const sa = root.querySelector('#shareAll'); if (sa) sa.onclick = () => shareAll(clips, g ? gameTitle(g) + ' clips' : 'FlagBook clips');
     root.querySelectorAll('[data-clip]').forEach(el => {
         const c = st.videos.find(v => v.id === el.dataset.clip); if (!c) return;
@@ -2957,6 +2970,11 @@ body.viewing .nav { display: none !important; }
     S.load();
     render();
     if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+      // When an updated worker takes over an already-running app, reload once so every script comes
+      // from the same release (otherwise the old app.js keeps running against the new index.html).
+      const hadController = !!navigator.serviceWorker.controller;
+      let reloaded = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => { if (hadController && !reloaded) { reloaded = true; location.reload(); } });
       navigator.serviceWorker.register('sw.js').catch(() => {});
     }
   });

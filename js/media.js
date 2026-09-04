@@ -81,11 +81,13 @@
     const play = o.play || {}, L = o.lineup || {}, file = o.file || {};
     const quarter = L.quarter ? +L.quarter : null;
     const playName = play.name || 'Play';
-    const seq = o.seq ? +o.seq : null;                       // 1, 2, 3… within the game
+    const seq = o.seq ? +o.seq : null;                       // 1, 2, 3… within the game, offense and defense alike
+    const side = o.side === 'defense' ? 'defense' : 'offense';
     return {
       id: o.id || FB.util.uid(),
       playId: play.id || '',
       playName,
+      side,
       gameId: L.gameId || '',
       quarter,
       seq,
