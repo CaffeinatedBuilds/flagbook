@@ -6,11 +6,12 @@
   --font: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 * { box-sizing: border-box; }
-html, body { margin: 0; padding: 0; background: var(--bg); color: var(--ink); font-family: var(--font); -webkit-text-size-adjust: 100%; }
+/* touches may only scroll the page: no double-tap zoom, no browser pinch-zoom. The field does its own two-finger zoom. */
+html, body { margin: 0; padding: 0; background: var(--bg); color: var(--ink); font-family: var(--font); -webkit-text-size-adjust: 100%; touch-action: pan-x pan-y; }
 body { min-height: 100vh; padding-bottom: calc(var(--nav-h) + var(--safe-b)); }
 a { color: inherit; }
 button, input, select, textarea { font: inherit; color: inherit; }
-button { cursor: pointer; }
+button { cursor: pointer; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
 h1, h2, h3 { margin: 0; }
 h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.01em; }
 h2 { font-size: 17px; font-weight: 700; }
