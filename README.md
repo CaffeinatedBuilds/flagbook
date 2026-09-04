@@ -39,6 +39,8 @@ the page data between launches.
   curved parts (swings, wheels, drags) become smooth splines. Redrawing replaces the shape but
   keeps the route's settings.
 * Drag a step number to place it exactly where you want; **↺ #** snaps it back beside the route.
+* Pinch with two fingers to zoom into the field (and pan while pinching) for fine work; a pinch
+  never draws or moves anything. **⤢ Whole field** zooms back out.
 * Tap a route to select it; tap it again (or use **🔥 Hot route**) to make it a hot route. Hot
   routes are red and show the step number the receiver should be ready for the ball on
   (**Ready on step** stepper). Any route can carry a step/depth number in black too.
@@ -64,6 +66,8 @@ move to another play with the ‹ › arrows. **✏️ Edit** switches to the ed
 **👁 View** button goes back. View mode hides the app navigation and gives the play the whole
 screen: on tablets and desktops the field sits inside a one-inch margin with the tools in the
 bottom margin; on a phone the tools sit below the field (portrait) or beside it (landscape).
+The page is locked while presenting: a finger swipe never scrolls or bounces it, and everything,
+including the first two lines of the coaching notes (tap them for the rest), fits on one screen.
 
 **Substitutions.** When a kid swaps out for a play, tap their token on the field (or the **🔁**
 button) and pick who goes in from the bench, trade spots with another player on the field, or leave

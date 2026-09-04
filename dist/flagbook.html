@@ -205,12 +205,14 @@ textarea { min-height: 80px; resize: vertical; }
 .lineup-bar .qseg button[disabled] { opacity: .4; }
 .lineup-bar.compact { margin-bottom: 0; }
 
-/* view mode: navigation hidden, play fills the screen inside a margin (1in on tablets/desktops) */
-body.viewing { padding-left: 0 !important; padding-bottom: 0 !important; }
+/* view mode: navigation hidden, play fills the screen inside a margin (1in on tablets/desktops).
+ * The body is pinned so a finger swipe can never scroll or rubber-band the page while presenting. */
+body.viewing { padding-left: 0 !important; padding-bottom: 0 !important; position: fixed; inset: 0; width: 100%; height: 100%; overflow: hidden; overscroll-behavior: none; }
 body.viewing .nav { display: none !important; }
-.viewer { --vpad: 8px; --topbar: 52px; --vtools-h: 64px; display: flex; flex-direction: column; }
-.viewer .stage { position: relative; background: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: var(--vpad); min-height: calc(100vh - var(--topbar)); }
-.viewer .frame { --ar: 1.3333; position: relative; width: 100%; aspect-ratio: var(--ar); max-width: min(calc(100vw - 2 * var(--vpad)), calc((100vh - var(--topbar) - var(--vtools-h) - 2 * var(--vpad)) * var(--ar))); }
+.viewer { --vpad: 8px; --topbar: calc(53px + env(safe-area-inset-top, 0px)); /* 52px bar + 1px border */ --vtools-h: 64px; --notes-h: 0px; display: flex; flex-direction: column; }
+.viewer.has-notes { --notes-h: 48px; }
+.viewer .stage { position: relative; background: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: var(--vpad) var(--vpad) calc(var(--vpad) + var(--safe-b)); height: calc(100vh - var(--topbar)); overflow: hidden; }
+.viewer .frame { --ar: 1.3333; position: relative; width: 100%; aspect-ratio: var(--ar); max-width: min(calc(100vw - 2 * var(--vpad)), calc((100vh - var(--topbar) - var(--vtools-h) - var(--notes-h) - var(--safe-b) - 2 * var(--vpad)) * var(--ar))); }
 .viewer .frame svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 .viewer .frame .annot { touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; cursor: crosshair; }
 .vtools { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; justify-content: center; padding: 10px 14px; min-height: var(--vtools-h); }
@@ -219,11 +221,12 @@ body.viewing .nav { display: none !important; }
 .pen { width: 40px; height: 40px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 0 0 1px var(--line); background: var(--pen); cursor: pointer; padding: 0; }
 .pen.on { box-shadow: 0 0 0 3px var(--ink); }
 .small-seg button { min-width: 46px; min-height: 40px; }
-.vnotes { padding: 4px 16px 14px; text-align: center; color: var(--muted); font-size: 14px; white-space: pre-wrap; }
+.vnotes { padding: 6px 16px 0; max-height: var(--notes-h); overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; text-align: center; color: var(--muted); font-size: 14px; line-height: 1.35; white-space: pre-wrap; cursor: pointer; }
 
 /* tablets and desktops: one-inch margin all round; tools sit in the bottom margin so the play gets the rest */
 @media (min-width: 700px) and (min-height: 521px) {
   .viewer { --vpad: 1in; --vtools-h: 0px; }
+  .viewer.has-notes { --notes-h: 0px; }
   .viewer .stage { height: calc(100vh - var(--topbar)); min-height: 0; }
   .vtools { position: absolute; left: 0; right: 0; bottom: calc((1in - 48px) / 2); padding: 0 1in; min-height: 48px; flex-wrap: nowrap; gap: 10px 22px; }
   .vtools .btn.icon { width: 44px; min-height: 44px; }
@@ -234,6 +237,7 @@ body.viewing .nav { display: none !important; }
 /* landscape phone: field left, tools stacked on the right */
 @media (orientation: landscape) and (max-height: 520px) {
   .viewer { --vtools-h: 0px; }
+  .viewer.has-notes { --notes-h: 0px; }
   .viewer .stage { flex-direction: row; height: calc(100vh - var(--topbar)); min-height: 0; padding: 6px; }
   .viewer .frame { max-width: min(calc(100vw - 124px), calc((100vh - var(--topbar) - 12px) * var(--ar))); }
   .vtools { flex-direction: column; width: 112px; padding: 4px; gap: 10px; overflow: hidden auto; max-height: 100%; justify-content: flex-start; min-height: 0; flex: 0 0 112px; }
@@ -1907,13 +1911,13 @@ body.viewing .nav { display: none !important; }
   }
 
   /* ---------- editor ---------- */
-  const ed = { id: null, sel: null, mode: 'move', showGrid: false, stroke: null, drag: null, dragLabel: null, svg: null, play: null, names: null };
+  const ed = { id: null, sel: null, mode: 'move', showGrid: false, stroke: null, drag: null, dragLabel: null, svg: null, play: null, names: null, zoom: null /* [x,y,w,h] viewBox when pinched in */ };
 
   function renderEditor(root, route) {
     const play = S.play(route.id);
     if (!play) { root.innerHTML = '<div class="empty">Play not found. <a href="#/playbook">Back to playbook</a></div>'; return; }
     // every play opens in Move: drawing a route is an explicit opt-in so a stray drag never rewrites one
-    if (ed.id !== play.id) { ed.id = play.id; ed.sel = null; ed.stroke = null; ed.drag = null; ed.dragLabel = null; ed.mode = 'move'; }
+    if (ed.id !== play.id) { ed.id = play.id; ed.sel = null; ed.stroke = null; ed.drag = null; ed.dragLabel = null; ed.mode = 'move'; ed.zoom = null; }
     ed.play = play; ed.names = S.lineupNames();
     if (ed.sel && !play.players[ed.sel]) ed.sel = null;
     const scrollY = window.scrollY;
@@ -1934,6 +1938,7 @@ body.viewing .nav { display: none !important; }
       <div class="full">${lineupBar(true)}</div>
       <div class="toolrow full">
         <div class="seg" id="mode"><button data-mode="move" class="${ed.mode === 'move' ? 'on' : ''}">✋ Move</button><button data-mode="draw" class="${ed.mode === 'draw' ? 'on' : ''}">✏️ Draw route</button></div>
+        <button class="btn sm${ed.zoom ? '' : ' hidden'}" id="zoomReset" title="Show the whole field again (pinch with two fingers to zoom)">⤢ Whole field</button>
         <div class="bench" id="bench">${S.POSITIONS.map(tokBtn).join('')}</div>
         <span class="hint grow">${ed.mode === 'draw' ? (sel ? `Drag on the field to draw <b>${sel}</b>'s route.` : 'Tap a player, then drag to draw their route.') : 'Drag players to position them. Drag from the bench to add.'}</span>
       </div>`;
@@ -1982,7 +1987,7 @@ body.viewing .nav { display: none !important; }
 
   function drawField(live) {
     if (!ed.svg || !ed.play) return;
-    F.render(ed.svg, ed.play, { selected: ed.sel, showGrid: ed.showGrid, names: ed.names, interactive: true, liveStroke: live });
+    F.render(ed.svg, ed.play, { selected: ed.sel, showGrid: ed.showGrid, names: ed.names, interactive: true, liveStroke: live, viewBox: ed.zoom ? ed.zoom.join(' ') : null });
   }
 
   function save(fn) { S.mutate(() => { fn(); ed.play.updatedAt = Date.now(); }); }
@@ -2049,10 +2054,47 @@ body.viewing .nav { display: none !important; }
 
     // field interactions
     let downPt = null, moved = false, tapRoute = null, tapGap = null;
+
+    // Two fingers = pinch: zoom and pan the field. Whatever the first finger had started (a stroke,
+    // a token or step-number drag) is thrown away, so a pinch can never draw or move anything.
+    const pointers = new Map();
+    let pinch = null, pinchEnded = false;
+    const WHOLE = [0, 0, G.FIELD_W, G.FIELD_H];
+    function startPinch() {
+      if (ed.drag) { if (ed.drag.from) play.players[ed.drag.pos] = ed.drag.from; ed.drag = null; }
+      if (ed.dragLabel) { const r = play.routes[ed.dragLabel.pos]; if (r) { if (ed.dragLabel.from) r.labelAt = ed.dragLabel.from; else delete r.labelAt; } ed.dragLabel = null; }
+      ed.stroke = null; downPt = null; tapRoute = null; tapGap = null; moved = false; pinchEnded = false;
+      drawField();
+      const [a, b] = Array.from(pointers.values());
+      const rect = svg.getBoundingClientRect(), box = ed.zoom || WHOLE;
+      const mid = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
+      pinch = {
+        d0: Math.hypot(a[0] - b[0], a[1] - b[1]) || 1, z0: G.FIELD_W / box[2],
+        anchor: [box[0] + (mid[0] - rect.left) / rect.width * box[2], box[1] + (mid[1] - rect.top) / rect.height * box[3]]   // field point under the fingers
+      };
+    }
+    function movePinch() {
+      if (pointers.size < 2) return;
+      const [a, b] = Array.from(pointers.values());
+      const rect = svg.getBoundingClientRect();
+      const z = U.clamp(pinch.z0 * (Math.hypot(a[0] - b[0], a[1] - b[1]) / pinch.d0), 1, 4);
+      const w = G.FIELD_W / z, h = G.FIELD_H / z;
+      const mid = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
+      const x = U.clamp(pinch.anchor[0] - (mid[0] - rect.left) / rect.width * w, 0, G.FIELD_W - w);
+      const y = U.clamp(pinch.anchor[1] - (mid[1] - rect.top) / rect.height * h, 0, G.FIELD_H - h);
+      ed.zoom = z > 1.01 ? [x, y, w, h].map(v => Math.round(v * 10) / 10) : null;
+      svg.setAttribute('viewBox', (ed.zoom || WHOLE).join(' '));
+    }
+    const syncZoomUI = () => { const b = root.querySelector('#zoomReset'); if (b) b.classList.toggle('hidden', !ed.zoom); };
+    const zoomReset = root.querySelector('#zoomReset'); if (zoomReset) zoomReset.onclick = () => { ed.zoom = null; drawField(); syncZoomUI(); };
+
     svg.onpointerdown = e => {
       if (e.button != null && e.button !== 0) return;
       e.preventDefault();
+      pointers.set(e.pointerId, [e.clientX, e.clientY]);
       try { svg.setPointerCapture(e.pointerId); } catch (err) {}
+      if (pointers.size >= 2 && !pinch) startPinch();
+      if (pinch || pinchEnded) return;
       const [x, y] = F.pointFromEvent(svg, e);
       downPt = [x, y]; moved = false; tapRoute = null; tapGap = null;
       const gapEl = e.target.closest && e.target.closest('.gap');
@@ -2062,13 +2104,13 @@ body.viewing .nav { display: none !important; }
         // grab the step number: works in either mode and takes priority over drawing
         const pos = lblEl.dataset.pos, r = play.routes[pos], at = play.players[pos];
         const cur = r.labelAt ? [at[0] + r.labelAt[0], at[1] + r.labelAt[1]] : G.labelPoint(r, at[0], at[1], r.labelSide || 1, 22);
-        ed.dragLabel = { pos, dx: cur[0] - x, dy: cur[1] - y };
+        ed.dragLabel = { pos, dx: cur[0] - x, dy: cur[1] - y, from: r.labelAt ? r.labelAt.slice() : null };
         if (ed.sel !== pos) { ed.sel = pos; drawField(); }
         return;
       }
       const tok = tokenAt(play, x, y);
       if (ed.mode === 'move') {
-        if (tok) { ed.sel = tok; ed.drag = { pos: tok, dx: play.players[tok][0] - x, dy: play.players[tok][1] - y }; drawField(); }
+        if (tok) { ed.sel = tok; ed.drag = { pos: tok, dx: play.players[tok][0] - x, dy: play.players[tok][1] - y, from: play.players[tok].slice() }; drawField(); }
         else tapRoute = routeAt(play, x, y);
       } else {
         const target = tok || ed.sel;
@@ -2081,7 +2123,9 @@ body.viewing .nav { display: none !important; }
       }
     };
     svg.onpointermove = e => {
-      if (!downPt) return;
+      if (pointers.has(e.pointerId)) pointers.set(e.pointerId, [e.clientX, e.clientY]);
+      if (pinch) { movePinch(); return; }
+      if (pinchEnded || !downPt) return;
       const [x, y] = F.pointFromEvent(svg, e);
       if (!moved && Math.hypot(x - downPt[0], y - downPt[1]) > 3) moved = true;
       if (ed.dragLabel) {
@@ -2097,6 +2141,9 @@ body.viewing .nav { display: none !important; }
       }
     };
     const up = e => {
+      pointers.delete(e.pointerId);
+      if (pinch) { if (pointers.size < 2) { pinch = null; pinchEnded = pointers.size > 0; syncZoomUI(); } return; }   // the finger still down must not start drawing
+      if (pinchEnded) { if (!pointers.size) pinchEnded = false; return; }
       if (!downPt) return;
       const wasDown = downPt; downPt = null;
       if (tapGap && !moved) {
@@ -2298,7 +2345,7 @@ body.viewing .nav { display: none !important; }
         <a class="btn sm" href="#/playbook/${play.id}" title="Edit this play">✏️ Edit</a>`);
 
       root.innerHTML = `
-        <div class="viewer">
+        <div class="viewer${play.notes ? ' has-notes' : ''}">
           <div class="stage">
             <div class="frame" style="--ar:${crop.ratio.toFixed(4)}">
               <svg class="field" id="vfield" xmlns="http://www.w3.org/2000/svg"></svg>
@@ -2321,14 +2368,19 @@ body.viewing .nav { display: none !important; }
             ${L.show ? `<div class="vgroup seg qseg small-seg">${Array.from({ length: Q }, (_, i) => `<button data-q="${i + 1}" class="${L.quarter === i + 1 ? 'on' : ''}">Q${i + 1}</button>`).join('')}</div>
             <div class="vgroup"><button class="btn icon${subbed.length ? ' on' : ''}" id="subBtn" title="Substitution: swap a player in from the bench (or tap a player on the field)">🔁</button></div>` : ''}
           </div>
+          ${play.notes ? `<div class="vnotes" title="Tap for the full notes">${U.esc(play.notes)}</div>` : ''}
           </div>
-          ${play.notes ? `<div class="vnotes">${U.esc(play.notes)}</div>` : ''}
         </div>`;
 
       const field = root.querySelector('#vfield'), annot = root.querySelector('#annot');
       F.render(field, play, { names, subbed, viewBox: crop.viewBox });
       drawAnnots(annot);
       const subBtn = root.querySelector('#subBtn'); if (subBtn) subBtn.onclick = () => subSheet(play);
+      // notes are clamped to two lines so the whole view fits the screen without scrolling; tap for all of them
+      const vn = root.querySelector('.vnotes'); if (vn) vn.onclick = () => {
+        const m = FB.ui.modal(`<h2>${U.esc(play.name)}</h2><p style="white-space:pre-wrap;margin:0 0 14px">${U.esc(play.notes)}</p><div class="actions"><button type="button" class="btn primary" id="ok">Done</button></div>`, { focus: false });
+        m.el.querySelector('#ok').onclick = m.close;
+      };
 
       root.querySelector('#prevPlay').onclick = () => { location.hash = '#/view/' + prev.id; };
       root.querySelector('#nextPlay').onclick = () => { location.hash = '#/view/' + next.id; };

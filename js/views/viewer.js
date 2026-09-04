@@ -97,7 +97,7 @@
         <a class="btn sm" href="#/playbook/${play.id}" title="Edit this play">✏️ Edit</a>`);
 
       root.innerHTML = `
-        <div class="viewer">
+        <div class="viewer${play.notes ? ' has-notes' : ''}">
           <div class="stage">
             <div class="frame" style="--ar:${crop.ratio.toFixed(4)}">
               <svg class="field" id="vfield" xmlns="http://www.w3.org/2000/svg"></svg>
@@ -120,14 +120,19 @@
             ${L.show ? `<div class="vgroup seg qseg small-seg">${Array.from({ length: Q }, (_, i) => `<button data-q="${i + 1}" class="${L.quarter === i + 1 ? 'on' : ''}">Q${i + 1}</button>`).join('')}</div>
             <div class="vgroup"><button class="btn icon${subbed.length ? ' on' : ''}" id="subBtn" title="Substitution: swap a player in from the bench (or tap a player on the field)">🔁</button></div>` : ''}
           </div>
+          ${play.notes ? `<div class="vnotes" title="Tap for the full notes">${U.esc(play.notes)}</div>` : ''}
           </div>
-          ${play.notes ? `<div class="vnotes">${U.esc(play.notes)}</div>` : ''}
         </div>`;
 
       const field = root.querySelector('#vfield'), annot = root.querySelector('#annot');
       F.render(field, play, { names, subbed, viewBox: crop.viewBox });
       drawAnnots(annot);
       const subBtn = root.querySelector('#subBtn'); if (subBtn) subBtn.onclick = () => subSheet(play);
+      // notes are clamped to two lines so the whole view fits the screen without scrolling; tap for all of them
+      const vn = root.querySelector('.vnotes'); if (vn) vn.onclick = () => {
+        const m = FB.ui.modal(`<h2>${U.esc(play.name)}</h2><p style="white-space:pre-wrap;margin:0 0 14px">${U.esc(play.notes)}</p><div class="actions"><button type="button" class="btn primary" id="ok">Done</button></div>`, { focus: false });
+        m.el.querySelector('#ok').onclick = m.close;
+      };
 
       root.querySelector('#prevPlay').onclick = () => { location.hash = '#/view/' + prev.id; };
       root.querySelector('#nextPlay').onclick = () => { location.hash = '#/view/' + next.id; };

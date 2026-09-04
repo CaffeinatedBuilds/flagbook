@@ -192,12 +192,14 @@ textarea { min-height: 80px; resize: vertical; }
 .lineup-bar .qseg button[disabled] { opacity: .4; }
 .lineup-bar.compact { margin-bottom: 0; }
 
-/* view mode: navigation hidden, play fills the screen inside a margin (1in on tablets/desktops) */
-body.viewing { padding-left: 0 !important; padding-bottom: 0 !important; }
+/* view mode: navigation hidden, play fills the screen inside a margin (1in on tablets/desktops).
+ * The body is pinned so a finger swipe can never scroll or rubber-band the page while presenting. */
+body.viewing { padding-left: 0 !important; padding-bottom: 0 !important; position: fixed; inset: 0; width: 100%; height: 100%; overflow: hidden; overscroll-behavior: none; }
 body.viewing .nav { display: none !important; }
-.viewer { --vpad: 8px; --topbar: 52px; --vtools-h: 64px; display: flex; flex-direction: column; }
-.viewer .stage { position: relative; background: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: var(--vpad); min-height: calc(100vh - var(--topbar)); }
-.viewer .frame { --ar: 1.3333; position: relative; width: 100%; aspect-ratio: var(--ar); max-width: min(calc(100vw - 2 * var(--vpad)), calc((100vh - var(--topbar) - var(--vtools-h) - 2 * var(--vpad)) * var(--ar))); }
+.viewer { --vpad: 8px; --topbar: calc(53px + env(safe-area-inset-top, 0px)); /* 52px bar + 1px border */ --vtools-h: 64px; --notes-h: 0px; display: flex; flex-direction: column; }
+.viewer.has-notes { --notes-h: 48px; }
+.viewer .stage { position: relative; background: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: var(--vpad) var(--vpad) calc(var(--vpad) + var(--safe-b)); height: calc(100vh - var(--topbar)); overflow: hidden; }
+.viewer .frame { --ar: 1.3333; position: relative; width: 100%; aspect-ratio: var(--ar); max-width: min(calc(100vw - 2 * var(--vpad)), calc((100vh - var(--topbar) - var(--vtools-h) - var(--notes-h) - var(--safe-b) - 2 * var(--vpad)) * var(--ar))); }
 .viewer .frame svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 .viewer .frame .annot { touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; cursor: crosshair; }
 .vtools { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; justify-content: center; padding: 10px 14px; min-height: var(--vtools-h); }
@@ -206,11 +208,12 @@ body.viewing .nav { display: none !important; }
 .pen { width: 40px; height: 40px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 0 0 1px var(--line); background: var(--pen); cursor: pointer; padding: 0; }
 .pen.on { box-shadow: 0 0 0 3px var(--ink); }
 .small-seg button { min-width: 46px; min-height: 40px; }
-.vnotes { padding: 4px 16px 14px; text-align: center; color: var(--muted); font-size: 14px; white-space: pre-wrap; }
+.vnotes { padding: 6px 16px 0; max-height: var(--notes-h); overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; text-align: center; color: var(--muted); font-size: 14px; line-height: 1.35; white-space: pre-wrap; cursor: pointer; }
 
 /* tablets and desktops: one-inch margin all round; tools sit in the bottom margin so the play gets the rest */
 @media (min-width: 700px) and (min-height: 521px) {
   .viewer { --vpad: 1in; --vtools-h: 0px; }
+  .viewer.has-notes { --notes-h: 0px; }
   .viewer .stage { height: calc(100vh - var(--topbar)); min-height: 0; }
   .vtools { position: absolute; left: 0; right: 0; bottom: calc((1in - 48px) / 2); padding: 0 1in; min-height: 48px; flex-wrap: nowrap; gap: 10px 22px; }
   .vtools .btn.icon { width: 44px; min-height: 44px; }
@@ -221,6 +224,7 @@ body.viewing .nav { display: none !important; }
 /* landscape phone: field left, tools stacked on the right */
 @media (orientation: landscape) and (max-height: 520px) {
   .viewer { --vtools-h: 0px; }
+  .viewer.has-notes { --notes-h: 0px; }
   .viewer .stage { flex-direction: row; height: calc(100vh - var(--topbar)); min-height: 0; padding: 6px; }
   .viewer .frame { max-width: min(calc(100vw - 124px), calc((100vh - var(--topbar) - 12px) * var(--ar))); }
   .vtools { flex-direction: column; width: 112px; padding: 4px; gap: 10px; overflow: hidden auto; max-height: 100%; justify-content: flex-start; min-height: 0; flex: 0 0 112px; }
