@@ -83,11 +83,12 @@ playbook ready to call the next play while the clip is saved underneath, tagged 
 the game and the quarter the lineup was showing. A small sheet lets you rename it, **Save to
 Photos** (share sheet → Save Video) or delete it. Clips are numbered per game ("Play 1 · Slant · Q2",
 "Play 2 · …") and each game in the Clips list has **Save all to Photos**, which puts every clip of
-that game in one share sheet. The Clips page lists games; open one to see just its clips, and tap a
-clip to give it a label and a comment. iOS caps these recordings at 10 minutes and
+that game in one share sheet. The **Film** tab lists games; open one to see just its clips, and tap a
+clip to rename it or add comments. Comments are threaded, signed with the name from **More → Your
+name** and time-stamped, and they travel in the JSON backup. iOS caps these recordings at 10 minutes and
 records them at medium quality, so this is for a play or a drive, not the whole game. Clips are
 kept on this device (IndexedDB) and are **not** part of the JSON backup; browse them from a
-game's **🎥 Clips** button or **More → All clips**. The single-file `dist/flagbook.html` build can
+game's **🎬 Film** button or the **Film** tab. The single-file `dist/flagbook.html` build can
 record and Save to Photos but cannot keep clips.
 
 ## Games & rotation
@@ -114,7 +115,7 @@ js/store.js           state, localStorage persistence, import/export, seed plays
 js/media.js           video clips in IndexedDB (blobs), size/duration helpers
 js/rotation.js        fair rotation + snack assignment
 js/field.js           SVG renderer for a play
-js/views/*.js         screens (home, roster, practices, games, playbook, viewer, clips, print, settings)
+js/views/*.js         screens (home, roster, practices, games, playbook, viewer, clips (Film), print, settings)
 js/app.js             hash router + UI helpers
 sw.js, manifest.webmanifest, icons/   PWA install/offline
 tools/run-tests.swift      runs tests/*.test.js in JavaScriptCore (no Node needed)
@@ -140,7 +141,8 @@ service-worker version deployed, bump `CACHE` in `sw.js` so installed phones pic
   "plays":     [{ "id", "name", "notes", "players": { "Y": [x, y] },
                   "routes": { "Y": { "pts": [[dx, dy]], "corners": [true], "hot", "steps", "end", "dashed", "labelSide" } },
                   "spacing": { "show": true, "labels": { "Y|Z": "1" } } }],
-  "videos":    [{ "id", "playId", "playName", "gameId", "quarter", "seq", "label", "notes", "createdAt", "durationMs", "sizeBytes", "mimeType" }]
+  "videos":    [{ "id", "playId", "playName", "gameId", "quarter", "seq", "label", "createdAt", "durationMs", "sizeBytes", "mimeType",
+                  "comments": [{ "id", "by", "text", "at" }] }]
                 // clip metadata only — the video file itself is in this device's IndexedDB and is not exported
 }
 ```

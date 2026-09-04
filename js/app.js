@@ -48,7 +48,7 @@
     [/^#\/playbook\/([^/?]+)/, 'playbook', 'playbook'], [/^#\/playbook/, 'playbook'],
     [/^#\/view\/([^/?]+)/, 'viewer', 'playbook'],
     [/^#\/print(?:\/([^/?]+))?/, 'print', 'playbook'], [/^#\/gamesheet\/([^/?]+)/, 'gamesheet', 'games'],
-    [/^#\/clips/, 'clips', 'games'],
+    [/^#\/film/, 'clips', 'film'], [/^#\/clips/, 'clips', 'film'],
     [/^#\/settings/, 'settings']
   ];
   let current = null;

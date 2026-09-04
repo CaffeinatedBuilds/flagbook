@@ -90,7 +90,7 @@
       quarter,
       seq,
       label: o.label || ((seq ? 'Play ' + seq + ' · ' : '') + playName + (quarter ? ' · Q' + quarter : '')),
-      notes: o.notes || '',
+      comments: [],
       createdAt: o.createdAt || Date.now(),
       durationMs: o.durationMs == null ? null : o.durationMs,
       sizeBytes: file.size || 0,

@@ -37,7 +37,7 @@
       practices: [],
       games: [],
       plays: [],
-      settings: { showYardGrid: false, quarters: 4 },
+      settings: { showYardGrid: false, quarters: 4, coachName: '' },   // coachName signs film comments
       lineup: { show: true, gameId: '', quarter: 1, subs: {}, subsKey: '' },   // which names the playbook shows (+ in-game substitutions)
       defaultRotation: {},                               // team lineup used when no game is picked
       videos: []                                         // clip metadata; the video files themselves live in IndexedDB (FB.media)
@@ -151,7 +151,12 @@
     s.practices = (s.practices || []).map(p => Object.assign({ id: U.uid(), date: '', time: '', location: '', notes: '' }, p));
     s.games = (s.games || []).map(g => Object.assign({ id: U.uid(), date: '', time: '', location: '', opponent: '', snackPlayerId: '', notes: '', rotation: {}, sitting: {} }, g));
     s.plays = (s.plays || []).map(p => Object.assign({ id: U.uid(), name: 'Untitled', notes: '', players: {}, routes: {}, spacing: { show: false, labels: {} } }, p));
-    s.videos = (Array.isArray(s.videos) ? s.videos : []).map(v => Object.assign({ id: U.uid(), playId: '', playName: '', gameId: '', quarter: null, seq: null, label: '', notes: '', createdAt: 0, durationMs: null, sizeBytes: 0, mimeType: '' }, v));
+    s.videos = (Array.isArray(s.videos) ? s.videos : []).map(v => {
+      v = Object.assign({ id: U.uid(), playId: '', playName: '', gameId: '', quarter: null, seq: null, label: '', comments: [], createdAt: 0, durationMs: null, sizeBytes: 0, mimeType: '' }, v);
+      v.comments = (Array.isArray(v.comments) ? v.comments : []).map(c => Object.assign({ id: U.uid(), by: '', text: '', at: 0 }, c));
+      if (v.notes) { if (!v.comments.length) v.comments.push({ id: U.uid(), by: '', text: String(v.notes), at: v.createdAt || 0 }); delete v.notes; }   // pre-comments builds kept one note
+      return v;
+    });
     for (const p of s.plays) {
       p.spacing = Object.assign({ show: false, labels: {} }, p.spacing || {});
       for (const k of Object.keys(p.routes || {})) {
@@ -236,6 +241,20 @@
     game(id) { return state.games.find(g => g.id === id) || null; },
     practice(id) { return state.practices.find(p => p.id === id) || null; },
     clipsFor(gameId) { return state.videos.filter(v => (v.gameId || '') === (gameId || '')); },
+    /* Film comments: who said what, when. The name is remembered as settings.coachName. */
+    addClipComment(clipId, text, by) {
+      const v = state.videos.find(x => x.id === clipId); text = (text || '').trim(); by = (by || '').trim();
+      if (!v || !text) return null;
+      const c = { id: U.uid(), by, text, at: Date.now() };
+      v.comments = v.comments || []; v.comments.push(c);
+      if (by) state.settings.coachName = by;
+      S.save();
+      return c;
+    },
+    removeClipComment(clipId, commentId) {
+      const v = state.videos.find(x => x.id === clipId); if (!v) return;
+      v.comments = (v.comments || []).filter(c => c.id !== commentId); S.save();
+    },
     /* Play numbers count up within a game (clips with no game share their own sequence). */
     nextClipSeq(gameId) { return Math.max(0, ...S.clipsFor(gameId).map(v => +v.seq || 0)) + 1; },
     activeRoster() { return U.sortBy(state.roster.filter(p => p.active !== false), p => (parseInt(p.number, 10) || 999)); },

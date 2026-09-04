@@ -11,15 +11,12 @@
         <div class="card"><h2 style="margin-bottom:10px">Team</h2>
           <div class="two"><div class="field-row"><label>Team name</label><input type="text" id="tname" value="${U.esc(st.team.name)}"></div>
           <div class="field-row"><label>Season</label><input type="text" id="tseason" value="${U.esc(st.team.season)}" placeholder="Fall 2026"></div></div>
+          <div class="field-row"><label>Your name <span class="muted" style="text-transform:none;letter-spacing:0">(signs your film comments)</span></label><input type="text" id="coach" value="${U.esc(st.settings.coachName || '')}" placeholder="Coach Ray" autocomplete="name"></div>
           <div class="field-row"><label>Quarters per game</label><select id="quarters">${[2, 4].map(n => `<option value="${n}"${(st.settings.quarters || 4) === n ? ' selected' : ''}>${n}</option>`).join('')}</select></div>
         </div>
         <div class="card"><h2 style="margin-bottom:10px">Backup & sharing</h2>
           <p class="small muted">Everything is stored on this device. Export a backup file regularly, or send it to an assistant coach who can import it.</p>
           <div class="row wrap"><button class="btn primary" id="export">⬇︎ Export backup</button>${navigator.share ? '<button class="btn" id="share">Share…</button>' : ''}<label class="btn">⬆︎ Import<input type="file" id="import" accept="application/json,.json" class="hidden"></label></div>
-        </div>
-        <div class="card"><h2 style="margin-bottom:10px">Game clips</h2>
-          <p class="small muted">Clips you record from a play in view mode stay on this device and are <b>not</b> in the backup file. Use <b>Save to Photos</b> on a clip for a permanent copy.<span id="mediaUse"></span></p>
-          <div class="row wrap"><a class="btn" href="#/clips">🎥 All clips${st.videos.length ? ' · ' + st.videos.length : ''}</a></div>
         </div>
         <div class="card"><h2 style="margin-bottom:10px">Playbook</h2>
           <div class="row wrap"><a class="btn" href="#/print">🖨 Print all plays</a><button class="btn" id="seed">Restore sample Raiders plays</button></div>
@@ -34,6 +31,7 @@
       root.querySelector('#tname').onchange = e => S.mutate(s => s.team.name = e.target.value.trim());
       root.querySelector('#tseason').onchange = e => S.mutate(s => s.team.season = e.target.value.trim());
       root.querySelector('#quarters').onchange = e => S.mutate(s => s.settings.quarters = +e.target.value);
+      root.querySelector('#coach').onchange = e => S.mutate(s => s.settings.coachName = e.target.value.trim());
       root.querySelector('#export').onclick = () => U.download(`flagbook-${(st.team.name || 'team').replace(/\W+/g, '-')}-${U.todayISO()}.json`, S.exportJSON());
       const share = root.querySelector('#share');
       if (share) share.onclick = async () => {
@@ -57,7 +55,6 @@
       root.querySelector('#reset').onclick = () => U.confirm('Erase roster, schedule, games, plays and clips on this device?', { ok: 'Erase', danger: true })
         .then(ok => ok && U.confirm('Really erase everything? Export a backup first if unsure.', { ok: 'Erase everything', danger: true }))
         .then(ok => { if (ok) { FB.media.clear().catch(() => {}); S.reset(); U.toast('Erased'); } });
-      if (st.videos.length) FB.media.usage().then(u => { const el = root.querySelector('#mediaUse'); if (el && u && u.usage) el.textContent = ` Using ${FB.media.fmtBytes(u.usage)}${u.quota ? ' of ' + FB.media.fmtBytes(u.quota) : ''}.`; });
     }
   };
 })();

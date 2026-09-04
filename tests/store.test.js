@@ -69,6 +69,17 @@
     eq(S.nextClipSeq('g1'), 1, 'numbering starts at 1 when no clip is numbered');
     S.importJSON(JSON.stringify({ videos: [{ id: 'v3', gameId: 'g1', seq: 3 }, { id: 'v7', gameId: '', seq: 7 }] }), 'merge');
     eq(S.nextClipSeq('g1'), 4); eq(S.nextClipSeq(''), 8, 'clips without a game count separately'); eq(S.nextClipSeq('other'), 1);
+    // comments: signed and time-stamped; a legacy single note becomes the first comment
+    S.importJSON(JSON.stringify({ videos: [{ id: 'n1', notes: 'old note', createdAt: 5 }] }), 'merge');
+    const n1 = S.get().videos.find(v => v.id === 'n1');
+    eq(n1.comments.length, 1); eq(n1.comments[0].text, 'old note'); eq(n1.comments[0].at, 5); eq(n1.notes, undefined);
+    eq(S.addClipComment('n1', '   ', 'Ray'), null, 'empty comment ignored');
+    const c = S.addClipComment('n1', ' Great catch ', ' Coach Ray ');
+    eq(c.text, 'Great catch'); eq(c.by, 'Coach Ray'); assert(c.at > 0, 'timestamp');
+    eq(S.get().settings.coachName, 'Coach Ray', 'name remembered');
+    eq(S.get().videos.find(v => v.id === 'n1').comments.length, 2);
+    S.removeClipComment('n1', c.id);
+    eq(S.get().videos.find(v => v.id === 'n1').comments.length, 1);
     S.importJSON(JSON.stringify({ videos: 'garbage' }), 'replace');
     eq(S.get().videos, [], 'bad shape tolerated');
   });

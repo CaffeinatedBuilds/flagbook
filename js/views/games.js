@@ -39,7 +39,7 @@
     return `<a class="card tap" href="#/games/${g.id}" style="display:block;text-decoration:none">
       <div class="row spread"><div class="card-title">${g.opponent ? 'vs ' + U.esc(g.opponent) : 'Game'}</div><div class="muted">${U.fmtDate(g.date)}${g.time ? ' · ' + U.fmtTime(g.time) : ''}</div></div>
       ${g.location ? `<div class="small muted" style="margin-top:4px">📍 ${U.esc(g.location)}</div>` : ''}
-      <div class="row wrap small" style="margin-top:8px;gap:12px"><span>🍎 ${snack ? U.esc(snack) : '<span class="muted">no snack assigned</span>'}</span><span>${set ? '✅ rotation set' : '<span class="muted">rotation not set</span>'}</span>${clips ? `<span>🎥 ${clips} clip${clips === 1 ? '' : 's'}</span>` : ''}</div></a>`;
+      <div class="row wrap small" style="margin-top:8px;gap:12px"><span>🍎 ${snack ? U.esc(snack) : '<span class="muted">no snack assigned</span>'}</span><span>${set ? '✅ rotation set' : '<span class="muted">rotation not set</span>'}</span>${clips ? `<span>🎬 ${clips} clip${clips === 1 ? '' : 's'}</span>` : ''}</div></a>`;
   }
 
   FB.views.games = {
@@ -85,7 +85,7 @@
 
       let html = `<div class="card">
         <div class="row spread"><div><div class="card-title">${U.fmtDateLong(g.date)}</div><div class="muted">${g.time ? 'Kickoff ' + U.fmtTime(g.time) : ''}</div></div>
-        <div class="row" style="gap:6px"><a class="btn sm" href="#/clips?game=${g.id}">🎥 Clips${S.clipsFor(g.id).length ? ' · ' + S.clipsFor(g.id).length : ''}</a><a class="btn sm" href="#/gamesheet/${g.id}">🖨 Game sheet</a></div></div>
+        <div class="row" style="gap:6px"><a class="btn sm" href="#/film?game=${g.id}">🎬 Film${S.clipsFor(g.id).length ? ' · ' + S.clipsFor(g.id).length : ''}</a><a class="btn sm" href="#/gamesheet/${g.id}">🖨 Game sheet</a></div></div>
         ${g.location ? `<div style="margin-top:8px">📍 <a href="${U.mapsLink(g.location)}" target="_blank" rel="noopener">${U.esc(g.location)}</a></div>` : ''}
         ${g.notes ? `<div class="small muted" style="margin-top:6px">${U.esc(g.notes)}</div>` : ''}
         <div class="field-row" style="margin:12px 0 0"><label>🍎 Snack duty (the family brings snacks)</label><select id="snack"><option value="">—</option>${S.activeRoster().map(p => `<option value="${p.id}"${p.id === g.snackPlayerId ? ' selected' : ''}>${U.esc(S.snackLabel(p.id))}</option>`).join('')}</select></div>
