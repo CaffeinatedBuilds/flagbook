@@ -55,6 +55,19 @@
     S.setSub('X', 'a'); S.clearSubs();
     eq(S.lineupNames(), { Q: 'Ben', C: 'Cy', X: 'Dee' });
   });
+  test('clip metadata lives in state.videos and survives import/merge', () => {
+    S.importJSON(JSON.stringify({ games: [{ id: 'g1', opponent: 'Bears' }] }), 'replace');
+    eq(S.get().videos, [], 'empty by default');
+    S.importJSON(JSON.stringify({ videos: [{ id: 'v1', playId: 'p1', playName: 'Slant', gameId: 'g1', quarter: 2, sizeBytes: 5 }] }), 'merge');
+    const v = S.get().videos[0];
+    eq(v.id, 'v1'); eq(v.label, ''); eq(v.durationMs, null); eq(v.mimeType, '');
+    eq(S.clipsFor('g1').length, 1); eq(S.clipsFor('nope').length, 0);
+    S.importJSON(JSON.stringify({ videos: [{ id: 'v1', label: 'renamed' }, { id: 'v2' }] }), 'merge');
+    eq(S.get().videos.length, 2); eq(S.get().videos.find(x => x.id === 'v1').label, 'renamed', 'merge is by id');
+    assert(S.exportJSON().includes('"videos"'), 'exported');
+    S.importJSON(JSON.stringify({ videos: 'garbage' }), 'replace');
+    eq(S.get().videos, [], 'bad shape tolerated');
+  });
   test('migrate fills defaults on partial data', () => {
     S.importJSON(JSON.stringify({ plays: [{ id: 'a', name: 'x', players: { Q: [1, 2] }, routes: { Q: { pts: [[0, 0], [0, -50]], corners: [true, true] } } }] }), 'replace');
     const p = S.get().plays[0];

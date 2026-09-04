@@ -89,6 +89,8 @@
     U._toastTimer = setTimeout(() => t.classList.remove('show'), ms || 1800);
   };
 
+  U.hideToast = function () { const t = document.getElementById('toast'); if (t) t.classList.remove('show'); clearTimeout(U._toastTimer); };
+
   U.confirm = function (msg) { return window.confirm(msg); };
 
   FB.util = U;

@@ -17,6 +17,10 @@
           <p class="small muted">Everything is stored on this device. Export a backup file regularly, or send it to an assistant coach who can import it.</p>
           <div class="row wrap"><button class="btn primary" id="export">⬇︎ Export backup</button>${navigator.share ? '<button class="btn" id="share">Share…</button>' : ''}<label class="btn">⬆︎ Import<input type="file" id="import" accept="application/json,.json" class="hidden"></label></div>
         </div>
+        <div class="card"><h2 style="margin-bottom:10px">Game clips</h2>
+          <p class="small muted">Clips you record from a play in view mode stay on this device and are <b>not</b> in the backup file. Use <b>Save to Photos</b> on a clip for a permanent copy.<span id="mediaUse"></span></p>
+          <div class="row wrap"><a class="btn" href="#/clips">🎥 All clips${st.videos.length ? ' · ' + st.videos.length : ''}</a></div>
+        </div>
         <div class="card"><h2 style="margin-bottom:10px">Playbook</h2>
           <div class="row wrap"><a class="btn" href="#/print">🖨 Print all plays</a><button class="btn" id="seed">Restore sample Raiders plays</button></div>
         </div>
@@ -49,7 +53,8 @@
         r.readAsText(f);
       };
       root.querySelector('#seed').onclick = () => { S.resetSeedPlays(); U.toast('Sample plays added'); };
-      root.querySelector('#reset').onclick = () => { if (U.confirm('Erase roster, schedule, games and plays on this device?') && U.confirm('Really erase everything? Export a backup first if unsure.')) { S.reset(); U.toast('Erased'); } };
+      root.querySelector('#reset').onclick = () => { if (U.confirm('Erase roster, schedule, games, plays and clips on this device?') && U.confirm('Really erase everything? Export a backup first if unsure.')) { FB.media.clear().catch(() => {}); S.reset(); U.toast('Erased'); } };
+      if (st.videos.length) FB.media.usage().then(u => { const el = root.querySelector('#mediaUse'); if (el && u && u.usage) el.textContent = ` Using ${FB.media.fmtBytes(u.usage)}${u.quota ? ' of ' + FB.media.fmtBytes(u.quota) : ''}.`; });
     }
   };
 })();

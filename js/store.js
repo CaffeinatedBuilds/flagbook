@@ -39,7 +39,8 @@
       plays: [],
       settings: { showYardGrid: false, quarters: 4 },
       lineup: { show: true, gameId: '', quarter: 1, subs: {}, subsKey: '' },   // which names the playbook shows (+ in-game substitutions)
-      defaultRotation: {}                                // team lineup used when no game is picked
+      defaultRotation: {},                               // team lineup used when no game is picked
+      videos: []                                         // clip metadata; the video files themselves live in IndexedDB (FB.media)
     };
   }
 
@@ -150,6 +151,7 @@
     s.practices = (s.practices || []).map(p => Object.assign({ id: U.uid(), date: '', time: '', location: '', notes: '' }, p));
     s.games = (s.games || []).map(g => Object.assign({ id: U.uid(), date: '', time: '', location: '', opponent: '', snackPlayerId: '', notes: '', rotation: {}, sitting: {} }, g));
     s.plays = (s.plays || []).map(p => Object.assign({ id: U.uid(), name: 'Untitled', notes: '', players: {}, routes: {}, spacing: { show: false, labels: {} } }, p));
+    s.videos = (Array.isArray(s.videos) ? s.videos : []).map(v => Object.assign({ id: U.uid(), playId: '', playName: '', gameId: '', quarter: null, label: '', createdAt: 0, durationMs: null, sizeBytes: 0, mimeType: '' }, v));
     for (const p of s.plays) {
       p.spacing = Object.assign({ show: false, labels: {} }, p.spacing || {});
       for (const k of Object.keys(p.routes || {})) {
@@ -199,7 +201,7 @@
       const incoming = migrate(JSON.parse(text));
       if (mode === 'merge') {
         const byId = arr => new Map(arr.map(x => [x.id, x]));
-        for (const k of ['roster', 'practices', 'games', 'plays']) {
+        for (const k of ['roster', 'practices', 'games', 'plays', 'videos']) {
           const cur = byId(state[k]);
           for (const item of incoming[k]) cur.set(item.id, item);
           state[k] = Array.from(cur.values());
@@ -220,6 +222,7 @@
     play(id) { return state.plays.find(p => p.id === id) || null; },
     game(id) { return state.games.find(g => g.id === id) || null; },
     practice(id) { return state.practices.find(p => p.id === id) || null; },
+    clipsFor(gameId) { return state.videos.filter(v => v.gameId === gameId); },
     activeRoster() { return U.sortBy(state.roster.filter(p => p.active !== false), p => (parseInt(p.number, 10) || 999)); },
 
     /* ---- playbook lineup: which rotation + quarter captions the tokens ---- */
