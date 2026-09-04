@@ -31,9 +31,10 @@ the page data between launches.
   `Raiders.pdf`, with the line of scrimmage at the same height. Printing uses that exact page size,
   one play per page (**More → Print all plays**, or the ⋯ menu inside a play).
 * Six spots: **Q** (black diamond), **C**, **X**, **Y**, **Z**, **R**. Drag a token from the bench
-  onto the field, or tap it to drop it at its default spot. In **Move** mode drag tokens around;
-  they snap onto the line when close.
-* In **Draw route** mode, tap a player and drag anywhere on the field. The stroke is cleaned up
+  onto the field, or tap it to drop it at its default spot. Every play opens in **Move** mode: drag
+  tokens around; they snap onto the line when close.
+* Switch to **Draw route** (an explicit opt-in, so a stray drag never rewrites a route), then tap a
+  player and drag anywhere on the field. The stroke is cleaned up
   automatically: jitter is removed, real cuts stay sharp and are squared to 45° angles, and
   curved parts (swings, wheels, drags) become smooth splines. Redrawing replaces the shape but
   keeps the route's settings.

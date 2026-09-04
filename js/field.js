@@ -53,11 +53,9 @@
       const [lx, ly] = r.labelAt ? [ox + r.labelAt[0], oy + r.labelAt[1]] : G.labelPoint(r, ox, oy, r.labelSide || 1, 22);
       s += `<g class="steplabel" data-pos="${pos}">`;
       if (opts.interactive) s += `<circle cx="${f(lx)}" cy="${f(ly)}" r="26" fill="rgba(0,0,0,0.001)" />`;
-      // number takes the player's token colour so it's easy to tell whose route it belongs to;
-      // the light Z yellow gets a thin dark outline so it stays legible on the white field
+      // number takes the player's token colour so it's easy to tell whose route it belongs to
       const m = meta(pos);
-      const outline = pos === 'Z' ? ` style="paint-order:stroke" stroke="rgba(90,70,0,0.75)" stroke-width="1.6"` : '';
-      s += `<text x="${f(lx)}" y="${f(ly)}" text-anchor="middle" dominant-baseline="central" font-family="${FONT}" font-weight="800" font-size="36" fill="${m.fill}"${outline}>${U.esc(r.steps)}</text></g>`;
+      s += `<text x="${f(lx)}" y="${f(ly)}" text-anchor="middle" dominant-baseline="central" font-family="${FONT}" font-weight="800" font-size="36" fill="${m.fill}">${U.esc(r.steps)}</text></g>`;
     }
     s += '</g>';
     return s;
@@ -74,7 +72,7 @@
       : `<circle r="${R + 8}" fill="none" stroke="#2A7DE1" stroke-width="3" stroke-dasharray="6 4" />`;
     if (m.shape === 'diamond') s += `<polygon points="0,${-R - 3} ${R + 9},0 0,${R + 3} ${-R - 9},0" fill="${m.fill}" />`;
     else s += `<circle r="${R}" fill="${m.fill}" />`;
-    s += `<text text-anchor="middle" dominant-baseline="central" dy="1" font-family="${FONT}" font-weight="800" font-size="27" fill="${m.text}" style="paint-order:stroke" stroke="${pos === 'Z' ? 'rgba(90,70,0,0.55)' : 'none'}" stroke-width="1.2">${pos}</text>`;
+    s += `<text text-anchor="middle" dominant-baseline="central" dy="1" font-family="${FONT}" font-weight="800" font-size="27" fill="${m.text}">${pos}</text>`;
     const name = opts.names && opts.names[pos];
     if (name) {
       // If someone lines up directly below (Q under C), the caption goes to the upper right instead.

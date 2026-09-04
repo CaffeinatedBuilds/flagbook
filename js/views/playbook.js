@@ -89,12 +89,13 @@
   }
 
   /* ---------- editor ---------- */
-  const ed = { id: null, sel: null, mode: 'draw', showGrid: false, stroke: null, drag: null, dragLabel: null, svg: null, play: null, names: null };
+  const ed = { id: null, sel: null, mode: 'move', showGrid: false, stroke: null, drag: null, dragLabel: null, svg: null, play: null, names: null };
 
   function renderEditor(root, route) {
     const play = S.play(route.id);
     if (!play) { root.innerHTML = '<div class="empty">Play not found. <a href="#/playbook">Back to playbook</a></div>'; return; }
-    if (ed.id !== play.id) { ed.id = play.id; ed.sel = null; ed.stroke = null; ed.drag = null; ed.dragLabel = null; }
+    // every play opens in Move: drawing a route is an explicit opt-in so a stray drag never rewrites one
+    if (ed.id !== play.id) { ed.id = play.id; ed.sel = null; ed.stroke = null; ed.drag = null; ed.dragLabel = null; ed.mode = 'move'; }
     ed.play = play; ed.names = S.lineupNames();
     if (ed.sel && !play.players[ed.sel]) ed.sel = null;
     const scrollY = window.scrollY;
