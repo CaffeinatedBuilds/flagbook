@@ -1,5 +1,5 @@
 /* FlagBook — render a play as SVG in the Raiders.pdf visual style.
- * FB.field.render(svgEl, play, opts)   opts: { selected, showGrid, names:{pos:name}, interactive }
+ * FB.field.render(svgEl, play, opts)   opts: { selected, showGrid, names:{pos:name}, subbed:[pos], interactive }
  * FB.field.svgString(play, opts)       standalone <svg> markup (thumbnails, print)
  */
 (function () {
@@ -53,7 +53,11 @@
       const [lx, ly] = r.labelAt ? [ox + r.labelAt[0], oy + r.labelAt[1]] : G.labelPoint(r, ox, oy, r.labelSide || 1, 22);
       s += `<g class="steplabel" data-pos="${pos}">`;
       if (opts.interactive) s += `<circle cx="${f(lx)}" cy="${f(ly)}" r="26" fill="rgba(0,0,0,0.001)" />`;
-      s += `<text x="${f(lx)}" y="${f(ly)}" text-anchor="middle" dominant-baseline="central" font-family="${FONT}" font-weight="800" font-size="36" fill="${color}">${U.esc(r.steps)}</text></g>`;
+      // number takes the player's token colour so it's easy to tell whose route it belongs to;
+      // the light Z yellow gets a thin dark outline so it stays legible on the white field
+      const m = meta(pos);
+      const outline = pos === 'Z' ? ` style="paint-order:stroke" stroke="rgba(90,70,0,0.75)" stroke-width="1.6"` : '';
+      s += `<text x="${f(lx)}" y="${f(ly)}" text-anchor="middle" dominant-baseline="central" font-family="${FONT}" font-weight="800" font-size="36" fill="${m.fill}"${outline}>${U.esc(r.steps)}</text></g>`;
     }
     s += '</g>';
     return s;
@@ -79,7 +83,8 @@
       const rt = play.routes && play.routes[pos];
       const side = rt && rt.steps != null && (rt.labelSide || 1) === -1 ? 1 : -1;
       const attrs = crowded ? `x="${side * (R - 2)}" y="${-R - 7}" text-anchor="${side > 0 ? 'start' : 'end'}"` : `y="${R + 19}" text-anchor="middle"`;
-      s += `<text ${attrs} font-family="${FONT}" font-weight="700" font-size="17" fill="#222" style="paint-order:stroke" stroke="#fff" stroke-width="3">${U.esc(name)}</text>`;
+      const sub = opts.subbed && opts.subbed.indexOf(pos) >= 0;   // in-game substitution: caption in blue
+      s += `<text ${attrs} font-family="${FONT}" font-weight="700" font-size="17" fill="${sub ? '#2A7DE1' : '#222'}" style="paint-order:stroke" stroke="#fff" stroke-width="3">${U.esc(name)}</text>`;
     }
     s += '</g>';
     return s;
