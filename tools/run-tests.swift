@@ -20,7 +20,7 @@ func load(_ rel: String) {
     guard let src = try? String(contentsOfFile: path, encoding: .utf8) else { print("cannot read", rel); failed = true; return }
     ctx.evaluateScript(src, withSourceURL: URL(fileURLWithPath: path))
 }
-for f in ["js/util.js", "js/geometry.js", "js/store.js", "js/media.js", "js/rotation.js", "js/field.js"] { load(f) }
+for f in ["js/util.js", "js/geometry.js", "js/store.js", "js/media.js", "js/recorder.js", "js/rotation.js", "js/field.js"] { load(f) }
 
 // tiny test harness
 ctx.evaluateScript("""

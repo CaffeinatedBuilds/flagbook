@@ -83,7 +83,7 @@
     const playName = play.name || 'Play';
     const seq = o.seq ? +o.seq : null;                       // 1, 2, 3… within the game, offense and defense alike
     const side = o.side === 'defense' ? 'defense' : 'offense';
-    return {
+    const out = {
       id: o.id || FB.util.uid(),
       playId: play.id || '',
       playName,
@@ -98,6 +98,8 @@
       sizeBytes: file.size || 0,
       mimeType: file.type || ''
     };
+    if (o.width > 0 && o.height > 0) { out.width = Math.round(o.width); out.height = Math.round(o.height); }   // known for in-app recordings
+    return out;
   };
 
   /* Duration of a video blob in ms via a detached <video>; null if the browser cannot tell within 3s. */

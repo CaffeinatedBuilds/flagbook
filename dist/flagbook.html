@@ -260,6 +260,43 @@ body.viewing .nav { display: none !important; }
   .vnotes { display: none; }
 }
 
+/* in-app camera (#/record/…): black full-bleed preview, controls float over it */
+body.recording { background: #000; }
+body.recording .topbar, body.recording .nav { display: none !important; }
+.recorder { position: fixed; inset: 0; background: #000; color: #fff; display: flex; flex-direction: column; }
+.rec-stage { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+.rec-stage video { width: 100%; height: 100%; object-fit: contain; background: #000; display: block; }
+.rec-fallback { text-align: center; padding: 24px; max-width: 360px; }
+.rec-fallback p { color: #ccc; margin: 0 0 16px; }
+.rec-top, .rec-bottom { position: relative; z-index: 2; display: flex; align-items: center; gap: 12px; }
+.rec-top { padding: calc(10px + env(safe-area-inset-top, 0px)) calc(16px + env(safe-area-inset-right, 0px)) 10px calc(16px + env(safe-area-inset-left, 0px)); }
+.rec-bottom { margin-top: auto; justify-content: space-between; padding: 12px calc(20px + env(safe-area-inset-right, 0px)) calc(16px + var(--safe-b)) calc(20px + env(safe-area-inset-left, 0px)); }
+.rec-title { flex: 1; font-weight: 700; font-size: 15px; text-shadow: 0 1px 3px #000; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rec-dim, .rec-time { font-variant-numeric: tabular-nums; font-size: 14px; opacity: .85; text-shadow: 0 1px 3px #000; }
+.rec-time.live { color: #fff; opacity: 1; font-weight: 700; }
+.rec-time.live::before { content: ''; display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--red); margin-right: 6px; vertical-align: 1px; }
+.rec-right { display: flex; align-items: center; gap: 10px; min-width: 96px; justify-content: flex-end; }
+.rbtn { background: rgba(0,0,0,.45); color: #fff; border: 1px solid rgba(255,255,255,.3); border-radius: 999px; padding: 8px 14px; font-weight: 600; font-size: 14px; min-height: 38px; }
+.rbtn[disabled] { opacity: .4; }
+.recorder .seg.lens { background: rgba(0,0,0,.45); border-color: rgba(255,255,255,.3); min-width: 96px; }
+.recorder .seg.lens button { color: #fff; min-width: 48px; border-left-color: rgba(255,255,255,.3); }
+.recorder .seg.lens button.on { background: #fff; color: #000; }
+.recorder .seg.lens button[disabled] { opacity: .5; }
+.recorder .seg.lens.ghost { visibility: hidden; }
+.rec-btn { width: 72px; height: 72px; border-radius: 50%; border: 4px solid #fff; background: transparent; padding: 0; display: flex; align-items: center; justify-content: center; flex: 0 0 auto; }
+.rec-btn span { width: 56px; height: 56px; border-radius: 50%; background: var(--red); transition: all .15s; }
+.rec-btn.on span { width: 28px; height: 28px; border-radius: 6px; }
+.rec-btn[disabled] { opacity: .3; }
+.rec-hint { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 2; background: rgba(0,0,0,.65); padding: 12px 18px; border-radius: 12px; font-weight: 600; text-align: center; max-width: 80%; }
+.rec-notice { position: absolute; left: 16px; right: 16px; bottom: calc(120px + var(--safe-b)); z-index: 2; background: rgba(229,53,43,.85); border-radius: 10px; padding: 8px 12px; font-size: 13px; }
+/* sideways: controls in a right-hand column so the preview keeps the full width */
+@media (orientation: landscape) {
+  .rec-bottom { position: absolute; right: 0; top: 0; bottom: 0; width: 132px; margin: 0; flex-direction: column; justify-content: center; gap: 18px; padding: 0 calc(8px + env(safe-area-inset-right, 0px)) 0 8px; background: linear-gradient(to right, transparent, rgba(0,0,0,.5)); }
+  .rec-right { flex-direction: column; min-width: 0; }
+  .rec-top { padding-right: 140px; }
+  .rec-notice { right: 148px; bottom: 16px; }
+}
+
 </style>
 </head>
 <body>
@@ -701,7 +738,7 @@ body.viewing .nav { display: none !important; }
       practices: [],
       games: [],
       plays: [],
-      settings: { showYardGrid: false, quarters: 4, coachName: '' },   // coachName signs film comments
+      settings: { showYardGrid: false, quarters: 4, coachName: '', lens: 'ultra', recMode: 'app' },   // coachName signs film comments; lens/recMode drive the in-app camera
       lineup: { show: true, gameId: '', quarter: 1, subs: {}, subsKey: '' },   // which names the playbook shows (+ in-game substitutions)
       defaultRotation: {},                               // team lineup used when no game is picked
       videos: []                                         // clip metadata; the video files themselves live in IndexedDB (FB.media)
@@ -1113,7 +1150,7 @@ body.viewing .nav { display: none !important; }
     const playName = play.name || 'Play';
     const seq = o.seq ? +o.seq : null;                       // 1, 2, 3… within the game, offense and defense alike
     const side = o.side === 'defense' ? 'defense' : 'offense';
-    return {
+    const out = {
       id: o.id || FB.util.uid(),
       playId: play.id || '',
       playName,
@@ -1128,6 +1165,8 @@ body.viewing .nav { display: none !important; }
       sizeBytes: file.size || 0,
       mimeType: file.type || ''
     };
+    if (o.width > 0 && o.height > 0) { out.width = Math.round(o.width); out.height = Math.round(o.height); }   // known for in-app recordings
+    return out;
   };
 
   /* Duration of a video blob in ms via a detached <video>; null if the browser cannot tell within 3s. */
@@ -1151,6 +1190,137 @@ body.viewing .nav { display: none !important; }
   };
 
   FB.media = M;
+})();
+
+</script>
+<script>
+/* FlagBook — in-app camera. iOS's file-input camera records at "medium" quality with the 1x lens and a
+ * tight crop, so the 🎥 buttons open our own recorder instead: getUserMedia on the rear ultra-wide (0.5x)
+ * lens at the highest resolution Safari will give (1080p on most iPhones, 4K where offered) and
+ * MediaRecorder writing an MP4 that goes through the normal clip pipeline. Everything browser-specific is
+ * guarded so this file also loads in the JavaScriptCore test runner; the pure helpers take their inputs
+ * as arguments so they can be unit tested. When any of it is missing the app falls back to the file input. */
+(function () {
+  'use strict';
+  const FB = (window.FB = window.FB || {});
+  const R = {};
+
+  /* ---------- pure helpers (unit tested) ---------- */
+  R.MIME_ORDER = ['video/mp4;codecs=avc1', 'video/mp4', 'video/webm;codecs=vp9', 'video/webm'];
+  /* first type the browser can record, or '' */
+  R.pickMime = isTypeSupported => R.MIME_ORDER.find(t => { try { return !!isTypeSupported(t); } catch (e) { return false; } }) || '';
+  /* 'video/mp4;codecs=avc1' → 'video/mp4' (what goes on the File so extFor/canShare see a plain type) */
+  R.containerOf = mime => (mime || '').split(';')[0].trim();
+  /* ~16 Mbps at 1080p30, scaled by pixel count, half again above 30 fps, kept between 4 and 40 Mbps */
+  R.bitrateFor = function (w, h, fps) {
+    const px = w > 0 && h > 0 ? w * h : 1920 * 1080;
+    const base = 16e6 * px / (1920 * 1080) * ((fps || 30) > 30 ? 1.5 : 1);
+    return Math.round(Math.min(40e6, Math.max(4e6, base)));
+  };
+  const isUltra = d => /ultra\s*wide/i.test(d.label || '');
+  const cams = devices => (devices || []).filter(d => d && d.kind === 'videoinput');
+  const backCams = devices => cams(devices).filter(d => /back|rear|environment/i.test(d.label || ''));
+  /* deviceId of the lens we want ('ultra' = 0.5x, 'wide' = 1x), or null when labels are unknown → use facingMode */
+  R.pickLens = function (devices, want) {
+    const back = backCams(devices);
+    if (want === 'ultra') { const u = back.find(isUltra); if (u) return u.deviceId; }
+    const plain = back.find(d => !/ultra|tele|dual|triple/i.test(d.label)) || back.find(d => !/ultra|tele/i.test(d.label)) || back[0];
+    return plain ? plain.deviceId : null;
+  };
+  R.hasUltraWide = devices => backCams(devices).some(isUltra);
+  R.lensOf = (devices, deviceId) => { const d = cams(devices).find(x => x.deviceId === deviceId); return d && isUltra(d) ? 'ultra' : 'wide'; };
+  R.constraintsFor = (deviceId, facing) => ({
+    audio: true,
+    video: Object.assign(deviceId ? { deviceId: { exact: deviceId } } : { facingMode: facing || 'environment' },
+      { width: { ideal: 3840 }, height: { ideal: 2160 }, frameRate: { ideal: 60, max: 60 } })
+  });
+  R.fileName = (mime, ts) => 'clip-' + (ts || Date.now()) + FB.media.extFor(R.containerOf(mime));
+  R.MAX_MS = 3 * 60 * 1000;                 // auto-stop: the chunks sit in memory until the clip is saved
+
+  /* ---------- feature detection ---------- */
+  let supported = null;
+  Object.defineProperty(R, 'supported', {
+    get() {
+      if (supported == null) {
+        const gum = typeof navigator !== 'undefined' && navigator.mediaDevices && typeof navigator.mediaDevices.getUserMedia === 'function';
+        const mr = typeof MediaRecorder !== 'undefined' && typeof MediaRecorder.isTypeSupported === 'function';
+        supported = !!(gum && mr && typeof File !== 'undefined' && R.pickMime(MediaRecorder.isTypeSupported));
+      }
+      return supported;
+    }
+  });
+  /* the coach can force the old Camera-app path from More → Record clips with */
+  R.enabled = () => R.supported && ((FB.store && FB.store.get().settings.recMode) || 'app') !== 'native';
+
+  /* ---------- camera session ---------- */
+  const videoTrack = s => s.getVideoTracks()[0];
+  const stopTrack = t => { try { t.stop(); } catch (e) { /* ignore */ } };
+  R.stopStream = s => { if (s) s.getTracks().forEach(stopTrack); };
+
+  /* Swap only the video track so the microphone permission is not asked twice. Keeps the old track on failure. */
+  async function useDevice(session, deviceId) {
+    const cur = videoTrack(session.stream);
+    if (!deviceId || (cur && cur.getSettings().deviceId === deviceId)) return false;
+    let s2;
+    try { s2 = await navigator.mediaDevices.getUserMedia({ video: R.constraintsFor(deviceId).video }); }
+    catch (e) { return false; }
+    const nt = videoTrack(s2);
+    if (!nt) return false;
+    if (cur) { session.stream.removeTrack(cur); stopTrack(cur); }
+    session.stream.addTrack(nt);
+    return true;
+  }
+  function refresh(session) {
+    const t = videoTrack(session.stream);
+    session.track = t || null;
+    session.settings = t ? t.getSettings() : {};
+    session.lens = R.lensOf(session.devices, session.settings.deviceId);
+    return session;
+  }
+
+  /* Open the rear camera, then move to the requested lens once the device labels are known (iOS only
+   * names cameras after permission is granted). Resolves { stream, track, settings, devices, hasUltra, lens }. */
+  R.open = async function (lens) {
+    const stream = await navigator.mediaDevices.getUserMedia(R.constraintsFor(null, 'environment'));
+    const session = { stream, devices: [], hasUltra: false };
+    try { session.devices = await navigator.mediaDevices.enumerateDevices(); } catch (e) { /* keep the first stream */ }
+    session.hasUltra = R.hasUltraWide(session.devices);
+    await useDevice(session, R.pickLens(session.devices, lens));
+    return refresh(session);
+  };
+  R.switchLens = async function (session, lens) {
+    await useDevice(session, R.pickLens(session.devices, lens));
+    return refresh(session);
+  };
+
+  /* Start recording the stream; the handle's stop() resolves { file, durationMs, width, height }. */
+  R.record = function (stream, videoSettings) {
+    videoSettings = videoSettings || {};
+    const mime = R.pickMime(MediaRecorder.isTypeSupported);
+    const opts = { videoBitsPerSecond: R.bitrateFor(videoSettings.width, videoSettings.height, videoSettings.frameRate), audioBitsPerSecond: 128e3 };
+    if (mime) opts.mimeType = mime;
+    const rec = new MediaRecorder(stream, opts);
+    const chunks = [];
+    const t0 = performance.now();
+    rec.ondataavailable = e => { if (e.data && e.data.size) chunks.push(e.data); };
+    const done = new Promise(res => { rec.onstop = () => res(); rec.onerror = () => res(); });
+    rec.start(1000);
+    return {
+      rec,
+      elapsed: () => performance.now() - t0,
+      get active() { return rec.state !== 'inactive'; },
+      async stop() {
+        if (rec.state !== 'inactive') { try { rec.stop(); } catch (e) { /* already stopped */ } }
+        await done;
+        const type = R.containerOf(rec.mimeType || mime);
+        const blob = new Blob(chunks, { type });
+        chunks.length = 0;
+        return { file: new File([blob], R.fileName(type), { type }), durationMs: Math.round(performance.now() - t0), width: videoSettings.width || 0, height: videoSettings.height || 0 };
+      }
+    };
+  };
+
+  FB.recorder = R;
 })();
 
 </script>
@@ -1979,10 +2149,11 @@ body.viewing .nav { display: none !important; }
     else html += `<div class="plays">${st.plays.map(p => `<a class="play-card" href="#/view/${p.id}">${F.svgString(p, { names })}<div class="cap"><span>${U.esc(p.name)}</span>${Object.values(p.routes).some(r => r.hot) ? '<i class="dot" title="has hot route"></i>' : ''}</div></a>`).join('')}</div>`;
     root.innerHTML = html;
     bindLineupBar(root);
-    // 🎥 Defense: same camera hand-off as the 🎥 in view mode, tagged as a defensive snap
+    // 🎥 Defense: same camera as the 🎥 in view mode (in-app recorder, or the iOS camera hand-off), tagged as a defensive snap
     const recDefIn = root.querySelector('#recDefIn');
-    document.getElementById('recDef').onclick = () => { recDefIn.value = ''; recDefIn.click(); };
+    document.getElementById('recDef').onclick = () => { if (FB.recorder && FB.recorder.enabled()) location.hash = '#/record/defense'; else { recDefIn.value = ''; recDefIn.click(); } };
     recDefIn.onchange = () => { const file = recDefIn.files && recDefIn.files[0]; recDefIn.value = ''; if (file) FB.clips.capture(file, { id: '', name: 'Defense' }, { side: 'defense' }); };
+    recDefIn.addEventListener('cancel', () => { recDefIn.value = ''; });
     const cs = root.querySelector('#clearSubs'); if (cs) cs.onclick = () => S.clearSubs();
     const a2 = root.querySelector('#add2'); if (a2) a2.onclick = newPlayDialog;
   }
@@ -2441,7 +2612,7 @@ body.viewing .nav { display: none !important; }
               <button class="btn icon" id="clear" title="Clear marks">✕</button>
             </div>
             <div class="vgroup">
-              <button class="btn icon" id="recBtn" title="Record a clip of this play (you come back to the playbook when you stop)">🎥</button>
+              <button class="btn icon" id="recBtn" title="Record a clip of this play: wide lens, full quality (you come back to the playbook when you stop)">🎥</button>
               <input type="file" accept="video/*" capture="environment" id="recIn" class="hidden" aria-hidden="true" tabindex="-1">
             </div>
             ${L.show ? `<div class="vgroup seg qseg small-seg">${Array.from({ length: Q }, (_, i) => `<button data-q="${i + 1}" class="${L.quarter === i + 1 ? 'on' : ''}">Q${i + 1}</button>`).join('')}</div>
@@ -2483,10 +2654,11 @@ body.viewing .nav { display: none !important; }
       root.querySelector('#clear').onclick = () => { A.strokes = []; drawAnnots(annot); };
       root.querySelectorAll('[data-q]').forEach(b => b.onclick = () => S.setLineup({ quarter: +b.dataset.q }));
 
-      // 🎥 opens the camera (iOS: straight into video mode). When the coach taps "Use Video" the file
-      // lands here and FB.clips takes over: back to the playbook, clip saved underneath.
+      // 🎥 opens FlagBook's own camera page (wide lens, full quality). Where that is not possible the old
+      // iOS camera hand-off runs instead: the coach taps "Use Video", the file lands here and FB.clips takes
+      // over: back to the playbook, clip saved underneath.
       const recBtn = root.querySelector('#recBtn'), recIn = root.querySelector('#recIn');
-      recBtn.onclick = () => { recIn.value = ''; recIn.click(); };
+      recBtn.onclick = () => { if (FB.recorder && FB.recorder.enabled()) location.hash = '#/record/' + play.id; else { recIn.value = ''; recIn.click(); } };
       recIn.onchange = () => { const file = recIn.files && recIn.files[0]; recIn.value = ''; if (file) FB.clips.capture(file, play); };
       recIn.addEventListener('cancel', () => { recIn.value = ''; });
 
@@ -2566,7 +2738,7 @@ body.viewing .nav { display: none !important; }
     return `<div class="field-row" style="margin-bottom:8px"><label>Comment</label><textarea id="ctext" placeholder="${U.esc(placeholder || 'What happened? Who made the play?')}" style="min-height:60px"></textarea></div>
       <div class="row" style="gap:8px;margin-bottom:12px"><input type="text" id="cby" placeholder="Your name" value="${U.esc(name)}" autocomplete="name" style="flex:1"><button type="button" class="btn" id="cpost">Post</button></div>`;
   }
-  function detail(c) { return `${U.esc(c.playName)}${c.quarter ? ' · Q' + c.quarter : ''} · ${M.fmtDuration(c.durationMs) || '?:??'} · ${M.fmtBytes(c.sizeBytes)}`; }
+  function detail(c) { return `${U.esc(c.playName)}${c.quarter ? ' · Q' + c.quarter : ''} · ${M.fmtDuration(c.durationMs) || '?:??'} · ${M.fmtBytes(c.sizeBytes)}${c.width && c.height ? ' · ' + c.width + '×' + c.height : ''}`; }
   const sideChip = c => c.side === 'defense' ? '<span class="chip side-def">DEF</span>' : '<span class="chip side-off">OFF</span>';
   function fileFor(c, blob) {
     const base = (c.seq ? 'Play-' + String(c.seq).padStart(2, '0') + ' ' : '') + clipLabel(c).replace(/^Play \d+ · /, '');
@@ -2601,20 +2773,23 @@ body.viewing .nav { display: none !important; }
   }
   const mediaCleanup = (m, url) => () => { const v = m && m.el && m.el.querySelector('video'); if (v) { try { v.pause(); v.removeAttribute('src'); v.load(); } catch (e) { /* ignore */ } } URL.revokeObjectURL(url); };
 
-  /* ---------- from view mode: the camera just handed us a file ---------- */
+  /* ---------- a video just arrived: from the in-app recorder, the iOS camera, or Photos ---------- */
   /* opts.side = 'defense' for a defensive snap (recorded from the playbook grid); the play number keeps
-   * counting across offense and defense so the whole game reads in order. */
+   * counting across offense and defense so the whole game reads in order.
+   * opts.durationMs / width / height: what the recorder knows (used when the file cannot say).
+   * opts.gameId: file the clip under this game instead of the lineup's; opts.stay: do not jump to the playbook. */
   C.capture = async function (file, play, opts) {
     if (!file) return;
     opts = opts || {};
     const L = S.get().lineup;
-    const lineup = { show: L.show, gameId: L.gameId || '', quarter: L.quarter || null };
+    const lineup = { show: L.show, gameId: opts.gameId != null ? opts.gameId : (L.gameId || ''), quarter: L.quarter || null };
     const id = U.uid();
-    FB.app.go('#/playbook');                       // back to the grid right away; the save finishes underneath
+    if (!opts.stay) FB.app.go('#/playbook');       // back to the grid right away; the save finishes underneath
     U.toast('Saving clip…', 60000);
     const seq = S.nextClipSeq(lineup.gameId);
-    const durationMs = await M.probeDuration(file);
-    const meta = M.meta({ id, file, play, lineup, durationMs, seq, side: opts.side });
+    let durationMs = await M.probeDuration(file);
+    if (durationMs == null && opts.durationMs > 0) durationMs = Math.round(opts.durationMs);   // WebM and fresh MP4s may not carry a duration
+    const meta = M.meta({ id, file, play, lineup, durationMs, seq, side: opts.side, width: opts.width, height: opts.height });
     let stored = false, why = '';
     if (!M.available) why = location.protocol === 'file:' ? 'The single-file version cannot keep clips.' : 'This browser cannot store clips.';
     else if (file.size > M.MAX_KEEP_BYTES) why = 'This clip is too big to keep in FlagBook (' + M.fmtBytes(file.size) + ').';
@@ -2625,6 +2800,18 @@ body.viewing .nav { display: none !important; }
     if (stored) S.mutate(st => st.videos.push(meta));
     U.hideToast();
     captureSheet(meta, file, stored, why);
+  };
+
+  /* Pull in a video the coach shot with the Camera app (4K, 0.5x, no time limit). No `capture` attribute, so
+   * iOS shows the Photo Library picker. Must be called straight from a tap handler. */
+  C.pickImport = function (play, opts) {
+    const inp = document.createElement('input');
+    inp.type = 'file'; inp.accept = 'video/*'; inp.className = 'hidden'; inp.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(inp);
+    const done = () => { if (inp.parentNode) inp.parentNode.removeChild(inp); };
+    inp.onchange = () => { const f = inp.files && inp.files[0]; done(); if (f) C.capture(f, play || { id: '', name: 'Clip' }, opts || {}); };
+    inp.addEventListener('cancel', done);
+    inp.click();
   };
 
   function captureSheet(meta, file, stored, why) {
@@ -2718,7 +2905,8 @@ body.viewing .nav { display: none !important; }
       if (gid) return renderGame(root, st, gid);
       FB.ui.setTitle(`<h1>Film</h1>`);
       if (!st.videos.length) {
-        root.innerHTML = `<div class="empty">No film yet.<br><br><span class="small">Open a play in the <a href="#/playbook">playbook</a> and tap <b>🎥</b> to record a clip. When you stop, you land back on the playbook.</span></div>`;
+        root.innerHTML = `<div class="empty">No film yet.<br><br><span class="small">Open a play in the <a href="#/playbook">playbook</a> and tap <b>🎥</b> to record a clip. When you stop, you land back on the playbook.</span><br><br><button class="btn" id="importClip">📥 Import from Photos</button></div>`;
+        root.querySelector('#importClip').onclick = () => C.pickImport({ id: '', name: 'Clip' }, { stay: true });
         return;
       }
       const groups = new Map();                      // most recent game first
@@ -2742,11 +2930,13 @@ body.viewing .nav { display: none !important; }
     FB.ui.setTitle(`<a class="btn ghost sm" href="#/film" aria-label="All film">‹</a><h1>${g ? U.esc(gameTitle(g)) + ' · film' : 'Other clips'}</h1>${g ? `<a class="btn sm" href="#/games/${g.id}">Game</a>` : ''}`);
     const clips = st.videos.filter(c => groupKey(c) === gid).sort(bySeq);
     if (!clips.length) {
-      root.innerHTML = `<div class="empty">No film for this game yet.<br><br><span class="small">Pick this game in the playbook's lineup bar, open a play and tap <b>🎥</b>.</span></div>`;
+      root.innerHTML = `<div class="empty">No film for this game yet.<br><br><span class="small">Pick this game in the playbook's lineup bar, open a play and tap <b>🎥</b>.</span><br><br><button class="btn" id="importClip">📥 Import from Photos</button></div>`;
+      root.querySelector('#importClip').onclick = () => C.pickImport({ id: '', name: 'Clip' }, { gameId: g ? g.id : '', stay: true });
       return;
     }
     const nDef = clips.filter(c => c.side === 'defense').length, nOff = clips.length - nDef;
-    root.innerHTML = `<div class="section" style="margin-top:0"><div class="row spread"><h3>${g ? U.fmtDate(g.date) + ' · ' : ''}${clips.length} clip${clips.length === 1 ? '' : 's'}${nDef ? ` <span class="muted" style="font-weight:600">· ${nOff} off · ${nDef} def</span>` : ''}</h3>${canShare ? `<button class="btn sm" id="shareAll" title="Every clip of this game in one share sheet → Save Video">⤴ Save all to Photos</button>` : ''}</div>${clips.map(rowHTML).join('')}</div>${FOOT}`;
+    root.innerHTML = `<div class="section" style="margin-top:0"><div class="row spread"><h3>${g ? U.fmtDate(g.date) + ' · ' : ''}${clips.length} clip${clips.length === 1 ? '' : 's'}${nDef ? ` <span class="muted" style="font-weight:600">· ${nOff} off · ${nDef} def</span>` : ''}</h3><div class="row" style="gap:6px"><button class="btn sm" id="importClip" title="Add a video from Photos to this game">📥 Import</button>${canShare ? `<button class="btn sm" id="shareAll" title="Every clip of this game in one share sheet → Save Video">⤴ Save all to Photos</button>` : ''}</div></div>${clips.map(rowHTML).join('')}</div>${FOOT}`;
+    root.querySelector('#importClip').onclick = () => C.pickImport({ id: '', name: 'Clip' }, { gameId: g ? g.id : '', stay: true });
     const sa = root.querySelector('#shareAll'); if (sa) sa.onclick = () => shareAll(clips, g ? gameTitle(g) + ' clips' : 'FlagBook clips');
     root.querySelectorAll('[data-clip]').forEach(el => {
         const c = st.videos.find(v => v.id === el.dataset.clip); if (!c) return;
@@ -2765,6 +2955,173 @@ body.viewing .nav { display: none !important; }
   }
 
   FB.clips = C;
+})();
+
+</script>
+<script>
+/* FlagBook — the in-app camera page (#/record/<playId> or #/record/defense). Full-bleed preview from the
+ * rear ultra-wide lens, one big record button, then the clip goes through FB.clips.capture exactly like a
+ * file from the iOS camera. selfManaged: saving the lens choice must not re-render and kill the stream. */
+(function () {
+  'use strict';
+  const FB = window.FB, U = FB.util, S = FB.store, M = FB.media, R = FB.recorder;
+
+  const V = { session: null, recording: null, timer: null, wake: null, pq: null, onVis: null, onOrient: null, root: null, play: null, side: 'offense', gone: false };
+
+  function clipTitle(play, side) {
+    const L = S.get().lineup;
+    return M.meta({ play, lineup: { gameId: L.gameId || '', quarter: L.quarter || null }, seq: S.nextClipSeq(L.gameId || ''), side }).label;
+  }
+  const dims = s => (s && s.width && s.height ? s.width + '×' + s.height + (s.frameRate ? ' · ' + Math.round(s.frameRate) + ' fps' : '') : '');
+  const q = sel => V.root && V.root.querySelector(sel);
+
+  async function wakeOn() { try { if (navigator.wakeLock && !V.wake) V.wake = await navigator.wakeLock.request('screen'); } catch (e) { V.wake = null; } }
+  function wakeOff() { if (V.wake) { try { V.wake.release(); } catch (e) { /* ignore */ } V.wake = null; } }
+
+  function showPreview() {
+    const v = q('#recPrev'); if (!v || !V.session) return;
+    v.srcObject = V.session.stream;
+    v.play().catch(() => {});
+    const d = q('#recDim'); if (d) d.textContent = dims(V.session.settings);
+    const lens = q('#lens');
+    if (lens) {
+      lens.classList.toggle('ghost', !V.session.hasUltra);   // keeps its space so the record button stays centred
+      lens.querySelectorAll('[data-lens]').forEach(b => b.classList.toggle('on', b.dataset.lens === V.session.lens));
+    }
+    if (V.session.track) V.session.track.onended = () => { if (V.recording) handoff(); };
+  }
+
+  /* camera refused or missing → the old path, from a real tap so the file input may open */
+  function nativeFallback(msg) {
+    const stage = q('#recStage'); if (!stage) return;
+    V.fallback = true; const hint = q('#rotHint'); if (hint) hint.classList.add('hidden');   // the rotate nag would sit on top of the message
+    stage.innerHTML = `<div class="rec-fallback"><p>${U.esc(msg)}</p><button class="btn primary" id="recNative">Open iPhone Camera</button>
+      <input type="file" accept="video/*" capture="environment" id="recNativeIn" class="hidden" aria-hidden="true" tabindex="-1"></div>`;
+    const inp = q('#recNativeIn');
+    q('#recNative').onclick = () => { inp.value = ''; inp.click(); };
+    inp.onchange = () => { const f = inp.files && inp.files[0]; inp.value = ''; if (f) FB.clips.capture(f, V.play, { side: V.side }); };
+    const lens = q('#lens'); if (lens) lens.classList.add('ghost');
+    const rb = q('#recBtn'); if (rb) rb.disabled = true;
+  }
+
+  async function openCamera() {
+    if (V.session || V.gone) return;
+    try {
+      const s = await R.open(S.get().settings.lens || 'ultra');
+      if (V.gone) { R.stopStream(s.stream); return; }
+      V.session = s;
+      showPreview();
+    } catch (e) {
+      const name = e && e.name;
+      nativeFallback(name === 'NotAllowedError' ? 'FlagBook was not allowed to use the camera. You can still record with the iPhone camera.'
+        : name === 'NotFoundError' || name === 'OverconstrainedError' ? 'No rear camera found here.'
+        : 'The camera could not be started' + (e && e.message ? ' (' + e.message + ')' : '') + '.');
+    }
+  }
+  function closeCamera() { if (V.session) { R.stopStream(V.session.stream); V.session = null; } const v = q('#recPrev'); if (v) v.srcObject = null; }
+
+  function setRecording(on) {
+    const rb = q('#recBtn'); if (rb) { rb.classList.toggle('on', on); rb.setAttribute('aria-label', on ? 'Stop' : 'Record'); }
+    ['#recClose', '#recImport'].forEach(s => { const b = q(s); if (b) b.disabled = on; });
+    q('#lens') && q('#lens').querySelectorAll('button').forEach(b => { b.disabled = on; });
+    const t = q('#recTime'); if (t) { t.classList.toggle('live', on); if (!on) t.textContent = '0:00'; }
+  }
+  function tick() {
+    if (!V.recording) return;
+    const ms = V.recording.elapsed();
+    const t = q('#recTime'); if (t) t.textContent = M.fmtDuration(ms);
+    if (ms >= R.MAX_MS) { U.toast('Clips stop at ' + M.fmtDuration(R.MAX_MS)); handoff(); }
+  }
+  function start() {
+    if (!V.session || V.recording) return;
+    try { V.recording = R.record(V.session.stream, V.session.settings); }
+    catch (e) { U.toast('Could not start recording' + (e && e.message ? ': ' + e.message : '')); return; }
+    setRecording(true);
+    wakeOn();
+    clearInterval(V.timer); V.timer = setInterval(tick, 250);
+  }
+  /* stop and hand the clip to the normal pipeline (which lands on the playbook and saves underneath) */
+  async function handoff() {
+    const rec = V.recording; if (!rec) return;
+    V.recording = null; clearInterval(V.timer); V.timer = null;
+    const r = await rec.stop();
+    wakeOff();
+    if (V.gone) return;                                   // navigated away mid-recording: nothing to keep
+    setRecording(false);
+    if (!r.file.size || r.durationMs < 1000) { U.toast('Too short — nothing saved'); return; }
+    const play = V.play, side = V.side;
+    history.replaceState(null, '', '#/playbook');         // Back must not reopen the camera
+    FB.clips.capture(r.file, play, { side, durationMs: r.durationMs, width: r.width, height: r.height });
+  }
+
+  FB.views.recorder = {
+    className: 'editor recorder-page',
+    selfManaged: true,
+    render(root, route) {
+      V.root = root; V.gone = false; V.fallback = false;
+      const def = route.id === 'defense';
+      V.play = def ? { id: '', name: 'Defense' } : S.play(route.id);
+      V.side = def ? 'defense' : 'offense';
+      if (!V.play) { root.innerHTML = '<div class="empty">Play not found. <a href="#/playbook">Back to playbook</a></div>'; return; }
+      document.body.classList.add('viewing', 'recording');
+      FB.ui.setTitle('');
+      const lens = S.get().settings.lens || 'ultra';
+      root.innerHTML = `<div class="recorder">
+        <div class="rec-stage" id="recStage"><video id="recPrev" autoplay muted playsinline></video></div>
+        <div class="rec-top">
+          <button class="rbtn" id="recClose" aria-label="Close">✕</button>
+          <div class="rec-title">${U.esc(clipTitle(V.play, V.side))}</div>
+          <div class="rec-dim" id="recDim"></div>
+        </div>
+        <div class="rec-hint hidden" id="rotHint">⟳ Turn your phone sideways to get the whole field</div>
+        <div class="rec-notice hidden" id="lowSpace"></div>
+        <div class="rec-bottom">
+          <div class="seg lens ghost" id="lens"><button type="button" data-lens="ultra"${lens === 'ultra' ? ' class="on"' : ''}>0.5×</button><button type="button" data-lens="wide"${lens !== 'ultra' ? ' class="on"' : ''}>1×</button></div>
+          <button class="rec-btn" id="recBtn" aria-label="Record"><span></span></button>
+          <div class="rec-right"><span class="rec-time" id="recTime">0:00</span><button class="rbtn" id="recImport" title="Add a video from Photos">📥 Import</button></div>
+        </div>
+      </div>`;
+      q('#recClose').onclick = () => { FB.app.go(def ? '#/playbook' : '#/view/' + V.play.id); };
+      q('#recBtn').onclick = () => { if (V.recording) handoff(); else start(); };
+      q('#recImport').onclick = () => FB.clips.pickImport(V.play, { side: V.side });
+      root.querySelectorAll('[data-lens]').forEach(b => b.onclick = async () => {
+        if (V.recording || !V.session) return;
+        const want = b.dataset.lens;
+        S.mutate(st => { st.settings.lens = want; });
+        await R.switchLens(V.session, want);
+        showPreview();
+      });
+      // landscape gets the whole field; iOS has no orientation lock, so just say so
+      if (typeof matchMedia === 'function') {
+        V.pq = matchMedia('(orientation: portrait)');
+        V.onOrient = () => { const h = q('#rotHint'); if (h) h.classList.toggle('hidden', V.fallback || !V.pq.matches); };
+        V.pq.addEventListener('change', V.onOrient); V.onOrient();
+      }
+      // iOS ends the camera when the app goes to the background: keep what was recorded, restart the preview on return
+      V.onVis = () => {
+        if (document.hidden) { if (V.recording) handoff(); else closeCamera(); }
+        else { if (V.recording) wakeOn(); else if (!V.session) openCamera(); }
+      };
+      document.addEventListener('visibilitychange', V.onVis);
+      M.usage().then(u => {
+        const el = q('#lowSpace'); if (!el || !u || !u.quota) return;
+        const free = u.quota - u.usage;
+        if (free < 300 * 1024 * 1024) { el.textContent = 'Low storage: ' + M.fmtBytes(Math.max(0, free)) + ' free. The clip can still be saved to Photos.'; el.classList.remove('hidden'); }
+      });
+      openCamera();
+    },
+    destroy() {
+      V.gone = true;
+      document.body.classList.remove('viewing', 'recording');
+      clearInterval(V.timer); V.timer = null;
+      if (V.recording) { const rec = V.recording; V.recording = null; rec.stop().catch(() => {}); }   // leaving = cancel
+      closeCamera();
+      wakeOff();
+      if (V.onVis) { document.removeEventListener('visibilitychange', V.onVis); V.onVis = null; }
+      if (V.pq && V.onOrient) { V.pq.removeEventListener('change', V.onOrient); V.pq = null; V.onOrient = null; }
+      V.root = null; V.play = null;
+    }
+  };
 })();
 
 </script>
@@ -2830,6 +3187,7 @@ body.viewing .nav { display: none !important; }
           <div class="field-row"><label>Season</label><input type="text" id="tseason" value="${U.esc(st.team.season)}" placeholder="Fall 2026"></div></div>
           <div class="field-row"><label>Your name <span class="muted" style="text-transform:none;letter-spacing:0">(signs your film comments)</span></label><input type="text" id="coach" value="${U.esc(st.settings.coachName || '')}" placeholder="Coach Ray" autocomplete="name"></div>
           <div class="field-row"><label>Quarters per game</label><select id="quarters">${[2, 4].map(n => `<option value="${n}"${(st.settings.quarters || 4) === n ? ' selected' : ''}>${n}</option>`).join('')}</select></div>
+          ${FB.recorder && FB.recorder.supported ? `<div class="field-row"><label>Record clips with</label><select id="recMode"><option value="app"${st.settings.recMode !== 'native' ? ' selected' : ''}>FlagBook camera (wider, higher quality)</option><option value="native"${st.settings.recMode === 'native' ? ' selected' : ''}>iPhone Camera app</option></select></div>` : ''}
         </div>
         <div class="card"><h2 style="margin-bottom:10px">Backup & sharing</h2>
           <p class="small muted">Everything is stored on this device. Export a backup file regularly, or send it to an assistant coach who can import it.</p>
@@ -2849,6 +3207,7 @@ body.viewing .nav { display: none !important; }
       root.querySelector('#tseason').onchange = e => S.mutate(s => s.team.season = e.target.value.trim());
       root.querySelector('#quarters').onchange = e => S.mutate(s => s.settings.quarters = +e.target.value);
       root.querySelector('#coach').onchange = e => S.mutate(s => s.settings.coachName = e.target.value.trim());
+      const rm = root.querySelector('#recMode'); if (rm) rm.onchange = e => S.mutate(s => s.settings.recMode = e.target.value);
       root.querySelector('#export').onclick = () => U.download(`flagbook-${(st.team.name || 'team').replace(/\W+/g, '-')}-${U.todayISO()}.json`, S.exportJSON());
       const share = root.querySelector('#share');
       if (share) share.onclick = async () => {
@@ -2926,7 +3285,7 @@ body.viewing .nav { display: none !important; }
     [/^#?\/?$/, 'home'], [/^#\/home/, 'home'], [/^#\/roster/, 'roster'], [/^#\/practices/, 'practices'],
     [/^#\/games\/([^/?]+)/, 'game', 'games'], [/^#\/games/, 'games'],
     [/^#\/playbook\/([^/?]+)/, 'playbook', 'playbook'], [/^#\/playbook/, 'playbook'],
-    [/^#\/view\/([^/?]+)/, 'viewer', 'playbook'],
+    [/^#\/view\/([^/?]+)/, 'viewer', 'playbook'], [/^#\/record\/([^/?]+)/, 'recorder', 'playbook'],
     [/^#\/print(?:\/([^/?]+))?/, 'print', 'playbook'], [/^#\/gamesheet\/([^/?]+)/, 'gamesheet', 'games'],
     [/^#\/film/, 'clips', 'film'], [/^#\/clips/, 'clips', 'film'],
     [/^#\/settings/, 'settings']

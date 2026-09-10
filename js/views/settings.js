@@ -13,6 +13,7 @@
           <div class="field-row"><label>Season</label><input type="text" id="tseason" value="${U.esc(st.team.season)}" placeholder="Fall 2026"></div></div>
           <div class="field-row"><label>Your name <span class="muted" style="text-transform:none;letter-spacing:0">(signs your film comments)</span></label><input type="text" id="coach" value="${U.esc(st.settings.coachName || '')}" placeholder="Coach Ray" autocomplete="name"></div>
           <div class="field-row"><label>Quarters per game</label><select id="quarters">${[2, 4].map(n => `<option value="${n}"${(st.settings.quarters || 4) === n ? ' selected' : ''}>${n}</option>`).join('')}</select></div>
+          ${FB.recorder && FB.recorder.supported ? `<div class="field-row"><label>Record clips with</label><select id="recMode"><option value="app"${st.settings.recMode !== 'native' ? ' selected' : ''}>FlagBook camera (wider, higher quality)</option><option value="native"${st.settings.recMode === 'native' ? ' selected' : ''}>iPhone Camera app</option></select></div>` : ''}
         </div>
         <div class="card"><h2 style="margin-bottom:10px">Backup & sharing</h2>
           <p class="small muted">Everything is stored on this device. Export a backup file regularly, or send it to an assistant coach who can import it.</p>
@@ -32,6 +33,7 @@
       root.querySelector('#tseason').onchange = e => S.mutate(s => s.team.season = e.target.value.trim());
       root.querySelector('#quarters').onchange = e => S.mutate(s => s.settings.quarters = +e.target.value);
       root.querySelector('#coach').onchange = e => S.mutate(s => s.settings.coachName = e.target.value.trim());
+      const rm = root.querySelector('#recMode'); if (rm) rm.onchange = e => S.mutate(s => s.settings.recMode = e.target.value);
       root.querySelector('#export').onclick = () => U.download(`flagbook-${(st.team.name || 'team').replace(/\W+/g, '-')}-${U.todayISO()}.json`, S.exportJSON());
       const share = root.querySelector('#share');
       if (share) share.onclick = async () => {

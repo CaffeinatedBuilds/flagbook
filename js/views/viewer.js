@@ -116,7 +116,7 @@
               <button class="btn icon" id="clear" title="Clear marks">✕</button>
             </div>
             <div class="vgroup">
-              <button class="btn icon" id="recBtn" title="Record a clip of this play (you come back to the playbook when you stop)">🎥</button>
+              <button class="btn icon" id="recBtn" title="Record a clip of this play: wide lens, full quality (you come back to the playbook when you stop)">🎥</button>
               <input type="file" accept="video/*" capture="environment" id="recIn" class="hidden" aria-hidden="true" tabindex="-1">
             </div>
             ${L.show ? `<div class="vgroup seg qseg small-seg">${Array.from({ length: Q }, (_, i) => `<button data-q="${i + 1}" class="${L.quarter === i + 1 ? 'on' : ''}">Q${i + 1}</button>`).join('')}</div>
@@ -158,10 +158,11 @@
       root.querySelector('#clear').onclick = () => { A.strokes = []; drawAnnots(annot); };
       root.querySelectorAll('[data-q]').forEach(b => b.onclick = () => S.setLineup({ quarter: +b.dataset.q }));
 
-      // 🎥 opens the camera (iOS: straight into video mode). When the coach taps "Use Video" the file
-      // lands here and FB.clips takes over: back to the playbook, clip saved underneath.
+      // 🎥 opens FlagBook's own camera page (wide lens, full quality). Where that is not possible the old
+      // iOS camera hand-off runs instead: the coach taps "Use Video", the file lands here and FB.clips takes
+      // over: back to the playbook, clip saved underneath.
       const recBtn = root.querySelector('#recBtn'), recIn = root.querySelector('#recIn');
-      recBtn.onclick = () => { recIn.value = ''; recIn.click(); };
+      recBtn.onclick = () => { if (FB.recorder && FB.recorder.enabled()) location.hash = '#/record/' + play.id; else { recIn.value = ''; recIn.click(); } };
       recIn.onchange = () => { const file = recIn.files && recIn.files[0]; recIn.value = ''; if (file) FB.clips.capture(file, play); };
       recIn.addEventListener('cancel', () => { recIn.value = ''; });
 

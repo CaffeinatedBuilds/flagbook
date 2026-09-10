@@ -37,7 +37,7 @@
       practices: [],
       games: [],
       plays: [],
-      settings: { showYardGrid: false, quarters: 4, coachName: '' },   // coachName signs film comments
+      settings: { showYardGrid: false, quarters: 4, coachName: '', lens: 'ultra', recMode: 'app' },   // coachName signs film comments; lens/recMode drive the in-app camera
       lineup: { show: true, gameId: '', quarter: 1, subs: {}, subsKey: '' },   // which names the playbook shows (+ in-game substitutions)
       defaultRotation: {},                               // team lineup used when no game is picked
       videos: []                                         // clip metadata; the video files themselves live in IndexedDB (FB.media)

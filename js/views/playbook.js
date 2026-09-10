@@ -84,10 +84,11 @@
     else html += `<div class="plays">${st.plays.map(p => `<a class="play-card" href="#/view/${p.id}">${F.svgString(p, { names })}<div class="cap"><span>${U.esc(p.name)}</span>${Object.values(p.routes).some(r => r.hot) ? '<i class="dot" title="has hot route"></i>' : ''}</div></a>`).join('')}</div>`;
     root.innerHTML = html;
     bindLineupBar(root);
-    // 🎥 Defense: same camera hand-off as the 🎥 in view mode, tagged as a defensive snap
+    // 🎥 Defense: same camera as the 🎥 in view mode (in-app recorder, or the iOS camera hand-off), tagged as a defensive snap
     const recDefIn = root.querySelector('#recDefIn');
-    document.getElementById('recDef').onclick = () => { recDefIn.value = ''; recDefIn.click(); };
+    document.getElementById('recDef').onclick = () => { if (FB.recorder && FB.recorder.enabled()) location.hash = '#/record/defense'; else { recDefIn.value = ''; recDefIn.click(); } };
     recDefIn.onchange = () => { const file = recDefIn.files && recDefIn.files[0]; recDefIn.value = ''; if (file) FB.clips.capture(file, { id: '', name: 'Defense' }, { side: 'defense' }); };
+    recDefIn.addEventListener('cancel', () => { recDefIn.value = ''; });
     const cs = root.querySelector('#clearSubs'); if (cs) cs.onclick = () => S.clearSubs();
     const a2 = root.querySelector('#add2'); if (a2) a2.onclick = newPlayDialog;
   }

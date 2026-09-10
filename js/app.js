@@ -46,7 +46,7 @@
     [/^#?\/?$/, 'home'], [/^#\/home/, 'home'], [/^#\/roster/, 'roster'], [/^#\/practices/, 'practices'],
     [/^#\/games\/([^/?]+)/, 'game', 'games'], [/^#\/games/, 'games'],
     [/^#\/playbook\/([^/?]+)/, 'playbook', 'playbook'], [/^#\/playbook/, 'playbook'],
-    [/^#\/view\/([^/?]+)/, 'viewer', 'playbook'],
+    [/^#\/view\/([^/?]+)/, 'viewer', 'playbook'], [/^#\/record\/([^/?]+)/, 'recorder', 'playbook'],
     [/^#\/print(?:\/([^/?]+))?/, 'print', 'playbook'], [/^#\/gamesheet\/([^/?]+)/, 'gamesheet', 'games'],
     [/^#\/film/, 'clips', 'film'], [/^#\/clips/, 'clips', 'film'],
     [/^#\/settings/, 'settings']

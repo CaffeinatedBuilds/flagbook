@@ -21,6 +21,9 @@
     const d = M.meta({ file: {}, play: { id: '', name: 'Defense' }, lineup: { gameId: 'g1', quarter: 2 }, seq: 5, side: 'defense' });
     eq(d.side, 'defense'); eq(d.label, 'Play 5 · Defense · Q2'); eq(d.playId, '');
     eq(M.meta({ file: {}, play: {}, lineup: {}, side: 'bogus' }).side, 'offense');
+    const hd = M.meta({ file: {}, play: {}, lineup: {}, width: 1920.4, height: 1080 });
+    eq(hd.width, 1920); eq(hd.height, 1080);
+    assert(!('width' in M.meta({ file: {}, play: {}, lineup: {}, width: 0, height: 1080 })), 'no half-known size');
     const m2 = M.meta({ file: {}, play: {}, lineup: {} });
     assert(m2.id, 'id generated'); eq(m2.label, 'Play'); eq(m2.quarter, null); eq(m2.seq, null); eq(m2.gameId, ''); eq(m2.durationMs, null); eq(m2.sizeBytes, 0);
   });

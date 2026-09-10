@@ -77,21 +77,29 @@ printout, without changing the saved lineup. Subs last until you change the quar
 source, or tap **Undo subs** (in the 🔁 sheet or the playbook). The Q1–Q4 buttons in view mode
 switch quarters without leaving the play.
 
-**Record a clip.** Tap **🎥** in view mode and the camera opens straight into video (iPhone/iPad:
-the built-in Camera UI, rear camera). Tap stop, then **Use Video**, and you land back on the
-playbook ready to call the next play while the clip is saved underneath, tagged with the play,
-the game and the quarter the lineup was showing. A small sheet lets you rename it, **Save to
-Photos** (share sheet → Save Video) or delete it. When the defense is on the field, the **🎥 Defense**
-button at the top of the playbook records the same way and tags the clip **DEF**. Clips are numbered
-per game across offense and defense ("Play 1 · Slant · Q2", "Play 2 · Defense · Q2", "Play 3 · …")
-so the whole game reads in order and each game in the Clips list has **Save all to Photos**, which puts every clip of
-that game in one share sheet. The **Film** tab lists games; open one to see just its clips, and tap a
-clip to rename it or add comments. Comments are threaded, signed with the name from **More → Your
-name** and time-stamped, and they travel in the JSON backup. iOS caps these recordings at 10 minutes and
-records them at medium quality, so this is for a play or a drive, not the whole game. Clips are
-kept on this device (IndexedDB) and are **not** part of the JSON backup; browse them from a
-game's **🎬 Film** button or the **Film** tab. The single-file `dist/flagbook.html` build can
-record and Save to Photos but cannot keep clips.
+**Record a clip.** Tap **🎥** in view mode and FlagBook's own camera page opens: a full-screen
+preview from the rear **ultra-wide (0.5×) lens** so the whole field fits, at the best quality Safari
+offers (1080p on most iPhones, 4K where available) with no time cap short of three minutes. Turn the
+phone sideways before you press record (the page reminds you), tap the red button to start and again
+to stop, and you land back on the playbook ready to call the next play while the clip is saved
+underneath, tagged with the play, the game and the quarter the lineup was showing. A **0.5× / 1×**
+toggle picks the lens and is remembered. A small sheet lets you rename it, **Save to Photos** (share
+sheet → Save Video) or delete it. When the defense is on the field, the **🎥 Defense** button at the
+top of the playbook records the same way and tags the clip **DEF**. Clips are numbered per game
+across offense and defense ("Play 1 · Slant · Q2", "Play 2 · Defense · Q2", "Play 3 · …") so the whole
+game reads in order and each game in the Film list has **Save all to Photos**, which puts every clip of
+that game in one share sheet. **📥 Import** (on the camera page and in the Film tab) pulls in a video
+shot with the iPhone Camera app, for the times you want 4K/60 or cinematic stabilisation. The **Film**
+tab lists games; open one to see just its clips, and tap a clip to rename it or add comments. Comments
+are threaded, signed with the name from **More → Your name** and time-stamped, and they travel in the
+JSON backup. Clips are kept on this device (IndexedDB) and are **not** part of the JSON backup; browse
+them from a game's **🎬 Film** button or the **Film** tab.
+
+iOS notes: a home-screen web app asks for camera permission every time it is launched (that is iOS,
+not FlagBook). Where the browser cannot record (older iOS, camera refused), 🎥 falls back to the iOS
+camera picker, which records at medium quality with the 1× lens; **More → Record clips with** forces
+that path if you prefer it. The single-file `dist/flagbook.html` build can record and Save to Photos
+but cannot keep clips.
 
 ## Games & rotation
 
@@ -115,9 +123,10 @@ js/util.js            helpers
 js/geometry.js        stroke → route smoothing, SVG path building
 js/store.js           state, localStorage persistence, import/export, seed plays
 js/media.js           video clips in IndexedDB (blobs), size/duration helpers
+js/recorder.js        in-app camera: lens choice, MediaRecorder, feature detection
 js/rotation.js        fair rotation + snack assignment
 js/field.js           SVG renderer for a play
-js/views/*.js         screens (home, roster, practices, games, playbook, viewer, clips (Film), print, settings)
+js/views/*.js         screens (home, roster, practices, games, playbook, viewer, recorder (camera), clips (Film), print, settings)
 js/app.js             hash router + UI helpers
 sw.js, manifest.webmanifest, icons/   PWA install/offline
 tools/run-tests.swift      runs tests/*.test.js in JavaScriptCore (no Node needed)
@@ -143,7 +152,7 @@ service-worker version deployed, bump `CACHE` in `sw.js` so installed phones pic
   "plays":     [{ "id", "name", "notes", "players": { "Y": [x, y] },
                   "routes": { "Y": { "pts": [[dx, dy]], "corners": [true], "hot", "steps", "end", "dashed", "labelSide" } },
                   "spacing": { "show": true, "labels": { "Y|Z": "1" } } }],
-  "videos":    [{ "id", "playId", "playName", "gameId", "quarter", "seq", "side", "label", "createdAt", "durationMs", "sizeBytes", "mimeType",
+  "videos":    [{ "id", "playId", "playName", "gameId", "quarter", "seq", "side", "label", "createdAt", "durationMs", "sizeBytes", "mimeType", "width", "height",
                   "comments": [{ "id", "by", "text", "at" }] }]
                 // clip metadata only — the video file itself is in this device's IndexedDB and is not exported
 }

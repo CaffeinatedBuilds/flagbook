@@ -77,6 +77,7 @@
     const c = S.addClipComment('n1', ' Great catch ', ' Coach Ray ');
     eq(c.text, 'Great catch'); eq(c.by, 'Coach Ray'); assert(c.at > 0, 'timestamp');
     eq(S.get().settings.coachName, 'Coach Ray', 'name remembered');
+    eq(S.get().settings.lens, 'ultra', 'default lens'); eq(S.get().settings.recMode, 'app', 'default recorder');
     eq(S.get().videos.find(v => v.id === 'n1').comments.length, 2);
     S.removeClipComment('n1', c.id);
     eq(S.get().videos.find(v => v.id === 'n1').comments.length, 1);

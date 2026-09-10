@@ -20,7 +20,7 @@
     return `<div class="field-row" style="margin-bottom:8px"><label>Comment</label><textarea id="ctext" placeholder="${U.esc(placeholder || 'What happened? Who made the play?')}" style="min-height:60px"></textarea></div>
       <div class="row" style="gap:8px;margin-bottom:12px"><input type="text" id="cby" placeholder="Your name" value="${U.esc(name)}" autocomplete="name" style="flex:1"><button type="button" class="btn" id="cpost">Post</button></div>`;
   }
-  function detail(c) { return `${U.esc(c.playName)}${c.quarter ? ' · Q' + c.quarter : ''} · ${M.fmtDuration(c.durationMs) || '?:??'} · ${M.fmtBytes(c.sizeBytes)}`; }
+  function detail(c) { return `${U.esc(c.playName)}${c.quarter ? ' · Q' + c.quarter : ''} · ${M.fmtDuration(c.durationMs) || '?:??'} · ${M.fmtBytes(c.sizeBytes)}${c.width && c.height ? ' · ' + c.width + '×' + c.height : ''}`; }
   const sideChip = c => c.side === 'defense' ? '<span class="chip side-def">DEF</span>' : '<span class="chip side-off">OFF</span>';
   function fileFor(c, blob) {
     const base = (c.seq ? 'Play-' + String(c.seq).padStart(2, '0') + ' ' : '') + clipLabel(c).replace(/^Play \d+ · /, '');
@@ -55,20 +55,23 @@
   }
   const mediaCleanup = (m, url) => () => { const v = m && m.el && m.el.querySelector('video'); if (v) { try { v.pause(); v.removeAttribute('src'); v.load(); } catch (e) { /* ignore */ } } URL.revokeObjectURL(url); };
 
-  /* ---------- from view mode: the camera just handed us a file ---------- */
+  /* ---------- a video just arrived: from the in-app recorder, the iOS camera, or Photos ---------- */
   /* opts.side = 'defense' for a defensive snap (recorded from the playbook grid); the play number keeps
-   * counting across offense and defense so the whole game reads in order. */
+   * counting across offense and defense so the whole game reads in order.
+   * opts.durationMs / width / height: what the recorder knows (used when the file cannot say).
+   * opts.gameId: file the clip under this game instead of the lineup's; opts.stay: do not jump to the playbook. */
   C.capture = async function (file, play, opts) {
     if (!file) return;
     opts = opts || {};
     const L = S.get().lineup;
-    const lineup = { show: L.show, gameId: L.gameId || '', quarter: L.quarter || null };
+    const lineup = { show: L.show, gameId: opts.gameId != null ? opts.gameId : (L.gameId || ''), quarter: L.quarter || null };
     const id = U.uid();
-    FB.app.go('#/playbook');                       // back to the grid right away; the save finishes underneath
+    if (!opts.stay) FB.app.go('#/playbook');       // back to the grid right away; the save finishes underneath
     U.toast('Saving clip…', 60000);
     const seq = S.nextClipSeq(lineup.gameId);
-    const durationMs = await M.probeDuration(file);
-    const meta = M.meta({ id, file, play, lineup, durationMs, seq, side: opts.side });
+    let durationMs = await M.probeDuration(file);
+    if (durationMs == null && opts.durationMs > 0) durationMs = Math.round(opts.durationMs);   // WebM and fresh MP4s may not carry a duration
+    const meta = M.meta({ id, file, play, lineup, durationMs, seq, side: opts.side, width: opts.width, height: opts.height });
     let stored = false, why = '';
     if (!M.available) why = location.protocol === 'file:' ? 'The single-file version cannot keep clips.' : 'This browser cannot store clips.';
     else if (file.size > M.MAX_KEEP_BYTES) why = 'This clip is too big to keep in FlagBook (' + M.fmtBytes(file.size) + ').';
@@ -79,6 +82,18 @@
     if (stored) S.mutate(st => st.videos.push(meta));
     U.hideToast();
     captureSheet(meta, file, stored, why);
+  };
+
+  /* Pull in a video the coach shot with the Camera app (4K, 0.5x, no time limit). No `capture` attribute, so
+   * iOS shows the Photo Library picker. Must be called straight from a tap handler. */
+  C.pickImport = function (play, opts) {
+    const inp = document.createElement('input');
+    inp.type = 'file'; inp.accept = 'video/*'; inp.className = 'hidden'; inp.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(inp);
+    const done = () => { if (inp.parentNode) inp.parentNode.removeChild(inp); };
+    inp.onchange = () => { const f = inp.files && inp.files[0]; done(); if (f) C.capture(f, play || { id: '', name: 'Clip' }, opts || {}); };
+    inp.addEventListener('cancel', done);
+    inp.click();
   };
 
   function captureSheet(meta, file, stored, why) {
@@ -172,7 +187,8 @@
       if (gid) return renderGame(root, st, gid);
       FB.ui.setTitle(`<h1>Film</h1>`);
       if (!st.videos.length) {
-        root.innerHTML = `<div class="empty">No film yet.<br><br><span class="small">Open a play in the <a href="#/playbook">playbook</a> and tap <b>🎥</b> to record a clip. When you stop, you land back on the playbook.</span></div>`;
+        root.innerHTML = `<div class="empty">No film yet.<br><br><span class="small">Open a play in the <a href="#/playbook">playbook</a> and tap <b>🎥</b> to record a clip. When you stop, you land back on the playbook.</span><br><br><button class="btn" id="importClip">📥 Import from Photos</button></div>`;
+        root.querySelector('#importClip').onclick = () => C.pickImport({ id: '', name: 'Clip' }, { stay: true });
         return;
       }
       const groups = new Map();                      // most recent game first
@@ -196,11 +212,13 @@
     FB.ui.setTitle(`<a class="btn ghost sm" href="#/film" aria-label="All film">‹</a><h1>${g ? U.esc(gameTitle(g)) + ' · film' : 'Other clips'}</h1>${g ? `<a class="btn sm" href="#/games/${g.id}">Game</a>` : ''}`);
     const clips = st.videos.filter(c => groupKey(c) === gid).sort(bySeq);
     if (!clips.length) {
-      root.innerHTML = `<div class="empty">No film for this game yet.<br><br><span class="small">Pick this game in the playbook's lineup bar, open a play and tap <b>🎥</b>.</span></div>`;
+      root.innerHTML = `<div class="empty">No film for this game yet.<br><br><span class="small">Pick this game in the playbook's lineup bar, open a play and tap <b>🎥</b>.</span><br><br><button class="btn" id="importClip">📥 Import from Photos</button></div>`;
+      root.querySelector('#importClip').onclick = () => C.pickImport({ id: '', name: 'Clip' }, { gameId: g ? g.id : '', stay: true });
       return;
     }
     const nDef = clips.filter(c => c.side === 'defense').length, nOff = clips.length - nDef;
-    root.innerHTML = `<div class="section" style="margin-top:0"><div class="row spread"><h3>${g ? U.fmtDate(g.date) + ' · ' : ''}${clips.length} clip${clips.length === 1 ? '' : 's'}${nDef ? ` <span class="muted" style="font-weight:600">· ${nOff} off · ${nDef} def</span>` : ''}</h3>${canShare ? `<button class="btn sm" id="shareAll" title="Every clip of this game in one share sheet → Save Video">⤴ Save all to Photos</button>` : ''}</div>${clips.map(rowHTML).join('')}</div>${FOOT}`;
+    root.innerHTML = `<div class="section" style="margin-top:0"><div class="row spread"><h3>${g ? U.fmtDate(g.date) + ' · ' : ''}${clips.length} clip${clips.length === 1 ? '' : 's'}${nDef ? ` <span class="muted" style="font-weight:600">· ${nOff} off · ${nDef} def</span>` : ''}</h3><div class="row" style="gap:6px"><button class="btn sm" id="importClip" title="Add a video from Photos to this game">📥 Import</button>${canShare ? `<button class="btn sm" id="shareAll" title="Every clip of this game in one share sheet → Save Video">⤴ Save all to Photos</button>` : ''}</div></div>${clips.map(rowHTML).join('')}</div>${FOOT}`;
+    root.querySelector('#importClip').onclick = () => C.pickImport({ id: '', name: 'Clip' }, { gameId: g ? g.id : '', stay: true });
     const sa = root.querySelector('#shareAll'); if (sa) sa.onclick = () => shareAll(clips, g ? gameTitle(g) + ' clips' : 'FlagBook clips');
     root.querySelectorAll('[data-clip]').forEach(el => {
         const c = st.videos.find(v => v.id === el.dataset.clip); if (!c) return;
